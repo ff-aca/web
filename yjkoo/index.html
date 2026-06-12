@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이사가서 부쟈되쟈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght=400;600;700;800&display=swap');
+        body {
+            font-family: 'Pretendard', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-indigo-600 text-white rounded-xl">
+                    <i data-lucide="trending-up" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900">상헌&연정 이사 준비 현금 흐름표💸</h1>
+                    <p class="text-xs text-slate-500">양주에서 동탄으로 가요 🚛</p>
+                </div>
+            </div>
+            </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">보유 잔고</p>
+                <h3 class="text-2xl font-black text-slate-900 mt-2" id="sum_start_cash">50,000,000원</h3>
+                <p class="text-xs text-slate-400 mt-1">현재 통장 가용 자금</p>
+            </div>
+
+            <div id="status_card" class="p-6 rounded-2xl border shadow-sm relative overflow-hidden transition-all duration-300">
+                <p class="text-xs font-semibold uppercase tracking-wider" id="status_title">전체 흐름 중 최저 잔고</p>
+                <h3 class="text-2xl font-black mt-2" id="dashboard_min_balance">계산 중</h3>
+                <p class="text-xs mt-1" id="status_desc">데이터 연동 분석 중</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">이사 정리 후 최종 잔고</p>
+                <h3 class="text-2xl font-black text-indigo-600 mt-2" id="dashboard_final_balance">0원</h3>
+                <p class="text-xs text-slate-400 mt-1">모든 유입/유출 정리 완료 기준</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-5 space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="wallet" class="w-5 h-5 text-indigo-600"></i>
+                        기본 자산 및 고정 수입
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">보유 잔고</label>
+                            <input type="text" id="current_cash" value="50,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('current_cash', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_current_cash">5,000만 원</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">이사 전까지 매월 저축 목표</label>
+                            <input type="text" id="monthly_savings" value="3,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('monthly_savings', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_monthly_savings">월 300만 원씩</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="home" class="w-5 h-5 text-emerald-600"></i>
+                            매도 주택 (양주회천한양수자인)
+                        </h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">매도 금액 (총액)</label>
+                            <input type="text" id="sell_price" value="350,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('sell_price', this.value)">
+                            <p class="text-[11px] text-emerald-600 mt-1" id="txt_sell_price">3억 5,000만 원</p>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-semibold text-slate-500">계약금 (수령)</label>
+                                <span class="text-[9px] bg-emerald-50 text-emerald-700 px-1 py-0.5 rounded font-bold">10% 자동계산</span>
+                            </div>
+                            <input type="text" id="sell_deposit" value="35,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('sell_deposit', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_sell_deposit">3,500만 원 (수령완료)</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">기존 대출 상환액</label>
+                            <input type="text" id="sell_loan_repay" value="181,600,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('sell_loan_repay', this.value)">
+                            <p class="text-[11px] text-red-500 mt-1" id="txt_sell_loan_repay">1억 8,160만 원</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">고래부동산 중개수수료(VAT+)</label>
+                            <input type="text" id="sell_broker_fee" value="1,200,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('sell_broker_fee', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_sell_broker_fee">120만 원</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50/50 border border-emerald-100 p-3 rounded-xl flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold text-emerald-900">실제 남는 현금</p>
+                            <p class="text-[10px] text-emerald-700/80">매도금액 - 계약금 - 대출상환액</p>
+                        </div>
+                        <p class="text-sm font-extrabold text-emerald-700" id="actual_sell_cash">0원</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="key-round" class="w-5 h-5 text-indigo-600"></i>
+                        매입 주택 (동탄역 신미주)
+                    </h2>
+
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-bold text-slate-700">신미주 KB시세</label>
+                            <span class="text-[9px] bg-indigo-50 text-indigo-700 px-1 py-0.5 rounded font-bold">대출 자동 연산 기준</span>
+                        </div>
+                        <input type="text" id="official_price" value="595,000,000" class="w-full bg-white border border-slate-200 rounded-lg p-2 font-bold text-sm" oninput="handleLeftInput('official_price', this.value)">
+                        <div class="flex justify-between items-center text-[10px] text-slate-400">
+                            <span id="txt_official_price">5억 9,500만 원</span>
+                            <span class="text-indigo-600 font-semibold" id="txt_loan_rule">70% 계산 (한도 6억)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">매입 금액 (총액)</label>
+                            <input type="text" id="buy_price" value="598,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('buy_price', this.value)">
+                            <p class="text-[11px] text-indigo-600 mt-1" id="txt_buy_price">6억 원</p>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-semibold text-slate-500">계약금 (송금)</label>
+                                <span class="text-[9px] bg-indigo-50 text-indigo-700 px-1 py-0.5 rounded font-bold">10% 자동계산</span>
+                            </div>
+                            <input type="text" id="buy_deposit" value="60,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('buy_deposit', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_buy_deposit">6,000만 원</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">중도금</label>
+                            <input type="text" id="buy_mid_pay" value="20,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('buy_mid_pay', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_buy_mid_pay">2,000만 원</p>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-semibold text-slate-500">신규 대출 실행금</label>
+                                <span class="text-[9px] bg-indigo-50 text-indigo-600 px-1 py-0.5 rounded font-bold">공식 자동 적용</span>
+                            </div>
+                            <input type="text" id="buy_loan" value="416,500,000" class="w-full bg-indigo-50 border border-indigo-200 text-indigo-950 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('buy_loan', this.value)">
+                            <p class="text-[11px] text-emerald-600 mt-1" id="txt_buy_loan">4억 1,650만 원</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-semibold text-slate-500">신미주 중개수수료(VAT+)</label>
+                                <span class="text-[9px] bg-indigo-50 text-indigo-700 px-1 py-0.5 rounded font-bold">0.4% * 1.1 VAT포함</span>
+                            </div>
+                            <input type="text" id="buy_broker_fee" value="2,631,200" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('buy_broker_fee', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_buy_broker_fee">264만 원</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-indigo-50/50 border border-indigo-100 p-3 rounded-xl flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold text-indigo-900">실제 지불해야 하는 현금</p>
+                            <p class="text-[10px] text-indigo-700/80">매입금액 - 계약금 - 중도금 - 대출 실행</p>
+                        </div>
+                        <p class="text-sm font-extrabold text-indigo-700" id="actual_buy_cash">0원</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="paint-bucket" class="w-5 h-5 text-orange-500"></i>
+                        인테리어 비용 정보
+                    </h2>
+                    
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-semibold text-slate-500">인테리어 총액</label>
+                            <span class="text-[9px] bg-orange-50 text-orange-700 px-1 py-0.5 rounded font-bold">변경 시 10/50/40% 자동분배</span>
+                        </div>
+                        <input type="text" id="interior_total" value="50,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('interior_total', this.value)">
+                        <p class="text-[11px] text-orange-600 mt-1" id="txt_interior_total">5,000만 원</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-orange-50/50 p-3 rounded-xl border border-orange-100 text-center">
+                        <div>
+                            <p class="text-[10px] font-bold text-orange-950 mb-1">계약금(10%)</p>
+                            <input type="text" id="interior_dep" value="5,000,000" class="w-full bg-white border border-orange-200 focus:border-orange-500 rounded-md p-1.5 font-extrabold text-xs text-center text-orange-700 outline-none transition" oninput="handleLeftInput('interior_dep', this.value)">
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-orange-950 mb-1">중도금(50%)</p>
+                            <input type="text" id="interior_mid" value="25,000,000" class="w-full bg-white border border-orange-200 focus:border-orange-500 rounded-md p-1.5 font-extrabold text-xs text-center text-orange-700 outline-none transition" oninput="handleLeftInput('interior_mid', this.value)">
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-bold text-orange-950 mb-1">잔금(40%)</p>
+                            <input type="text" id="interior_rem" value="20,000,000" class="w-full bg-white border border-orange-200 focus:border-orange-500 rounded-md p-1.5 font-extrabold text-xs text-center text-orange-700 outline-none transition" oninput="handleLeftInput('interior_rem', this.value)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <i data-lucide="truck" class="w-5 h-5 text-amber-500"></i>
+                        이사 및 기타 비용 정보
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">이사 비용</label>
+                            <input type="text" id="move_cost" value="3,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('move_cost', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_move_cost">300만 원</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">월세 및 단기 거주비</label>
+                            <input type="text" id="rent_cost" value="1,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('rent_cost', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_rent_cost">100만 원</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">취득세 및 세금</label>
+                            <input type="text" id="tax_cost" value="8,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('tax_cost', this.value)">
+                            <p class="text-[11px] text-slate-400 mt-1" id="txt_tax_cost">800만 원</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">신생아 취득세 환급 (+)</label>
+                            <input type="text" id="baby_refund" value="5,000,000" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-bold text-sm" oninput="handleLeftInput('baby_refund', this.value)">
+                            <p class="text-[11px] text-emerald-600 mt-1" id="txt_baby_refund">500만 원 환급 예정</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-7 space-y-6">
+                
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-700 mb-3 flex items-center gap-1.5">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+                        자금 쇼티지 모니터링 (가장 낮아지는 구간 자금상태)
+                    </h3>
+                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden flex">
+                        <div id="gauge_safe" class="bg-emerald-500 h-full transition-all duration-500" style="width: 50%"></div>
+                        <div id="gauge_short" class="bg-red-500 h-full transition-all duration-500" style="width: 50%"></div>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-slate-400 mt-2">
+                        <span>보유/대출 여유 상태</span>
+                        <span class="font-bold" id="gauge_text">자금 부족: 0원</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 overflow-hidden">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <i data-lucide="milestone" class="w-5 h-5 text-indigo-600"></i>
+                                시간 순 현금 흐름 타임라인 (상세 편집 보드)
+                            </h2>
+                            <p class="text-[11px] text-slate-500 mt-1">
+                                💡 날짜를 변경하면 <strong>자동으로 순서가 정렬</strong>되며, 모든 행의 내용과 금액은 직접 수정/추가/삭제가 가능합니다.
+                            </p>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="addNewRow()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow-sm">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                추가
+                            </button>
+                            <button onclick="resetToDefault()" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold flex items-center gap-1 transition">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                리셋
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-200/50">
+                        <span class="font-bold text-slate-500">📂 분류 색상 가이드:</span>
+                        <span class="inline-flex items-center gap-1 text-emerald-800"><span class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span> 수자인 (매도)</span>
+                        <span class="inline-flex items-center gap-1 text-indigo-800"><span class="w-2.5 h-2.5 bg-indigo-500 rounded-full"></span> 신미주 (매입)</span>
+                        <span class="inline-flex items-center gap-1 text-orange-800"><span class="w-2.5 h-2.5 bg-orange-500 rounded-full"></span> 인테리어</span>
+                        <span class="inline-flex items-center gap-1 text-slate-700"><span class="w-2.5 h-2.5 bg-slate-400 rounded-full"></span> 기타/저축</span>
+                    </div>
+
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full text-left border-collapse block min-w-[600px]">
+                            <thead class="block w-full">
+                                <tr class="border-b border-slate-200 text-slate-400 font-semibold flex items-center w-full text-[11px]">
+                                    <th class="py-3 px-1 w-[10%] text-center">일자</th>
+                                    <th class="py-3 px-1 w-[16%] text-left">분류</th>
+                                    <th class="py-3 px-1 w-[26%] text-left">내용</th>
+                                    <th class="py-3 px-1 w-[14%] text-right">입금</th>
+                                    <th class="py-3 px-1 w-[14%] text-right">출금</th>
+                                    <th class="py-3 px-1 w-[15%] text-right">잔액</th>
+                                    <th class="py-3 px-1 w-[5%] text-center">삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="flow_table_body" class="divide-y divide-slate-100 block w-full">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-md font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-500"></i>
+                        갈아타기 현금 흐름 전문가 조언
+                    </h3>
+                    <div class="text-sm text-slate-600 leading-relaxed space-y-2.5" id="expert_comment">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-20 py-8 text-center text-slate-400 text-xs">
+        <p>© 2026 부동산 현금 흐름 솔루션. 수자인-신미주 종합 가시성 설계 버전.</p>
+    </footer>
+
+    <script>
+        const defaultTransactions = [
+            { id: "start", date: "6/4", category: "etc", desc: "현재잔액", income: 50000000, expense: 0, isFixed: true },
+            { id: "sell_dep", date: "6/7", category: "sujain", desc: "수자인 계약금 수령", income: 35000000, expense: 0 },
+            { id: "buy_dep", date: "6/8", category: "shinmiju", desc: "신미주 계약금 지출", income: 0, expense: 60000000 },
+            { id: "sell_broker", date: "6/8", category: "sujain", desc: "수자인 부동산 복비 지출", income: 0, expense: 1200000 },
+            { id: "buy_broker", date: "6/8", category: "shinmiju", desc: "신미주 부동산 복비 지출", income: 0, expense: 2640000 },
+            { id: "int_dep", date: "6/15", category: "interior", desc: "인테리어 계약금(10%)", income: 0, expense: 5000000 },
+            { id: "save_6", date: "6/30", category: "etc", desc: "6월 월급 저축", income: 3000000, expense: 0 },
+            { id: "buy_mid", date: "7/15", category: "shinmiju", desc: "신미주 중도금 지출", income: 0, expense: 20000000 },
+            { id: "int_mid", date: "7/20", category: "interior", desc: "인테리어 중도금(50%)", income: 0, expense: 25000000 },
+            { id: "save_7", date: "7/31", category: "etc", desc: "7월 월급 저축", income: 3000000, expense: 0 },
+            { id: "int_rem", date: "8/25", category: "interior", desc: "인테리어 잔금(40%)", income: 0, expense: 20000000 },
+            { id: "save_8", date: "8/31", category: "etc", desc: "8월 월급 저축", income: 3000000, expense: 0 },
+            { id: "sell_rem", date: "9/1", category: "sujain", desc: "수자인 매도 잔금 수령", income: 315000000, expense: 0 },
+            { id: "sell_repay", date: "9/1", category: "sujain", desc: "수자인 대출 상환", income: 0, expense: 181600000 },
+            { id: "buy_loan_ex", date: "9/1", category: "shinmiju", desc: "신미주 주담대 대출 실행", income: 416500000, expense: 0 },
+            { id: "buy_rem", date: "9/1", category: "shinmiju", desc: "신미주 매입 잔금 지출", income: 0, expense: 520000000 },
+            { id: "move", date: "9/15", category: "etc", desc: "이사 비용 지출", income: 0, expense: 3000000 },
+            { id: "rent", date: "9/15", category: "etc", desc: "월세 지출", income: 0, expense: 1000000 },
+            { id: "tax", date: "9/15", category: "shinmiju", desc: "취득세 및 세금 지출", income: 0, expense: 8000000 },
+            { id: "refund", date: "9/15", category: "shinmiju", desc: "신생아 취득세 환급", income: 5000000, expense: 0 }
+        ];
+
+        let transactions = JSON.parse(JSON.stringify(defaultTransactions));
+
+        function formatCommas(num) {
+            return Math.floor(num).toLocaleString('ko-KR');
+        }
+
+        function parseCleanNumber(val) {
+            if (typeof val === 'number') return val;
+            const cleanStr = val.replace(/[^0-9.-]/g, '');
+            const parsed = parseFloat(cleanStr);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function formatNumberWithCommas(num) {
+            const parsed = parseInt(num.toString().replace(/[^0-9]/g, ''), 10);
+            if (isNaN(parsed)) return '0';
+            return parsed.toLocaleString('ko-KR');
+        }
+
+        function formatWon(val) {
+            if (val === 0) return "0원";
+            const isNegative = val < 0;
+            let absVal = Math.abs(val);
+            
+            const eok = Math.floor(absVal / 100000000);
+            const man = Math.floor((absVal % 100000000) / 10000);
+            
+            let result = "";
+            if (eok > 0) result += eok + "억 ";
+            if (man > 0) result += man.toLocaleString() + "만";
+            result += " 원";
+            
+            return (isNegative ? "-" : "") + result.trim();
+        }
+
+        // 날짜 가중치 구하는 헬퍼 함수 (정렬 목적)
+        function getSortVal(dateStr) {
+            const parts = dateStr.split('/');
+            if (parts.length === 2) {
+                const month = parseInt(parts[0], 10);
+                const day = parseInt(parts[1], 10);
+                return month * 100 + day;
+            }
+            return 9999;
+        }
+
+        function resetToDefault() {
+            transactions = JSON.parse(JSON.stringify(defaultTransactions));
+            syncTransactionsToLeftPanel();
+            calculateAndRender();
+        }
+
+        function addNewRow() {
+            const newId = "custom_" + Date.now();
+            transactions.push({
+                id: newId,
+                date: "9/16",
+                category: "etc",
+                desc: "추가 항목",
+                income: 0,
+                expense: 1000000
+            });
+            calculateAndRender();
+        }
+
+        function deleteRow(index) {
+            transactions.splice(index, 1);
+            syncTransactionsToLeftPanel();
+            calculateAndRender();
+        }
+
+        function handleTableEdit(index, field, value) {
+            if (field === 'income' || field === 'expense') {
+                transactions[index][field] = parseCleanNumber(value);
+            } else {
+                transactions[index][field] = value;
+            }
+            
+            if (field === 'date' && value.length === 4 && !value.includes('/')) {
+                transactions[index]['date'] = value.substring(0,1) + '/' + value.substring(1,3);
+            }
+
+            syncTransactionsToLeftPanel();
+            calculateAndRender();
+        }
+
+        function handleLeftInput(elementId, value) {
+            const targetInput = document.getElementById(elementId);
+            const rawValue = parseRawNumber(value);
+            targetInput.value = formatNumberWithCommas(rawValue);
+
+            updateTransactionValueFromLeft(elementId, rawValue);
+            calculateAndRender();
+        }
+
+        function parseRawNumber(str) {
+            if (!str) return 0;
+            const cleanStr = str.toString().replace(/,/g, '');
+            const parsed = parseFloat(cleanStr);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function updateTransactionValueFromLeft(id, value) {
+            if (id === "current_cash") {
+                const item = transactions.find(t => t.id === "start");
+                if (item) item.income = value;
+            } else if (id === "monthly_savings") {
+                transactions.filter(t => t.id.startsWith("save_")).forEach(item => {
+                    item.income = value;
+                });
+            } else if (id === "sell_price") {
+                const depositVal = Math.floor(value * 0.1);
+                document.getElementById('sell_deposit').value = formatNumberWithCommas(depositVal);
+                
+                const depItem = transactions.find(t => t.id === "sell_dep");
+                if (depItem) depItem.income = depositVal;
+
+                const remItem = transactions.find(t => t.id === "sell_rem");
+                if (remItem) remItem.income = value - depositVal;
+            } else if (id === "sell_deposit") {
+                const sellPrice = parseRawNumber(document.getElementById('sell_price').value);
+                const depItem = transactions.find(t => t.id === "sell_dep");
+                if (depItem) depItem.income = value;
+                const remItem = transactions.find(t => t.id === "sell_rem");
+                if (remItem) remItem.income = Math.max(0, sellPrice - value);
+            } else if (id === "sell_loan_repay") {
+                const item = transactions.find(t => t.id === "sell_repay");
+                if (item) item.expense = value;
+            } else if (id === "sell_broker_fee") {
+                const item = transactions.find(t => t.id === "sell_broker");
+                if (item) item.expense = value;
+            } else if (id === "official_price") {
+                const calculatedLoan = Math.min(600000000, Math.floor(value * 0.7));
+                document.getElementById('buy_loan').value = formatNumberWithCommas(calculatedLoan);
+                
+                const item = transactions.find(t => t.id === "buy_loan_ex");
+                if (item) item.income = calculatedLoan;
+            } else if (id === "buy_price") {
+                const depositVal = Math.floor(value * 0.1);
+                document.getElementById('buy_deposit').value = formatNumberWithCommas(depositVal);
+                
+                const depItem = transactions.find(t => t.id === "buy_dep");
+                if (depItem) depItem.expense = depositVal;
+
+                // 0.4% * 1.1 중개보수 공식 자동 적용
+                const calculatedBrokerFee = Math.floor(value * 0.004 * 1.1);
+                document.getElementById('buy_broker_fee').value = formatNumberWithCommas(calculatedBrokerFee);
+                const brokerItem = transactions.find(t => t.id === "buy_broker");
+                if (brokerItem) brokerItem.expense = calculatedBrokerFee;
+
+                const midVal = parseRawNumber(document.getElementById('buy_mid_pay').value);
+                const remItem = transactions.find(t => t.id === "buy_rem");
+                if (remItem) remItem.expense = Math.max(0, value - depositVal - midVal);
+            } else if (id === "buy_deposit") {
+                const buyPrice = parseRawNumber(document.getElementById('buy_price').value);
+                const depItem = transactions.find(t => t.id === "buy_dep");
+                if (depItem) depItem.expense = value;
+
+                const midVal = parseRawNumber(document.getElementById('buy_mid_pay').value);
+                const remItem = transactions.find(t => t.id === "buy_rem");
+                if (remItem) remItem.expense = Math.max(0, buyPrice - value - midVal);
+            } else if (id === "buy_mid_pay") {
+                const buyPrice = parseRawNumber(document.getElementById('buy_price').value);
+                const depositVal = parseRawNumber(document.getElementById('buy_deposit').value);
+                
+                const midItem = transactions.find(t => t.id === "buy_mid");
+                if (midItem) midItem.expense = value;
+
+                const remItem = transactions.find(t => t.id === "buy_rem");
+                if (remItem) remItem.expense = Math.max(0, buyPrice - depositVal - value);
+            } else if (id === "buy_loan") {
+                const item = transactions.find(t => t.id === "buy_loan_ex");
+                if (item) item.income = value;
+            } else if (id === "buy_broker_fee") {
+                const item = transactions.find(t => t.id === "buy_broker");
+                if (item) item.expense = value;
+            } else if (id === "move_cost") {
+                const item = transactions.find(t => t.id === "move");
+                if (item) item.expense = value;
+            } else if (id === "rent_cost") {
+                const item = transactions.find(t => t.id === "rent");
+                if (item) item.expense = value;
+            } else if (id === "tax_cost") {
+                const item = transactions.find(t => t.id === "tax");
+                if (item) item.expense = value;
+            } else if (id === "baby_refund") {
+                const item = transactions.find(t => t.id === "refund");
+                if (item) item.income = value;
+            } else if (id === "interior_total") {
+                // 인테리어 총액 수정 시 10%, 50%, 40% 로 기본 세팅 및 하위 항목 반영
+                const depVal = Math.floor(value * 0.1);
+                const midVal = Math.floor(value * 0.5);
+                const remVal = value - depVal - midVal;
+
+                document.getElementById('interior_dep').value = formatNumberWithCommas(depVal);
+                document.getElementById('interior_mid').value = formatNumberWithCommas(midVal);
+                document.getElementById('interior_rem').value = formatNumberWithCommas(remVal);
+
+                const depItem = transactions.find(t => t.id === "int_dep");
+                if (depItem) depItem.expense = depVal;
+                const midItem = transactions.find(t => t.id === "int_mid");
+                if (midItem) midItem.expense = midVal;
+                const remItem = transactions.find(t => t.id === "int_rem");
+                if (remItem) remItem.expense = remVal;
+            } else if (id === "interior_dep") {
+                // 인테리어 각 항목 수동 수정
+                const item = transactions.find(t => t.id === "int_dep");
+                if (item) item.expense = value;
+            } else if (id === "interior_mid") {
+                const item = transactions.find(t => t.id === "int_mid");
+                if (item) item.expense = value;
+            } else if (id === "interior_rem") {
+                const item = transactions.find(t => t.id === "int_rem");
+                if (item) item.expense = value;
+            }
+        }
+
+        function syncTransactionsToLeftPanel() {
+            transactions.forEach(t => {
+                if (t.id === "start") {
+                    document.getElementById('current_cash').value = formatCommas(t.income);
+                } else if (t.id === "sell_dep") {
+                    document.getElementById('sell_deposit').value = formatCommas(t.income);
+                } else if (t.id === "sell_repay") {
+                    document.getElementById('sell_loan_repay').value = formatCommas(t.expense);
+                } else if (t.id === "sell_broker") {
+                    document.getElementById('sell_broker_fee').value = formatCommas(t.expense);
+                } else if (t.id === "buy_dep") {
+                    document.getElementById('buy_deposit').value = formatCommas(t.expense);
+                } else if (t.id === "buy_mid") {
+                    document.getElementById('buy_mid_pay').value = formatCommas(t.expense);
+                } else if (t.id === "buy_loan_ex") {
+                    document.getElementById('buy_loan').value = formatCommas(t.income);
+                } else if (t.id === "buy_broker") {
+                    document.getElementById('buy_broker_fee').value = formatCommas(t.expense);
+                } else if (t.id === "move") {
+                    document.getElementById('move_cost').value = formatCommas(t.expense);
+                } else if (t.id === "rent") {
+                    document.getElementById('rent_cost').value = formatCommas(t.expense);
+                } else if (t.id === "tax") {
+                    document.getElementById('tax_cost').value = formatCommas(t.expense);
+                } else if (t.id === "refund") {
+                    document.getElementById('baby_refund').value = formatCommas(t.income);
+                } else if (t.id === "int_dep") {
+                    document.getElementById('interior_dep').value = formatCommas(t.expense);
+                } else if (t.id === "int_mid") {
+                    document.getElementById('interior_mid').value = formatCommas(t.expense);
+                } else if (t.id === "int_rem") {
+                    document.getElementById('interior_rem').value = formatCommas(t.expense);
+                }
+            });
+
+            const sellDepItem = transactions.find(t => t.id === "sell_dep");
+            const sellRemItem = transactions.find(t => t.id === "sell_rem");
+            if (sellDepItem && sellRemItem) {
+                const sellTotal = sellDepItem.income + sellRemItem.income;
+                document.getElementById('sell_price').value = formatCommas(sellTotal);
+            }
+
+            const buyDepItem = transactions.find(t => t.id === "buy_dep");
+            const buyMidItem = transactions.find(t => t.id === "buy_mid");
+            const buyRemItem = transactions.find(t => t.id === "buy_rem");
+            if (buyDepItem && buyMidItem && buyRemItem) {
+                const buyTotal = buyDepItem.expense + buyMidItem.expense + buyRemItem.expense;
+                document.getElementById('buy_price').value = formatCommas(buyTotal);
+            }
+
+            const intDepItem = transactions.find(t => t.id === "int_dep");
+            const intMidItem = transactions.find(t => t.id === "int_mid");
+            const intRemItem = transactions.find(t => t.id === "int_rem");
+            if (intDepItem && intMidItem && intRemItem) {
+                const intTotal = intDepItem.expense + intMidItem.expense + intRemItem.expense;
+                document.getElementById('interior_total').value = formatCommas(intTotal);
+            }
+        }
+
+        function calculateAndRender() {
+            // 날짜 자동 정렬 재적용
+            const sorted = transactions.slice();
+            sorted.sort((a, b) => {
+                if (a.id === "start") return -1;
+                if (b.id === "start") return 1;
+                return getSortVal(a.date) - getSortVal(b.date);
+            });
+            transactions = sorted;
+
+            const curCash = parseRawNumber(document.getElementById('current_cash').value);
+            const mSav = parseRawNumber(document.getElementById('monthly_savings').value);
+            const sPri = parseRawNumber(document.getElementById('sell_price').value);
+            const sDep = parseRawNumber(document.getElementById('sell_deposit').value);
+            const sRep = parseRawNumber(document.getElementById('sell_loan_repay').value);
+            const sBro = parseRawNumber(document.getElementById('sell_broker_fee').value);
+            
+            const officialPrice = parseRawNumber(document.getElementById('official_price').value);
+            const bPri = parseRawNumber(document.getElementById('buy_price').value);
+            const bDep = parseRawNumber(document.getElementById('buy_deposit').value);
+            const bMid = parseRawNumber(document.getElementById('buy_mid_pay').value);
+
+            // 대출 계산 공식
+            const calculatedLoan = Math.min(600000000, Math.floor(officialPrice * 0.7));
+            document.getElementById('buy_loan').value = formatNumberWithCommas(calculatedLoan);
+            const bLoa = calculatedLoan; 
+
+            const loanTx = transactions.find(t => t.id === "buy_loan_ex");
+            if (loanTx) loanTx.income = calculatedLoan;
+
+            const bBro = parseRawNumber(document.getElementById('buy_broker_fee').value);
+            const mCos = parseRawNumber(document.getElementById('move_cost').value);
+            const rCos = parseRawNumber(document.getElementById('rent_cost').value);
+            const tCos = parseRawNumber(document.getElementById('tax_cost').value);
+            const bRef = parseRawNumber(document.getElementById('baby_refund').value);
+
+            // 각 개별 입력칸을 기반으로 인테리어 비용 읽어오기
+            const iDep = parseRawNumber(document.getElementById('interior_dep').value);
+            const iMid = parseRawNumber(document.getElementById('interior_mid').value);
+            const iRem = parseRawNumber(document.getElementById('interior_rem').value);
+            const iTot = iDep + iMid + iRem;
+
+            // 결과 산식 업데이트
+            const remainingSellCash = sPri - sDep - sRep;
+            document.getElementById('actual_sell_cash').innerText = formatWon(remainingSellCash);
+
+            // 신미주 매입 실제 현금 = 매입금액 - 계약금 - 중도금 - 대출실행
+            const remainingBuyPay = bPri - bDep - bMid - bLoa;
+            document.getElementById('actual_buy_cash').innerText = formatWon(remainingBuyPay);
+
+            // 하단 가이드 텍스트 매핑
+            document.getElementById('txt_current_cash').innerText = formatWon(curCash);
+            document.getElementById('txt_monthly_savings').innerText = `월 ${formatWon(mSav)}씩 저축`;
+            document.getElementById('txt_sell_price').innerText = formatWon(sPri);
+            document.getElementById('txt_sell_deposit').innerText = formatWon(sDep) + " 수령 완료";
+            document.getElementById('txt_sell_loan_repay').innerText = formatWon(sRep);
+            document.getElementById('txt_sell_broker_fee').innerText = formatWon(sBro);
+            document.getElementById('txt_official_price').innerText = formatWon(officialPrice);
+            document.getElementById('txt_buy_price').innerText = formatWon(bPri);
+            document.getElementById('txt_buy_deposit').innerText = formatWon(bDep);
+            document.getElementById('txt_buy_mid_pay').innerText = formatWon(bMid);
+            
+            if (calculatedLoan >= 600000000) {
+                document.getElementById('txt_buy_loan').innerText = formatWon(bLoa) + " (최대 한도 6억 제한 적용)";
+            } else {
+                document.getElementById('txt_buy_loan').innerText = formatWon(bLoa) + " (공시지가 70% 자동 계산)";
+            }
+            
+            document.getElementById('txt_buy_broker_fee').innerText = formatWon(bBro);
+            document.getElementById('txt_move_cost').innerText = formatWon(mCos);
+            document.getElementById('txt_rent_cost').innerText = formatWon(rCos);
+            document.getElementById('txt_tax_cost').innerText = formatWon(tCos);
+            document.getElementById('txt_baby_refund').innerText = formatWon(bRef);
+
+            // 인테리어 총액 동기화
+            document.getElementById('txt_interior_total').innerText = formatWon(iTot);
+
+            const tbody = document.getElementById('flow_table_body');
+            tbody.innerHTML = '';
+
+            let accum = 0;
+            let minBalance = Infinity;
+
+            transactions.forEach((item, index) => {
+                if (index === 0) {
+                    accum = item.income;
+                } else {
+                    accum = accum + item.income - item.expense;
+                }
+
+                if (accum < minBalance) {
+                    minBalance = accum;
+                }
+
+                const isStart = item.id === "start";
+
+                let rowBorderClass = "border-l-4 border-slate-300"; 
+                let categorySelectStyle = "bg-slate-100 text-slate-800 border-slate-200";
+
+                // 카테고리별 분기 스타일 디자인 (수자인, 신미주, 인테리어 추가)
+                if (item.category === 'sujain') {
+                    rowBorderClass = "border-l-4 border-emerald-500 bg-emerald-50/10";
+                    categorySelectStyle = "bg-emerald-50 text-emerald-800 border-emerald-200";
+                } else if (item.category === 'shinmiju') {
+                    rowBorderClass = "border-l-4 border-indigo-500 bg-indigo-50/10";
+                    categorySelectStyle = "bg-indigo-50 text-indigo-800 border-indigo-200";
+                } else if (item.category === 'interior') {
+                    rowBorderClass = "border-l-4 border-orange-500 bg-orange-50/10";
+                    categorySelectStyle = "bg-orange-50 text-orange-800 border-orange-200";
+                }
+
+                let trBgClass = "hover:bg-slate-50 transition-colors";
+                if (accum < 0) {
+                    trBgClass = "bg-rose-50 hover:bg-rose-100/80 transition-colors";
+                }
+
+                const incomeValue = item.income === 0 ? "" : formatCommas(item.income);
+                const expenseValue = item.expense === 0 ? "" : formatCommas(item.expense);
+
+                const tr = document.createElement('tr');
+                tr.className = `${rowBorderClass} ${trBgClass} flex items-center w-full`;
+
+                tr.innerHTML = `
+                    <td class="py-2 px-1 w-[10%]">
+                        <input type="text" value="${item.date}" 
+                            class="w-full bg-transparent border-b border-transparent focus:border-indigo-500 focus:bg-white text-center font-semibold text-slate-700 focus:outline-none text-[11px] lg:text-xs"
+                            ${isStart ? 'disabled' : ''}
+                            onchange="handleTableEdit(${index}, 'date', this.value)">
+                    </td>
+                    <td class="py-2 px-1 w-[16%]">
+                        <select onchange="handleTableEdit(${index}, 'category', this.value)" 
+                            class="w-full text-[10px] lg:text-[11px] font-extrabold px-0.5 py-1 rounded border focus:outline-none cursor-pointer truncate ${categorySelectStyle}">
+                            <option value="etc" ${item.category === 'etc' ? 'selected' : ''}>⚪ 기타</option>
+                            <option value="sujain" ${item.category === 'sujain' ? 'selected' : ''}>🟢 수자인</option>
+                            <option value="shinmiju" ${item.category === 'shinmiju' ? 'selected' : ''}>🟣 신미주</option>
+                            <option value="interior" ${item.category === 'interior' ? 'selected' : ''}>🎨 인테리어</option>
+                        </select>
+                    </td>
+                    <td class="py-2 px-1 w-[26%]">
+                        <input type="text" value="${item.desc}" 
+                            class="w-full bg-transparent border-b border-transparent focus:border-indigo-500 focus:bg-white font-bold text-slate-900 focus:outline-none text-[11px] lg:text-xs truncate"
+                            onchange="handleTableEdit(${index}, 'desc', this.value)">
+                    </td>
+                    <td class="py-2 px-1 w-[14%]">
+                        <input type="text" value="${incomeValue}" 
+                            placeholder="-"
+                            class="w-full text-right bg-transparent border-b border-transparent focus:border-indigo-500 focus:bg-white text-emerald-600 font-extrabold focus:outline-none text-[11px] lg:text-xs"
+                            onchange="handleTableEdit(${index}, 'income', this.value)">
+                    </td>
+                    <td class="py-2 px-1 w-[14%]">
+                        <input type="text" value="${expenseValue}" 
+                            placeholder="-"
+                            class="w-full text-right bg-transparent border-b border-transparent focus:border-indigo-500 focus:bg-white text-rose-500 font-extrabold focus:outline-none text-[11px] lg:text-xs"
+                            ${isStart ? 'disabled' : ''}
+                            onchange="handleTableEdit(${index}, 'expense', this.value)">
+                    </td>
+                    <td class="py-2 px-1 w-[15%] text-right font-black ${accum < 0 ? 'text-rose-600' : 'text-slate-950'} bg-slate-50/20 text-[11px] lg:text-xs truncate">
+                        ${formatCommas(accum)}
+                    </td>
+                    <td class="py-2 px-1 w-[5%] flex justify-center gap-1">
+                        ${isStart ? '' : `
+                            <button onclick="deleteRow(${index})" class="text-slate-300 hover:text-rose-500 p-0.5 rounded transition" title="삭제">
+                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            </button>
+                        `}
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+
+            const finalBalance = accum;
+            document.getElementById('sum_start_cash').innerText = formatWon(curCash);
+            document.getElementById('dashboard_final_balance').innerText = formatWon(finalBalance);
+            
+            const minBalElement = document.getElementById('dashboard_min_balance');
+            minBalElement.innerText = formatWon(minBalance);
+
+            const status_card = document.getElementById('status_card');
+            const status_title = document.getElementById('status_title');
+            const status_desc = document.getElementById('status_desc');
+
+            if (minBalance < 0) {
+                status_card.className = "p-6 rounded-2xl border border-rose-300 bg-rose-50 text-rose-900 relative overflow-hidden";
+                status_title.innerText = "🚨 최저 잔고 (자금 펑크 발생)";
+                status_desc.innerText = "특정 일자에 자금 흐름상 부족액이 감지됩니다!";
+                minBalElement.className = "text-2xl font-black text-rose-600 mt-2";
+            } else {
+                status_card.className = "p-6 rounded-2xl border border-emerald-300 bg-emerald-50 text-emerald-950 relative overflow-hidden";
+                status_title.innerText = "✔ 최저 잔고 (안전 마진 확보)";
+                status_desc.innerText = "일정 전체 동안 잔고가 마이너스로 내려가지 않습니다!";
+                minBalElement.className = "text-2xl font-black text-emerald-600 mt-2";
+            }
+
+            const gauge_safe = document.getElementById('gauge_safe');
+            const gauge_short = document.getElementById('gauge_short');
+            const gauge_text = document.getElementById('gauge_text');
+
+            if (minBalance < 0) {
+                // 요구 자금 총량에 중도금과 인테리어 비용 포함 계산
+                const total_req = bDep + bMid + (bPri - bDep - bMid) + sRep + tCos + mCos + rCos + sBro + bBro + iTot;
+                const deficit = Math.abs(minBalance);
+                const short_percent = Math.min(100, (deficit / total_req) * 100 * 5); 
+                const safe_percent = 100 - short_percent;
+
+                gauge_safe.style.width = `${safe_percent}%`;
+                gauge_short.style.width = `${short_percent}%`;
+                gauge_text.innerText = `위험 지점 부족 금액: ${formatWon(deficit)}`;
+                gauge_text.className = "font-bold text-red-500 animate-pulse";
+            } else {
+                gauge_safe.style.width = "100%";
+                gauge_short.style.width = "0%";
+                gauge_text.innerText = "전 구간 정상 운용 가능 (적자 위험 없음)";
+                gauge_text.className = "font-bold text-emerald-600";
+            }
+
+            updateExpertComments(minBalance, finalBalance, bLoa);
+        }
+
+        function updateExpertComments(minBal, finalBal, currentBuyLoan) {
+            const commentBox = document.getElementById('expert_comment');
+            let commentHtml = "";
+
+            if (minBal < 0) {
+                const shortageAmt = Math.abs(minBal);
+                const recommended_loan = Math.ceil(shortageAmt / 1000000) * 1000000;
+                commentHtml = `
+                    <div class="space-y-4">
+                        <div class="p-4 bg-gradient-to-r from-rose-50 to-red-100 border-l-8 border-red-500 rounded-xl shadow-inner animate-pulse">
+                            <div class="flex items-start gap-3">
+                                <div class="p-2 bg-red-600 text-white rounded-lg shrink-0 mt-0.5">
+                                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-black text-red-900 tracking-tight">🚨 자금 쇼티지 비상 리스크 감지!</h4>
+                                    <p class="text-sm font-bold text-red-800 mt-1">
+                                        인테리어 및 신미주 중도금 지출이 추가되면서, 일시적 자금 부족 현상이 관측됩니다. 누적으로 최대 <span class="text-red-600 font-extrabold underline decoration-2 decoration-red-700">${formatWon(shortageAmt)}</span>의 자금 적자 구간이 존재합니다.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-indigo-50/50 border border-indigo-150 rounded-2xl space-y-3 shadow-sm">
+                            <p class="text-xs font-extrabold text-indigo-900 flex items-center gap-1">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-indigo-600"></i>
+                                현금흐름 해결을 위한 전문가 긴급 처방 솔루션:
+                            </p>
+                            <ul class="text-xs text-indigo-950 list-decimal pl-4 space-y-2 leading-relaxed">
+                                <li>
+                                    <strong class="text-indigo-950 font-bold">인테리어 대금 지급 주기 조율:</strong><br>
+                                    인테리어 중도금과 잔금 지급 일정을 공사 일정에 맞추어 주택 잔금 수령 이후로 최대한 미룰 수 있는지 인테리어 업체와 협의해 보세요.
+                                </li>
+                                <li>
+                                    <strong class="text-indigo-950 font-bold">신규 주택 담보대출 한도 증액 검토:</strong><br>
+                                    현재 계획하신 ${formatWon(currentBuyLoan)}의 주담대에서 약 <span class="font-bold text-indigo-600 underline">${formatWon(recommended_loan)} 이상 대출을 증액</span>할 수 있는지 은행 지점에 확인하십시오.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } else {
+                commentHtml = `
+                    <div class="space-y-3">
+                        <div class="flex gap-2 text-emerald-700">
+                            <span class="text-emerald-500 font-bold">✔ 자금 밸런스 완벽:</span>
+                            <p>현재 보유액과 매월 월급 저축액, 그리고 대출금을 조합했을 때 전 기간 적자 리스크가 전혀 없는 <strong>아주 모범적인 현금흐름</strong>입니다.</p>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            다만 대형 자금 인출 시기(계약금, 중도금 등) 직후에는 가용 현금이 줄어드므로 주택담보대출이 실제로 실행될 때까지 다른 고액 소비를 제어하는 것이 좋습니다.
+                        </p>
+                    </div>
+                `;
+            }
+
+            commentBox.innerHTML = commentHtml;
+        }
+
+        window.onload = function() {
+            calculateAndRender();
+        }
+    </script>
+</body>
+</html>

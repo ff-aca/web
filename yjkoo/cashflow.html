@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이사 재무 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;font-size:14px}
+.wrap{max-width:980px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:22px;font-weight:500;margin-bottom:4px}
+.page-sub{font-size:13px;color:#888780;margin-bottom:20px}
+
+/* tabs */
+.tabs{display:flex;border-bottom:1px solid rgba(0,0,0,0.1);margin-bottom:24px}
+.tab-btn{padding:10px 20px;font-size:14px;border:none;background:transparent;cursor:pointer;color:#888780;border-bottom:2px solid transparent;margin-bottom:-1px;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.tab-btn.on{color:#1a1a18;font-weight:500;border-bottom-color:#1a1a18}
+.tab-btn:hover{color:#1a1a18;background:transparent}
+.tab-pane{display:none}.tab-pane.on{display:block}
+
+/* cards */
+.card{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:16px 20px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+
+/* metrics */
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.metric{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:8px;padding:12px 14px}
+.metric-label{font-size:11px;color:#888780;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.metric-val{font-size:19px;font-weight:500;color:#1a1a18}
+.metric-val.pos{color:#1D9E75}.metric-val.neg{color:#E24B4A}
+
+/* form */
+.field-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.field-row label{font-size:13px;color:#888780;width:150px;flex-shrink:0}
+.field-row input[type=range]{flex:1;accent-color:#378ADD}
+.field-row .fval{font-size:13px;font-weight:500;min-width:76px;text-align:right;color:#1a1a18}
+.field-row input[type=text],.field-row select,.field-row input.num-input{
+  flex:1;font-size:13px;padding:5px 8px;
+  border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;
+  background:#fff;color:#1a1a18;
+}
+.field-row input.num-input{text-align:right}
+.field-row input:focus,.field-row select:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
+.sec-divider{height:0.5px;background:rgba(0,0,0,0.07);margin:14px 0}
+
+/* alert */
+.alert{border-radius:8px;padding:10px 14px;font-size:13px;line-height:1.5;margin-top:8px}
+.alert.ok{background:#EAF3DE;color:#3B6D11}
+.alert.ng{background:#FCEBEB;color:#A32D2D}
+
+/* buttons */
+button{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;background:transparent;cursor:pointer;color:#1a1a18;transition:background .15s}
+button:hover{background:rgba(0,0,0,0.05)}
+button:active{transform:scale(.98)}
+button.primary{background:#1a1a18;color:#fff;border-color:#1a1a18}
+button.primary:hover{background:#333}
+button.danger{color:#A32D2D;border-color:rgba(162,45,45,0.3)}
+button.danger:hover{background:#FCEBEB}
+button.small{padding:4px 8px;font-size:12px}
+button.ghost{border-color:transparent;color:#888780}
+button.ghost:hover{background:rgba(0,0,0,0.05);color:#1a1a18}
+
+/* flow section */
+.section-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.section-header h3{font-size:15px;font-weight:500;flex:1}
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;font-size:12px;border:0.5px solid rgba(0,0,0,0.15);border-radius:20px;cursor:pointer;background:transparent;color:#888780;line-height:1.4}
+.filter-btn.on{background:#1a1a18;color:#fff;border-color:#1a1a18}
+
+/* regenerate banner */
+.regen-banner{background:#EAF3DE;border:0.5px solid #9FCE7A;border-radius:8px;padding:9px 14px;font-size:13px;color:#2D5A0E;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.regen-banner.hidden{display:none}
+
+/* flow table */
+.table-wrap{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px}
+table.flow{width:100%;border-collapse:collapse;table-layout:fixed}
+col.c-drag{width:26px}col.c-date{width:64px}col.c-cat{width:86px}
+col.c-desc{width:auto}col.c-in{width:106px}col.c-out{width:106px}
+col.c-bal{width:100px}col.c-act{width:52px}
+table.flow thead tr{background:#f8f8f6}
+table.flow th{font-size:11px;font-weight:500;color:#888780;text-align:left;padding:8px 10px;border-bottom:0.5px solid rgba(0,0,0,0.08);text-transform:uppercase;letter-spacing:.04em}
+table.flow th.r,table.flow td.r{text-align:right}
+table.flow td{padding:5px 8px;border-bottom:0.5px solid rgba(0,0,0,0.06);vertical-align:middle}
+table.flow tr:last-child td{border-bottom:none}
+tr.neg-row{background:#fff8f8}
+tr.drag-over{background:#E6F1FB}
+tr.dragging{opacity:.4}
+/* inline inputs */
+table.flow td input[type=text],table.flow td select{width:100%;font-size:13px;padding:3px 5px;border:0.5px solid transparent;border-radius:5px;background:transparent;color:#1a1a18;transition:border-color .15s,background .15s}
+table.flow td input.num-input{width:100%;font-size:13px;padding:3px 5px;text-align:right;border:0.5px solid transparent;border-radius:5px;background:transparent;color:#1a1a18;transition:border-color .15s,background .15s}
+table.flow td input[type=text]:hover,table.flow td input.num-input:hover,table.flow td select:hover{border-color:rgba(0,0,0,0.2);background:#fafaf8}
+table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#378ADD;background:#fff;box-shadow:0 0 0 3px rgba(55,138,221,0.15)}
+/* locked row */
+tr.locked-row td input, tr.locked-row td select{pointer-events:none;color:#aaa}
+tr.locked-row td input[type=text],tr.locked-row td select{color:#aaa}
+tr.locked-row{background:#fafaf8}
+tr.locked-row td:first-child .drag-handle{opacity:.3;pointer-events:none}
+.lock-badge{font-size:10px;color:#aaa;margin-left:4px;vertical-align:middle}
+
+/* tags */
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.tag-수자인{background:#E1F5EE;color:#085041}
+.tag-신미주{background:#E6F1FB;color:#0C447C}
+.tag-인테리어{background:#FAEEDA;color:#633806}
+.tag-기타{background:#F1EFE8;color:#444441}
+.drag-handle{cursor:grab;color:#ccc;font-size:16px;padding:0 2px;user-select:none}
+.drag-handle:active{cursor:grabbing}
+.bal-pos{color:#1D9E75;font-weight:500}.bal-neg{color:#E24B4A;font-weight:500}
+
+/* add row */
+.add-row-area{padding:10px 12px;border-top:0.5px solid rgba(0,0,0,0.06);background:#fafaf8;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.add-row-area input,.add-row-area select{padding:5px 8px;font-size:13px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18}
+.add-row-area input.num-input{text-align:right}
+.add-row-area input:focus,.add-row-area select:focus{outline:none;border-color:#378ADD}
+.add-row-area input[name=date]{width:64px}
+.add-row-area select[name=cat]{width:96px}
+.add-row-area input[name=desc]{flex:1;min-width:100px}
+.add-row-area input[name=in],.add-row-area input[name=out]{width:100px}
+
+/* chart */
+.chart-wrap{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:16px;margin-bottom:16px}
+.chart-title{font-size:13px;font-weight:500;color:#888780;margin-bottom:12px}
+
+/* modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:20px;width:340px;border:0.5px solid rgba(0,0,0,0.1)}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:8px}
+.modal p{font-size:13px;color:#888780;margin-bottom:16px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+
+/* interior breakdown table */
+.int-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+.int-table td{padding:5px 6px;border-bottom:0.5px solid rgba(0,0,0,0.05);color:#444}
+.int-table tr:last-child td{border-bottom:none}
+.int-table td:last-child{text-align:right;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">🏠 이사 재무 대시보드</h1>
+  <p class="page-sub">한양수자인 매도 → 신미주 매입 · 대출 계산 · 현금 흐름 통합 관리</p>
+
+  <div class="tabs">
+    <button class="tab-btn on" onclick="showTab('loan')"><i class="ti ti-calculator" aria-hidden="true"></i> 대출 계산기</button>
+    <button class="tab-btn" onclick="showTab('flow')"><i class="ti ti-list" aria-hidden="true"></i> 현금 흐름</button>
+  </div>
+
+  <!-- ══════ TAB 1: 대출 계산기 ══════ -->
+  <div id="tab-loan" class="tab-pane on">
+    <div id="calc-metrics" class="metric-grid"></div>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><i class="ti ti-building" aria-hidden="true"></i> 한양수자인 매도</div>
+        <div class="field-row"><label>재판매가격</label><input class="num-input" id="c_sell" value="350,000,000" data-raw="350000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>주담대 잔액</label><input class="num-input" id="c_loan_bal" value="182,000,000" data-raw="182000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>중개보수(VAT+)</label><input class="num-input" id="c_agent_sell" value="1,200,000" data-raw="1200000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="sec-divider"></div>
+        <div class="field-row"><label>보유현금</label><input class="num-input" id="c_savings" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>월 저축액</label><input class="num-input" id="c_monthly" value="4,000,000" data-raw="4000000" oninput="onNumInput(this,calcLoan)"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-home-heart" aria-hidden="true"></i> 신미주 매입</div>
+        <div class="field-row"><label>매입가</label><input class="num-input" id="c_buy" value="598,000,000" data-raw="598000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>대출 유형</label>
+          <select id="c_loan_type" onchange="calcLoan()">
+            <option value="general">일반주담대 (5.10%, 70%/6억)</option>
+            <option value="didimdol">신생아 디딤돌 (2.80%, 70%/4억)</option>
+          </select>
+        </div>
+        <div class="field-row"><label>금리 직접입력(%)</label><input type="text" id="c_rate_custom" placeholder="비우면 유형 기준" oninput="calcLoan()"></div>
+        <div class="field-row"><label>대출 기간</label>
+          <select id="c_years" onchange="calcLoan()">
+            <option value="30" selected>30년</option><option value="20">20년</option><option value="10">10년</option>
+          </select>
+        </div>
+        <div class="sec-divider"></div>
+        <div class="field-row"><label>취득세</label><input class="num-input" id="c_acq_tax" value="6,578,000" data-raw="6578000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>중개보수(VAT+)</label><input class="num-input" id="c_agent_buy" value="2,631,200" data-raw="2631200" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>이사비용</label><input class="num-input" id="c_move" value="3,000,000" data-raw="3000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>인지세·채권 등</label><input class="num-input" id="c_stamp" value="1,000,000" data-raw="1000000" oninput="onNumInput(this,calcLoan)"></div>
+        <div class="field-row"><label>인테리어</label><input class="num-input" id="c_interior" value="30,000,000" data-raw="30000000" oninput="onNumInput(this,calcLoan)"></div>
+      </div>
+    </div>
+    <div id="calc-alert"></div>
+  </div>
+
+  <!-- ══════ TAB 2: 현금 흐름 ══════ -->
+  <div id="tab-flow" class="tab-pane">
+
+    <!-- 계획 입력 패널 -->
+    <div class="card">
+      <div class="card-title" style="cursor:pointer;user-select:none" onclick="togglePlanPanel()">
+        <i class="ti ti-calendar" aria-hidden="true"></i> 잔금·중도금 계획 입력
+        <span style="margin-left:auto;font-size:12px;color:#aaa" id="plan-toggle-hint">▼ 펼치기</span>
+      </div>
+      <div id="plan-panel" style="display:none">
+        <div class="two-col">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">🏢 한양수자인 매도</div>
+            <div class="field-row"><label>매도가</label><input class="num-input" id="p_sell" value="350,000,000" data-raw="350000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>계약일 · 계약금</label>
+              <input type="text" id="p_sell_cd" value="6/7" oninput="markPlanDirty()" style="width:60px;flex:none">
+              <input class="num-input" id="p_sell_dep" value="35,000,000" data-raw="35000000" oninput="onNumInput(this,markPlanDirty)" style="flex:1">
+            </div>
+            <div class="field-row"><label>잔금일</label><input type="text" id="p_sell_bd" value="9/1" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>기존 주담대 잔액</label><input class="num-input" id="p_loan_bal" value="182,000,000" data-raw="182000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>중개보수</label><input class="num-input" id="p_agent_sell" value="1,200,000" data-raw="1200000" oninput="onNumInput(this,markPlanDirty)"></div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">🏡 신미주 매입</div>
+            <div class="field-row"><label>매입가</label><input class="num-input" id="p_buy" value="598,000,000" data-raw="598000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>계약일 · 계약금</label>
+              <input type="text" id="p_buy_cd" value="6/9" oninput="markPlanDirty()" style="width:60px;flex:none">
+              <input class="num-input" id="p_buy_dep" value="60,000,000" data-raw="60000000" oninput="onNumInput(this,markPlanDirty)" style="flex:1">
+            </div>
+            <div class="field-row"><label>중도금일 · 중도금</label>
+              <input type="text" id="p_buy_md" value="6/30" oninput="markPlanDirty()" style="width:60px;flex:none">
+              <input class="num-input" id="p_buy_mid" value="10,000,000" data-raw="10000000" oninput="onNumInput(this,markPlanDirty)" style="flex:1">
+            </div>
+            <div class="field-row"><label>잔금일</label><input type="text" id="p_buy_bd" value="9/1" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>주담대 예정액</label><input class="num-input" id="p_new_loan" value="420,000,000" data-raw="420000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>중개보수</label><input class="num-input" id="p_agent_buy" value="2,631,200" data-raw="2631200" oninput="onNumInput(this,markPlanDirty)"></div>
+          </div>
+        </div>
+        <div class="sec-divider"></div>
+        <div class="two-col">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">🔨 인테리어</div>
+            <div class="field-row"><label>총 비용</label><input class="num-input" id="p_interior" value="30,000,000" data-raw="30000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>계약금일</label><input type="text" id="p_int_cd" value="6/15" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>착수금일</label><input type="text" id="p_int_sd" value="7/20" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>중도금일</label><input type="text" id="p_int_md" value="8/10" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>잔금일</label><input type="text" id="p_int_bd" value="8/25" oninput="markPlanDirty()"></div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">💰 기타</div>
+            <div class="field-row"><label>보유현금</label><input class="num-input" id="p_savings" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div class="field-row"><label>월 저축 (입금)</label><input class="num-input" id="p_monthly" value="4,000,000" data-raw="4000000" oninput="onNumInput(this,markPlanDirty)"></div>
+            <div id="interior-summary" style="margin-top:12px"></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+          <button class="primary" onclick="applyPlan()"><i class="ti ti-refresh" aria-hidden="true"></i> 계획 적용 → 현금 흐름 생성</button>
+          <span style="font-size:12px;color:#888780">기존 행을 계획으로 덮어씁니다</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- regen banner -->
+    <div class="regen-banner hidden" id="regen-banner">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      계획 값이 변경됐어요. <button class="primary" style="padding:4px 12px;font-size:12px" onclick="applyPlan()">다시 적용</button>
+    </div>
+
+    <!-- summary metrics -->
+    <div class="metric-grid" id="flow-summary"></div>
+
+    <!-- toolbar -->
+    <div class="section-header">
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-btn on" data-cat="전체">전체</button>
+        <button class="filter-btn" data-cat="수자인">수자인</button>
+        <button class="filter-btn" data-cat="신미주">신미주</button>
+        <button class="filter-btn" data-cat="인테리어">인테리어</button>
+        <button class="filter-btn" data-cat="기타">기타</button>
+      </div>
+      <button onclick="exportCSV()" style="margin-left:auto"><i class="ti ti-download" aria-hidden="true"></i> CSV</button>
+    </div>
+
+    <!-- flow table -->
+    <div class="table-wrap">
+      <table class="flow" aria-label="현금 흐름 테이블">
+        <colgroup><col class="c-drag"><col class="c-date"><col class="c-cat"><col class="c-desc"><col class="c-in"><col class="c-out"><col class="c-bal"><col class="c-act"></colgroup>
+        <thead><tr>
+          <th></th><th>일자</th><th>분류</th><th>내용</th>
+          <th class="r">입금</th><th class="r">출금</th><th class="r">잔액</th><th></th>
+        </tr></thead>
+        <tbody id="flow-body"></tbody>
+      </table>
+      <div class="add-row-area" id="add-area">
+        <input name="date" type="text" placeholder="날짜" aria-label="날짜">
+        <select name="cat" aria-label="분류">
+          <option value="기타">기타</option><option value="수자인">수자인</option>
+          <option value="신미주">신미주</option><option value="인테리어">인테리어</option>
+        </select>
+        <input name="desc" type="text" placeholder="내용" aria-label="내용">
+        <input name="in" class="num-input" placeholder="입금액" data-raw="0" aria-label="입금액">
+        <input name="out" class="num-input" placeholder="출금액" data-raw="0" aria-label="출금액">
+        <button class="primary" onclick="addRow()"><i class="ti ti-plus" aria-hidden="true"></i> 추가</button>
+      </div>
+    </div>
+
+    <!-- chart -->
+    <div class="chart-wrap">
+      <div class="chart-title">일자별 잔액 변화</div>
+      <div style="position:relative;height:200px"><canvas id="chart" role="img" aria-label="잔액 변화 꺾은선 차트"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- delete modal -->
+<div class="modal-bg" id="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <h3 id="modal-title">행 삭제</h3>
+    <p id="modal-msg"></p>
+    <div class="modal-btns">
+      <button onclick="closeModal()">취소</button>
+      <button class="danger" onclick="confirmDelete()"><i class="ti ti-trash" aria-hidden="true"></i> 삭제</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ─────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────── */
+function el(id){return document.getElementById(id);}
+function gv(id){return parseFloat(el(id)?.value)||0;}
+function gn(id){const i=el(id);if(!i)return 0;return parseFloat((i.dataset.raw)||i.value.replace(/,/g,''))||0;}
+function fmtM(n){
+  const a=Math.abs(Math.round(n));
+  if(a>=100000000)return(n<0?'-':'')+(a/100000000).toFixed(1).replace(/\.0$/,'')+'억';
+  return(n<0?'-':'')+Math.round(a/10000).toLocaleString()+'만';
+}
+function fmtW(n){return Math.round(n).toLocaleString('ko-KR');}
+function tag(cat){return`<span class="tag tag-${cat}">${cat}</span>`;}
+
+/* 쉼표 포맷 입력 */
+function onNumInput(inp, cb){
+  const raw=inp.value.replace(/[^0-9]/g,'');
+  const formatted=raw===''?'':parseInt(raw,10).toLocaleString('ko-KR');
+  const cf=inp.value.length-inp.selectionStart;
+  inp.value=formatted;
+  inp.dataset.raw=raw===''?'0':raw;
+  const np=Math.max(0,formatted.length-cf);
+  try{inp.setSelectionRange(np,np);}catch(e){}
+  if(cb) cb();
+}
+/* blur 시 정리 */
+document.addEventListener('blur',e=>{
+  if(e.target.classList.contains('num-input')){
+    const raw=e.target.dataset.raw||'0';
+    e.target.value=(raw==='0'||raw==='')?'':parseInt(raw).toLocaleString('ko-KR');
+  }
+},true);
+
+/* ─────────────────────────────────────────
+   TABS
+───────────────────────────────────────── */
+function showTab(name){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('on',['loan','flow'][i]===name));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+  el('tab-'+name).classList.add('on');
+  if(name==='flow') renderFlow();
+}
+
+/* ─────────────────────────────────────────
+   TAB 1: 대출 계산기
+───────────────────────────────────────── */
+function getLoanParams(){
+  const type=el('c_loan_type').value;
+  const buy=gn('c_buy');
+  const yrs=parseInt(el('c_years').value)||30;
+  const customRate=parseFloat(el('c_rate_custom').value);
+  let rate,maxAmt;
+  if(type==='general'){rate=(isNaN(customRate)?5.10:customRate)/100;maxAmt=Math.min(buy*0.7,600000000);}
+  else{rate=(isNaN(customRate)?2.80:customRate)/100;maxAmt=Math.min(buy*0.7-48000000,400000000);}
+  const loanAmt=Math.round(Math.max(0,maxAmt)/10000)*10000;
+  const mr=rate/12,n=yrs*12;
+  const monthly=loanAmt>0?(loanAmt*(mr*Math.pow(1+mr,n))/(Math.pow(1+mr,n)-1)):0;
+  return{rate,loanAmt,monthly:Math.round(monthly),yrs};
+}
+function calcLoan(){
+  const sell=gn('c_sell'),loanBal=gn('c_loan_bal'),agentSell=gn('c_agent_sell');
+  const buy=gn('c_buy'),acqTax=gn('c_acq_tax'),agentBuy=gn('c_agent_buy');
+  const moveCost=gn('c_move'),stamp=gn('c_stamp'),savings=gn('c_savings'),interior=gn('c_interior');
+  const{rate,loanAmt,monthly}=getLoanParams();
+  const netSell=sell-loanBal-agentSell;
+  const totalCash=savings+netSell;
+  const cashNeeded=buy-loanAmt+acqTax+agentBuy+moveCost+stamp+interior;
+  const remaining=totalCash-cashNeeded;
+  const profit=sell-285544000;
+  el('calc-metrics').innerHTML=`
+    <div class="metric"><div class="metric-label">매도 순수령액</div><div class="metric-val">${fmtM(netSell)}</div></div>
+    <div class="metric"><div class="metric-label">대출금액</div><div class="metric-val">${fmtM(loanAmt)}</div></div>
+    <div class="metric"><div class="metric-label">월 원리금</div><div class="metric-val">${fmtW(monthly)}원</div></div>
+    <div class="metric"><div class="metric-label">최소 필요현금</div><div class="metric-val">${fmtM(cashNeeded)}</div></div>
+    <div class="metric"><div class="metric-label">최종 남는 현금</div><div class="metric-val ${remaining>=0?'pos':'neg'}">${fmtM(remaining)}</div></div>
+    <div class="metric"><div class="metric-label">수자인 실현이득</div><div class="metric-val pos">${fmtM(profit)}</div></div>`;
+  el('calc-alert').innerHTML=`<div class="alert ${remaining>=0?'ok':'ng'}">
+    <strong>${remaining>=0?'✓ 가능':'✗ 현금 부족'}</strong> — 필요현금 대비 <strong>${fmtM(Math.abs(remaining))}</strong> ${remaining>=0?'여유':'부족'}.
+    금리 <strong>${(rate*100).toFixed(2)}%</strong> · 월 원리금 <strong>${fmtW(monthly)}원</strong>
+  </div>`;
+}
+
+/* ─────────────────────────────────────────
+   TAB 2: 현금흐름 — 계획 패널
+───────────────────────────────────────── */
+let planPanelOpen=false;
+let planDirty=false;
+
+function togglePlanPanel(){
+  planPanelOpen=!planPanelOpen;
+  el('plan-panel').style.display=planPanelOpen?'block':'none';
+  el('plan-toggle-hint').textContent=planPanelOpen?'▲ 접기':'▼ 펼치기';
+  if(planPanelOpen) updateInteriorSummary();
+}
+
+function markPlanDirty(){
+  updateInteriorSummary();
+  planDirty=true;
+  el('regen-banner').classList.remove('hidden');
+}
+
+function updateInteriorSummary(){
+  const v=gn('p_interior');
+  el('interior-summary').innerHTML=`<table class="int-table">
+    <tr><td>계약금 (10%)</td><td>${fmtM(v*0.1)}</td></tr>
+    <tr><td>착수금 (30%)</td><td>${fmtM(v*0.3)}</td></tr>
+    <tr><td>중도금 (50%)</td><td>${fmtM(v*0.5)}</td></tr>
+    <tr><td>잔금 (10%)</td><td>${fmtM(v*0.1)}</td></tr>
+  </table>`;
+}
+
+/* 계획 → rows 생성 */
+function buildPlanRows(){
+  const sell=gn('p_sell'), dep=gn('p_sell_dep'), lbal=gn('p_loan_bal'), agSell=gn('p_agent_sell');
+  const buy=gn('p_buy'), buyDep=gn('p_buy_dep'), buyMid=gn('p_buy_mid');
+  const newLoan=gn('p_new_loan'), agBuy=gn('p_agent_buy');
+  const interior=gn('p_interior');
+  const savings=gn('p_savings'), monthly=gn('p_monthly');
+  const sellBal=sell-dep;
+  const buyBal=buy-buyDep-buyMid;
+
+  return [
+    {cat:'기타',    desc:'보유현금 (시작)',           date:'6/4',                    inn:savings,                  out:0},
+    {cat:'수자인',  desc:'수자인 계약금 수령',         date:el('p_sell_cd').value,    inn:dep,                      out:0},
+    {cat:'신미주',  desc:'신미주 계약금 지출',         date:el('p_buy_cd').value,     inn:0,                        out:buyDep},
+    {cat:'인테리어',desc:'인테리어 계약금 (10%)',      date:el('p_int_cd').value,     inn:0,                        out:Math.round(interior*0.1)},
+    {cat:'신미주',  desc:'신미주 중도금 지출',         date:el('p_buy_md').value,     inn:0,                        out:buyMid},
+    {cat:'기타',    desc:'6월 월급 저축',              date:'6/30',                   inn:monthly,                  out:0},
+    {cat:'인테리어',desc:'인테리어 착수금 (30%)',      date:el('p_int_sd').value,     inn:0,                        out:Math.round(interior*0.3)},
+    {cat:'기타',    desc:'7월 월급 저축',              date:'7/31',                   inn:monthly,                  out:0},
+    {cat:'인테리어',desc:'인테리어 중도금 (50%)',      date:el('p_int_md').value,     inn:0,                        out:Math.round(interior*0.5)},
+    {cat:'인테리어',desc:'인테리어 잔금 (10%)',        date:el('p_int_bd').value,     inn:0,                        out:Math.round(interior*0.1)},
+    {cat:'수자인',  desc:'수자인 중개보수',             date:el('p_sell_bd').value,    inn:0,                        out:agSell},
+    {cat:'기타',    desc:'8월 월급 저축',              date:'8/31',                   inn:monthly,                  out:0},
+    {cat:'수자인',  desc:'수자인 매도 잔금 수령',      date:el('p_sell_bd').value,    inn:sellBal,                  out:0},
+    {cat:'수자인',  desc:'기존 주담대 상환',           date:el('p_sell_bd').value,    inn:0,                        out:lbal},
+    {cat:'신미주',  desc:'신미주 주담대 대출 실행',    date:el('p_buy_bd').value,     inn:newLoan,                  out:0},
+    {cat:'신미주',  desc:'신미주 매입 잔금 지출',      date:el('p_buy_bd').value,     inn:0,                        out:buyBal},
+    {cat:'신미주',  desc:'신미주 중개보수',             date:el('p_buy_bd').value,     inn:0,                        out:agBuy},
+  ].map((r,i)=>({id:i+1, ...r}));
+}
+
+function applyPlan(){
+  rows=buildPlanRows();
+  nextId=rows.length+1;
+  planDirty=false;
+  el('regen-banner').classList.add('hidden');
+  renderFlow();
+}
+
+/* ─────────────────────────────────────────
+   TAB 2: 현금흐름 — 테이블
+───────────────────────────────────────── */
+let rows=buildPlanRows();
+let nextId=rows.length+1;
+let filterCat='전체', deleteTargetId=null, dragSrcId=null, chartInst=null;
+
+function computeBalances(data){let b=0;return data.map(r=>({...r,bal:(b=b+r.inn-r.out)}));}
+
+/* 잔액 셀·배경색·summary·chart만 갱신 (포커스 유지용) */
+function refreshBalances(){
+  const wb=computeBalances(rows);
+  /* 각 행의 잔액 셀 업데이트 */
+  wb.forEach(r=>{
+    const tr=el('flow-body').querySelector(`tr[data-id="${r.id}"]`);
+    if(!tr) return;
+    const balTd=tr.cells[6];
+    balTd.textContent=fmtM(r.bal);
+    balTd.className='r '+(r.bal>=0?'bal-pos':'bal-neg');
+    tr.classList.toggle('neg-row', r.bal<0);
+  });
+  updateSummaryChart(wb);
+}
+
+function updateSummaryChart(wb){
+  const final=wb[wb.length-1]?.bal||0;
+  const minBal=wb.length?Math.min(...wb.map(x=>x.bal)):0;
+  const totalIn=rows.reduce((s,r)=>s+r.inn,0), totalOut=rows.reduce((s,r)=>s+r.out,0);
+  el('flow-summary').innerHTML=`
+    <div class="metric"><div class="metric-label">최종 잔액</div><div class="metric-val ${final>=0?'pos':'neg'}">${fmtM(final)}</div></div>
+    <div class="metric"><div class="metric-label">최저 잔액</div><div class="metric-val ${minBal>=0?'pos':'neg'}">${fmtM(minBal)}</div></div>
+    <div class="metric"><div class="metric-label">총 입금</div><div class="metric-val pos">${fmtM(totalIn)}</div></div>
+    <div class="metric"><div class="metric-label">총 출금</div><div class="metric-val neg">${fmtM(totalOut)}</div></div>`;
+  const labels=wb.map(r=>r.date), data=wb.map(r=>Math.round(r.bal/10000));
+  const colors=data.map(v=>v>=0?'#378ADD':'#E24B4A');
+  if(chartInst) chartInst.destroy();
+  chartInst=new Chart(el('chart'),{
+    type:'line',
+    data:{labels,datasets:[{label:'잔액(만원)',data,borderColor:'#378ADD',pointBackgroundColor:colors,pointBorderColor:colors,backgroundColor:'rgba(55,138,221,0.08)',borderWidth:2,pointRadius:4,fill:true,tension:0.3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11},maxRotation:45,autoSkip:false}},y:{ticks:{callback:v=>v.toLocaleString()+'만',font:{size:11}}}}}
+  });
+}
+
+function renderFlow(){
+  const wb=computeBalances(rows);
+  const filtered=filterCat==='전체'?wb:wb.filter(r=>r.cat===filterCat);
+  const tbody=el('flow-body'); tbody.innerHTML='';
+
+  filtered.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.dataset.id=r.id; tr.draggable=true;
+    if(r.bal<0) tr.classList.add('neg-row');
+
+    tr.innerHTML=`
+      <td><span class="drag-handle" title="드래그해서 순서 변경"><i class="ti ti-grip-vertical" aria-hidden="true"></i></span></td>
+      <td><input type="text" value="${r.date}" data-field="date" data-id="${r.id}" style="width:54px" aria-label="날짜"></td>
+      <td><select data-field="cat" data-id="${r.id}" aria-label="분류">${['기타','수자인','신미주','인테리어'].map(c=>`<option${r.cat===c?' selected':''}>${c}</option>`).join('')}</select></td>
+      <td><input type="text" value="${escHtml(r.desc)}" data-field="desc" data-id="${r.id}" aria-label="내용"></td>
+      <td><input class="num-input" data-field="inn" data-id="${r.id}" data-raw="${r.inn}" value="${r.inn?r.inn.toLocaleString('ko-KR'):''}" placeholder="0" aria-label="입금액"></td>
+      <td><input class="num-input" data-field="out" data-id="${r.id}" data-raw="${r.out}" value="${r.out?r.out.toLocaleString('ko-KR'):''}" placeholder="0" aria-label="출금액"></td>
+      <td class="r ${r.bal>=0?'bal-pos':'bal-neg'}">${fmtM(r.bal)}</td>
+      <td style="text-align:right"><button class="small danger" onclick="askDelete(${r.id})" aria-label="삭제"><i class="ti ti-trash" aria-hidden="true" style="font-size:13px"></i></button></td>`;
+
+    /* drag */
+    tr.addEventListener('dragstart',e=>{dragSrcId=r.id;tr.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    tr.addEventListener('dragend',()=>{tr.classList.remove('dragging');document.querySelectorAll('tr.drag-over').forEach(t=>t.classList.remove('drag-over'));});
+    tr.addEventListener('dragover',e=>{e.preventDefault();tr.classList.add('drag-over');});
+    tr.addEventListener('dragleave',()=>tr.classList.remove('drag-over'));
+    tr.addEventListener('drop',e=>{e.preventDefault();tr.classList.remove('drag-over');if(dragSrcId!==r.id)moveRow(dragSrcId,r.id);});
+
+    tbody.appendChild(tr);
+
+    /* text/select → change 시에만 전체 재렌더 */
+    tr.querySelectorAll('input[type=text],select').forEach(inp=>{
+      inp.addEventListener('change',()=>{
+        const row=rows.find(x=>x.id===r.id); if(!row) return;
+        row[inp.dataset.field]=inp.value;
+        renderFlow();
+      });
+    });
+
+    /* num-input → 포커스 유지하면서 잔액만 갱신 */
+    tr.querySelectorAll('input.num-input').forEach(inp=>{
+      inp.addEventListener('input',()=>{
+        const raw=inp.value.replace(/[^0-9]/g,'');
+        const formatted=raw===''?'':parseInt(raw,10).toLocaleString('ko-KR');
+        const sel=inp.selectionStart, oldLen=inp.value.length;
+        inp.value=formatted;
+        inp.dataset.raw=raw||'0';
+        /* 커서 위치 보정 */
+        const newPos=Math.max(0, formatted.length-(oldLen-sel));
+        try{inp.setSelectionRange(newPos,newPos);}catch(e){}
+        const row=rows.find(x=>x.id===r.id); if(!row) return;
+        row[inp.dataset.field]=parseInt(raw||'0',10);
+        refreshBalances(); /* DOM 재생성 없이 잔액만 업데이트 */
+      });
+    });
+  });
+
+  updateSummaryChart(wb);
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function moveRow(srcId,targetId){
+  const a=rows.findIndex(r=>r.id===srcId), b=rows.findIndex(r=>r.id===targetId);
+  if(a<0||b<0) return;
+  const[rm]=rows.splice(a,1); rows.splice(b,0,rm); renderFlow();
+}
+function askDelete(id){
+  deleteTargetId=id;
+  const r=rows.find(r=>r.id===id);
+  el('modal-msg').textContent=`"${r?.desc||''}" 항목을 삭제할까요?`;
+  el('modal-bg').classList.add('open');
+}
+function closeModal(){el('modal-bg').classList.remove('open');deleteTargetId=null;}
+function confirmDelete(){rows=rows.filter(r=>r.id!==deleteTargetId);closeModal();renderFlow();}
+
+function addRow(){
+  const a=el('add-area');
+  rows.push({
+    id:nextId++,
+    date:a.querySelector('[name=date]').value.trim()||'?',
+    cat:a.querySelector('[name=cat]').value,
+    desc:a.querySelector('[name=desc]').value.trim()||'새 항목',
+    inn:parseInt(a.querySelector('[name=in]').dataset.raw||'0')||0,
+    out:parseInt(a.querySelector('[name=out]').dataset.raw||'0')||0
+  });
+  ['date','desc'].forEach(n=>a.querySelector(`[name=${n}]`).value='');
+  ['in','out'].forEach(n=>{const i=a.querySelector(`[name=${n}]`);i.value='';i.dataset.raw='0';});
+  renderFlow();
+}
+
+/* add-area num inputs */
+el('add-area').querySelectorAll('input.num-input').forEach(inp=>{
+  inp.addEventListener('input',()=>{
+    const raw=inp.value.replace(/[^0-9]/g,'');
+    const formatted=raw===''?'':parseInt(raw,10).toLocaleString('ko-KR');
+    const cf=inp.value.length-inp.selectionStart;
+    inp.value=formatted; inp.dataset.raw=raw||'0';
+    try{inp.setSelectionRange(Math.max(0,formatted.length-cf),Math.max(0,formatted.length-cf));}catch(e){}
+  });
+});
+
+function exportCSV(){
+  const wb=computeBalances(rows);
+  const lines=['일자,분류,내용,입금,출금,잔액',...wb.map(r=>`${r.date},${r.cat},"${r.desc}",${r.inn},${r.out},${Math.round(r.bal)}`)];
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8;'}));
+  a.download='현금흐름.csv'; a.click();
+}
+
+el('filter-bar').addEventListener('click',e=>{
+  const b=e.target.closest('.filter-btn'); if(!b) return;
+  document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  filterCat=b.dataset.cat; renderFlow();
+});
+el('add-area').querySelector('input[name=desc]').addEventListener('keydown',e=>{if(e.key==='Enter')addRow();});
+
+/* ─── init ─── */
+calcLoan();
+renderFlow();
+updateInteriorSummary();
+</script>
+</body>
+</html>
