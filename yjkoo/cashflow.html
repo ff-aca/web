@@ -92,6 +92,46 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
 .int-table td{padding:5px 6px;border-bottom:0.5px solid rgba(0,0,0,0.05);color:#444}
 .int-table tr:last-child td{border-bottom:none}
 .int-table td:last-child{text-align:right;font-weight:500}
+
+@media(max-width:680px){
+  /* 탭 버튼 작게 */
+  .tab-btn{padding:8px 12px;font-size:13px}
+
+  /* 카드 패딩 줄이기 */
+  .card{padding:12px 14px}
+
+  /* 대출계산기 신용대출 3열 → 1열 */
+  #credit-result,
+  [style*="grid-template-columns:1fr 1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* 계획패널 인테리어 A/B 2열 → 1열 */
+  [style*="grid-template-columns:1fr 1fr"]{
+    grid-template-columns:1fr !important;
+  }
+
+  /* 라벨 위로 올리기 */
+  .field-row{flex-wrap:wrap}
+  .field-row label{width:100%;margin-bottom:2px}
+
+  /* 테이블 폰트·패딩 축소 */
+  table.flow th,table.flow td{font-size:11px;padding:4px 5px}
+  col.c-desc{width:80px}
+  col.c-in,col.c-out,col.c-bal{width:72px}
+
+  /* 하단 행추가 세로로 */
+  .add-row-area{flex-direction:column;align-items:stretch}
+  .add-row-area input,.add-row-area select{width:100%}
+  .add-row-area input[name=date]{width:100%}
+
+  /* 요약 메트릭 2열로 */
+  .metric-grid{grid-template-columns:1fr 1fr}
+
+  /* 신용대출 결과 1열 */
+  #credit-result{grid-template-columns:1fr !important}
+}
+
 </style>
 </head>
 <body>
