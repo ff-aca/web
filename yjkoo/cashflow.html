@@ -25,10 +25,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .metric-label{font-size:11px;color:#888780;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
 .metric-val{font-size:19px;font-weight:500;color:#1a1a18}
 .metric-val.pos{color:#1D9E75}.metric-val.neg{color:#E24B4A}
-.field-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.field-row label{font-size:13px;color:#888780;width:150px;flex-shrink:0}
+.field-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;width:100%;box-sizing:border-box}
+.field-row label{font-size:13px;color:#888780;width:110px;flex-shrink:0}
 .field-row .fval{font-size:13px;font-weight:500;min-width:76px;text-align:right;color:#1a1a18}
-.field-row input[type=text],.field-row select,.field-row input.num-input{flex:1;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;}
+.field-row input[type=text],.field-row select,.field-row input.num-input{flex:1 1 0%;min-width:0;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;}
 .field-row input.num-input{text-align:right}
 .field-row input:focus,.field-row select:focus{outline:none;border-color:#378ADD;box-shadow:0 0 0 3px rgba(55,138,221,0.12)}
 .sec-divider{height:0.5px;background:rgba(0,0,0,0.07);margin:14px 0}
@@ -58,6 +58,10 @@ table.flow th.r,table.flow td.r{text-align:right}
 table.flow td{padding:5px 8px;border-bottom:0.5px solid rgba(0,0,0,0.06);vertical-align:middle}
 table.flow tr:last-child td{border-bottom:none}
 tr.neg-row{background:#fff8f8}
+tr.row-interior{background:#FFF8EC}
+tr.row-etc{background:#F7F6F2}
+tr.row-credit{background:#FFF0DC}
+tr.neg-row.row-interior,tr.neg-row.row-etc,tr.neg-row.row-credit{background:#fff0ee}
 tr.drag-over{background:#E6F1FB}
 tr.dragging{opacity:.4}
 table.flow td input[type=text],table.flow td select{width:100%;font-size:13px;padding:3px 5px;border:0.5px solid transparent;border-radius:5px;background:transparent;color:#1a1a18;transition:border-color .15s,background .15s}
@@ -88,50 +92,49 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
 .modal h3{font-size:15px;font-weight:500;margin-bottom:8px}
 .modal p{font-size:13px;color:#888780;margin-bottom:16px}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.int-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
-.int-table td{padding:5px 6px;border-bottom:0.5px solid rgba(0,0,0,0.05);color:#444}
-.int-table tr:last-child td{border-bottom:none}
-.int-table td:last-child{text-align:right;font-weight:500}
-
+/* ── 대시보드 추가 스타일 ── */
+.flow-box{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:16px 18px;margin-bottom:0}
+.flow-box-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888780;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.flow-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.05);font-size:13px}
+.flow-row:last-child{border-bottom:none}
+.flow-row.total{border-top:1px solid rgba(0,0,0,0.12);margin-top:4px;padding-top:8px;font-weight:600;font-size:14px}
+.flow-row .lbl{color:#888780}
+.flow-row .amt{font-weight:500}
+.flow-row .amt.neg{color:#E24B4A}
+.flow-row .amt.pos{color:#1D9E75}
+.arrow-col{display:flex;align-items:center;justify-content:center;color:#ccc;font-size:22px;padding:0 4px}
+.dash-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;margin-bottom:16px;align-items:start}
+.result-box{border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.result-box.ok{background:#EAF3DE;border:0.5px solid #9FCE7A}
+.result-box.ng{background:#FCEBEB;border:0.5px solid #F5A8A8}
+.result-box.warn{background:#FAEEDA;border:0.5px solid #E8C47A}
+.result-title{font-size:13px;font-weight:600;margin-bottom:10px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.result-item{background:rgba(255,255,255,0.6);border-radius:8px;padding:10px 12px}
+.result-item .rl{font-size:11px;color:#888780;margin-bottom:3px}
+.result-item .rv{font-size:16px;font-weight:600}
+.dsr-bar-wrap{background:rgba(0,0,0,0.08);border-radius:20px;height:8px;margin:6px 0 2px;overflow:hidden}
+.dsr-bar{height:8px;border-radius:20px;transition:width .4s}
+.loan-inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.input-group{background:#fff;border:0.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:14px 16px;box-sizing:border-box;overflow:hidden}
+.input-group-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#888780;margin-bottom:12px}
+.stress-box{background:#f8f8f6;border-radius:8px;padding:10px 14px;font-size:12px;color:#666;margin-top:8px;line-height:1.6}
 @media(max-width:680px){
-  /* 탭 버튼 작게 */
+  .dash-grid{grid-template-columns:1fr;gap:8px}
+  .arrow-col{transform:rotate(90deg);padding:4px 0}
+  .result-grid{grid-template-columns:1fr 1fr}
+  .loan-inputs{grid-template-columns:1fr}
   .tab-btn{padding:8px 12px;font-size:13px}
-
-  /* 카드 패딩 줄이기 */
   .card{padding:12px 14px}
-
-  /* 대출계산기 신용대출 3열 → 1열 */
-  #credit-result,
-  [style*="grid-template-columns:1fr 1fr 1fr"]{
-    grid-template-columns:1fr !important;
-  }
-
-  /* 계획패널 인테리어 A/B 2열 → 1열 */
-  [style*="grid-template-columns:1fr 1fr"]{
-    grid-template-columns:1fr !important;
-  }
-
-  /* 라벨 위로 올리기 */
   .field-row{flex-wrap:wrap}
   .field-row label{width:100%;margin-bottom:2px}
-
-  /* 테이블 폰트·패딩 축소 */
   table.flow th,table.flow td{font-size:11px;padding:4px 5px}
-  col.c-desc{width:80px}
   col.c-in,col.c-out,col.c-bal{width:72px}
-
-  /* 하단 행추가 세로로 */
   .add-row-area{flex-direction:column;align-items:stretch}
   .add-row-area input,.add-row-area select{width:100%}
-  .add-row-area input[name=date]{width:100%}
-
-  /* 요약 메트릭 2열로 */
   .metric-grid{grid-template-columns:1fr 1fr}
-
-  /* 신용대출 결과 1열 */
-  #credit-result{grid-template-columns:1fr !important}
+  #credit-result{grid-template-columns:1fr!important}
 }
-
 </style>
 </head>
 <body>
@@ -144,64 +147,112 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
     <button class="tab-btn" onclick="showTab('flow')"><i class="ti ti-list"></i> 현금 흐름</button>
   </div>
 
-  <!-- ══════ TAB 1: 대출 계산기 ══════ -->
+  <!-- ══════ TAB 1: 대시보드 ══════ -->
   <div id="tab-loan" class="tab-pane on">
-    <div id="calc-metrics" class="metric-grid"></div>
-    <div class="two-col">
-      <div class="card">
-        <div class="card-title"><i class="ti ti-building"></i> 한양수자인 매도</div>
-        <div class="field-row"><label>재판매가격</label><input class="num-input" id="c_sell" value="350,000,000" data-raw="350000000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>주담대 잔액</label><input class="num-input" id="c_loan_bal" value="182,000,000" data-raw="182000000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>중개보수(VAT+)</label><input class="num-input" id="c_agent_sell" value="1,200,000" data-raw="1200000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="sec-divider"></div>
-        <div class="field-row"><label>보유현금</label><input class="num-input" id="c_savings" value="52,000,000" data-raw="52000000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>월 저축액</label><input class="num-input" id="c_monthly" value="4,000,000" data-raw="4000000" oninput="onNumInput(this,calcLoan)"></div>
+
+    <!-- 입력 영역 전체 wrapper: 위 3카드와 아래 기타비용 카드가 정확히 같은 너비를 갖도록 box-sizing 보정 -->
+    <div style="box-sizing:border-box;width:100%">
+
+    <!-- 입력값 — 상단: 매도(1) + 매입(1) + 내현금(1) 균등 3열 -->
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,0.8fr);gap:12px;margin-bottom:12px;width:100%;box-sizing:border-box">
+
+      <!-- 블록 1: 매도 -->
+      <div class="input-group">
+        <div class="input-group-title">🏢 한양수자인 매도</div>
+        <div class="field-row"><label>매도가</label><input class="num-input" id="c_sell" value="350,000,000" data-raw="350000000" oninput="onNumInput(this,calcAll)"></div>
+        <div class="field-row"><label>주담대 잔액</label><input class="num-input" id="c_loan_bal" value="182,000,000" data-raw="182000000" oninput="onNumInput(this,calcAll)"></div>
       </div>
-      <div class="card">
-        <div class="card-title"><i class="ti ti-home-heart"></i> 신미주 매입</div>
-        <div class="field-row"><label>매입가</label><input class="num-input" id="c_buy" value="598,000,000" data-raw="598000000" oninput="onNumInput(this,calcLoan)"></div>
+
+      <!-- 블록 2: 매입 + 대출 조건 -->
+      <div class="input-group">
+        <div class="input-group-title">🏡 신미주 매입 · 대출</div>
+        <div class="field-row"><label>매입가</label><input class="num-input" id="c_buy" value="598,000,000" data-raw="598000000" oninput="onNumInput(this,calcAll)"></div>
         <div class="field-row"><label>대출 유형</label>
-          <select id="c_loan_type" onchange="calcLoan()">
+          <select id="c_loan_type" onchange="calcAll()">
             <option value="general">일반주담대 (5.50%, 70%/6억)</option>
             <option value="didimdol">신생아 디딤돌 (2.90%, 70%/4억/방공제4800만)</option>
           </select>
         </div>
-        <div class="field-row"><label>금리 직접입력(%)</label><input type="text" id="c_rate_custom" placeholder="비우면 유형 기준" oninput="calcLoan()"></div>
+        <div class="field-row"><label>금리 직접입력(%)</label><input type="text" id="c_rate_custom" placeholder="비우면 유형 기준" oninput="calcAll()"></div>
+        <div class="field-row"><label>고정기간</label>
+          <select id="c_fix_type" onchange="calcAll()">
+            <option value="var">변동금리</option>
+            <option value="fix5">5년 고정</option>
+          </select>
+        </div>
         <div class="field-row"><label>대출 기간</label>
-          <select id="c_years" onchange="calcLoan()">
+          <select id="c_years" onchange="calcAll()">
             <option value="30" selected>30년</option><option value="20">20년</option><option value="10">10년</option>
           </select>
         </div>
-        <div class="sec-divider"></div>
-        <div class="field-row"><label>취득세</label><input class="num-input" id="c_acq_tax" value="6,578,000" data-raw="6578000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>중개보수(VAT+)</label><input class="num-input" id="c_agent_buy" value="2,631,200" data-raw="2631200" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>이사비용</label><input class="num-input" id="c_move" value="3,000,000" data-raw="3000000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>인지세·채권 등</label><input class="num-input" id="c_stamp" value="1,000,000" data-raw="1000000" oninput="onNumInput(this,calcLoan)"></div>
-        <div class="field-row"><label>인테리어</label><input class="num-input" id="c_interior" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,calcLoan)"></div>
+      </div>
+
+      <!-- 블록 3: 보유현금 + 월저축 -->
+      <div class="input-group">
+        <div class="input-group-title">💰 내 현금</div>
+        <div class="field-row"><label>보유현금</label><input class="num-input" id="c_savings" value="52,000,000" data-raw="52000000" oninput="onNumInput(this,calcAll)"></div>
+        <div class="field-row"><label>월 저축액</label><input class="num-input" id="c_monthly" value="4,000,000" data-raw="4000000" oninput="onNumInput(this,calcAll)"></div>
       </div>
     </div>
-    <div id="calc-alert"></div>
 
-    <!-- 신용대출 계산기 -->
-    <div class="card" style="margin-top:4px">
-      <div class="card-title"><i class="ti ti-credit-card"></i> 신용대출 계산기</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
-        <div class="field-row" style="flex-direction:column;align-items:flex-start;gap:4px">
-          <label style="width:auto">대출금액</label>
-          <input class="num-input" id="cr_amt" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,calcCredit)" style="flex:none;width:100%">
+    <!-- 기타 비용 — 가로 1줄 카드 (매도 중개보수 포함), 위 카드들과 동일 너비 -->
+    <div class="input-group" style="margin-bottom:16px;width:100%;box-sizing:border-box">
+      <div class="input-group-title">📋 기타 비용</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px">
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">매도 중개보수</div><input class="num-input" id="c_agent_sell" value="1,200,000" data-raw="1200000" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">취득세</div><input class="num-input" id="c_acq_tax" value="6,578,000" data-raw="6578000" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">매입 중개보수</div><input class="num-input" id="c_agent_buy" value="2,631,200" data-raw="2631200" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">이사비용</div><input class="num-input" id="c_move" value="3,000,000" data-raw="3000000" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">인지세·채권 등</div><input class="num-input" id="c_stamp" value="1,000,000" data-raw="1000000" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+        <div><div style="font-size:11px;color:#888780;margin-bottom:5px">인테리어</div><input class="num-input" id="c_interior" value="30,000,000" data-raw="30000000" oninput="onNumInput(this,calcAll)" style="width:100%;box-sizing:border-box;font-size:13px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.15);border-radius:6px;background:#fff;color:#1a1a18;text-align:right"></div>
+      </div>
+    </div>
+    </div><!-- /입력 영역 전체 wrapper -->
+
+    <!-- 숨겨진 값 (잔금날 계산용) -->
+    <input type="hidden" id="c_sell_dep" data-raw="35000000">
+    <input type="hidden" id="c_buy_dep" data-raw="60000000">
+    <input type="hidden" id="c_buy_mid" data-raw="10000000">
+    <div class="dash-grid">
+      <div class="flow-box">
+        <div class="flow-box-title">🏢 한양수자인 매도 흐름</div>
+        <div id="sell-flow"></div>
+      </div>
+      <div class="arrow-col">→</div>
+      <div class="flow-box">
+        <div class="flow-box-title">🏡 신미주 매수 흐름</div>
+        <div id="buy-flow"></div>
+      </div>
+    </div>
+
+    <!-- 결과 요약 -->
+    <div id="dash-result" style="margin-top:16px"></div>
+
+    <!-- DSR + 신용대출 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0" id="dsr-credit-grid">
+      <div class="input-group">
+        <div class="input-group-title">📊 DSR 계산 (스트레스 금리 반영)</div>
+        <div class="field-row"><label>연소득</label><input class="num-input" id="c_income" value="73,000,000" data-raw="73000000" oninput="onNumInput(this,calcAll)"></div>
+        <div class="field-row"><label>기타 연간 원리금</label><input class="num-input" id="c_other_debt" value="0" data-raw="0" oninput="onNumInput(this,calcAll)"></div>
+        <div id="dsr-result"></div>
+        <div class="stress-box">
+          스트레스 금리 기준 (2025년)<br>
+          · 변동금리: <strong>+3.00%p</strong> 가산<br>
+          · 5년 고정: <strong>+1.20%p</strong> 가산<br>
+          DSR 한도: 은행권 <strong>40%</strong> · 2금융 <strong>50%</strong>
         </div>
-        <div class="field-row" style="flex-direction:column;align-items:flex-start;gap:4px">
-          <label style="width:auto">금리 (%)</label>
-          <input type="text" id="cr_rate" value="7.0" oninput="calcCredit()" style="flex:none;width:100%">
-        </div>
-        <div class="field-row" style="flex-direction:column;align-items:flex-start;gap:4px">
-          <label style="width:auto">원리금 상환 기간</label>
-          <select id="cr_years" onchange="calcCredit()" style="flex:none;width:100%">
+      </div>
+      <div class="input-group">
+        <div class="input-group-title">💳 신용대출 계산기</div>
+        <div class="field-row"><label>대출금액</label><input class="num-input" id="cr_amt" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,calcCredit)"></div>
+        <div class="field-row"><label>금리 (%)</label><input type="text" id="cr_rate" value="7.0" oninput="calcCredit()"></div>
+        <div class="field-row"><label>상환 기간</label>
+          <select id="cr_years" onchange="calcCredit()">
             <option value="5" selected>5년</option><option value="3">3년</option><option value="7">7년</option><option value="10">10년</option>
           </select>
         </div>
+        <div id="credit-result" style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
       </div>
-      <div id="credit-result" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
     </div>
   </div>
 
@@ -256,7 +307,7 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
           <div>
-            <div style="font-size:12px;font-weight:600;color:#2D5A0E;background:#EAF3DE;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 A안 (10·30·50·10%)</div>
+            <div style="font-size:12px;font-weight:600;color:#2D5A0E;background:#EAF3DE;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 A안 (계약금 10·착수금 20·중도금 50·잔금 20%)</div>
             <div class="field-row"><label>총 비용</label><input class="num-input" id="p_interior" value="30,000,000" data-raw="30000000" oninput="onNumInput(this,markPlanDirty)"></div>
             <div class="field-row"><label>계약금일</label><input type="text" id="p_int_cd" value="6/20" oninput="markPlanDirty()"></div>
             <div class="field-row"><label>착수금일</label><input type="text" id="p_int_sd" value="7/20" oninput="markPlanDirty()"></div>
@@ -265,9 +316,11 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
             <div id="interior-summary" style="margin-top:10px"></div>
           </div>
           <div>
-            <div style="font-size:12px;font-weight:600;color:#0C447C;background:#E6F1FB;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 B안 (계약금 30% · 잔금 70%)</div>
+            <div style="font-size:12px;font-weight:600;color:#0C447C;background:#E6F1FB;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 B안 (계약금 10·착수금 40·중도금 40·잔금 10%)</div>
             <div class="field-row"><label>총 비용</label><input class="num-input" id="pb_interior" value="30,000,000" data-raw="30000000" oninput="onNumInput(this,markPlanDirty)"></div>
             <div class="field-row"><label>계약금일</label><input type="text" id="pb_int_cd" value="6/20" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>착수금일</label><input type="text" id="pb_int_sd" value="7/20" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>중도금일</label><input type="text" id="pb_int_md" value="8/10" oninput="markPlanDirty()"></div>
             <div class="field-row"><label>잔금일</label><input type="text" id="pb_int_bd" value="8/25" oninput="markPlanDirty()"></div>
             <div id="interior-b-summary" style="margin-top:10px"></div>
           </div>
@@ -362,7 +415,11 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
 <script>
 function el(id){return document.getElementById(id);}
 function gn(id){const i=el(id);if(!i)return 0;return parseInt((i.dataset.raw)||i.value.replace(/,/g,''))||0;}
-function fmtM(n){const a=Math.abs(Math.round(n));if(a>=100000000)return(n<0?'-':'')+(a/100000000).toFixed(1).replace(/\.0$/,'')+'억';return(n<0?'-':'')+Math.round(a/10000).toLocaleString()+'만';}
+function fmtM(n){
+  const a=Math.abs(Math.round(n));
+  if(a>=100000000){const v=(a/100000000);return(n<0?'-':'')+v.toFixed(2).replace(/\.?0+$/,'')+'억';}
+  return(n<0?'-':'')+Math.round(a/10000).toLocaleString()+'만';
+}
 function fmtW(n){return Math.round(n).toLocaleString('ko-KR');}
 
 /* 쉼표 포맷 */
@@ -389,39 +446,126 @@ function showTab(name){
   if(name==='flow') renderFlow();
 }
 
-/* ── 대출 계산기 ── */
+/* ── 대시보드 계산 ── */
 function getLoanParams(){
   const type=el('c_loan_type').value;
   const buy=gn('c_buy');
   const yrs=parseInt(el('c_years').value)||30;
+  const fix=el('c_fix_type').value;
   const customRate=parseFloat(el('c_rate_custom').value);
-  let rate,maxAmt;
-  if(type==='general'){rate=(isNaN(customRate)?5.50:customRate)/100;maxAmt=Math.min(buy*0.7,600000000);}
-  else{rate=(isNaN(customRate)?2.90:customRate)/100;maxAmt=Math.min(buy*0.7-48000000,400000000);}
+  let baseRate,maxAmt;
+  if(type==='general'){baseRate=isNaN(customRate)?5.50:customRate;maxAmt=Math.min(buy*0.7,600000000);}
+  else{baseRate=isNaN(customRate)?2.90:customRate;maxAmt=Math.min(buy*0.7-48000000,400000000);}
+  const stressAdd=fix==='fix5'?1.20:3.00;
+  const rate=baseRate/100;
+  const stressRate=(baseRate+stressAdd)/100;
   const loanAmt=Math.round(Math.max(0,maxAmt)/10000)*10000;
   const mr=rate/12,n=yrs*12;
+  const smr=stressRate/12;
   const monthly=loanAmt>0?(loanAmt*(mr*Math.pow(1+mr,n))/(Math.pow(1+mr,n)-1)):0;
-  return{rate,loanAmt,monthly:Math.round(monthly)};
+  const monthlyStress=loanAmt>0?(loanAmt*(smr*Math.pow(1+smr,n))/(Math.pow(1+smr,n)-1)):0;
+  return{rate,baseRate,stressRate,stressAdd,loanAmt,monthly:Math.round(monthly),monthlyStress:Math.round(monthlyStress),yrs,fix};
 }
-function calcLoan(){
-  const sell=gn('c_sell'),loanBal=gn('c_loan_bal'),agentSell=gn('c_agent_sell');
-  const buy=gn('c_buy'),acqTax=gn('c_acq_tax'),agentBuy=gn('c_agent_buy');
-  const moveCost=gn('c_move'),stamp=gn('c_stamp'),savings=gn('c_savings'),interior=gn('c_interior');
-  const{rate,loanAmt,monthly}=getLoanParams();
-  const netSell=sell-loanBal-agentSell;
-  const cashNeeded=buy-loanAmt+acqTax+agentBuy+moveCost+stamp+interior;
-  const remaining=savings+netSell-cashNeeded;
+
+function frow(lbl,amt,cls=''){
+  return `<div class="flow-row"><span class="lbl">${lbl}</span><span class="amt ${cls}">${amt}</span></div>`;
+}
+
+function calcAll(){
+  const sell=gn('c_sell'), loanBal=gn('c_loan_bal'), agSell=gn('c_agent_sell');
+  const sellDep=gn('c_sell_dep');
+  const buy=gn('c_buy'), buyDep=gn('c_buy_dep'), buyMid=gn('c_buy_mid');
+  const acqTax=gn('c_acq_tax'), agBuy=gn('c_agent_buy');
+  const moveCost=gn('c_move'), stamp=gn('c_stamp'), interior=gn('c_interior');
+  const savings=gn('c_savings');
+  const {rate,baseRate,stressRate,stressAdd,loanAmt,monthly,monthlyStress,yrs,fix}=getLoanParams();
   const profit=sell-285544000;
-  el('calc-metrics').innerHTML=`
-    <div class="metric"><div class="metric-label">매도 순수령액</div><div class="metric-val">${fmtM(netSell)}</div></div>
-    <div class="metric"><div class="metric-label">대출금액</div><div class="metric-val">${fmtM(loanAmt)}</div></div>
-    <div class="metric"><div class="metric-label">월 원리금</div><div class="metric-val">${fmtW(monthly)}원</div></div>
-    <div class="metric"><div class="metric-label">최소 필요현금</div><div class="metric-val">${fmtM(cashNeeded)}</div></div>
-    <div class="metric"><div class="metric-label">최종 남는 현금</div><div class="metric-val ${remaining>=0?'pos':'neg'}">${fmtM(remaining)}</div></div>
-    <div class="metric"><div class="metric-label">수자인 실현이득</div><div class="metric-val pos">${fmtM(profit)}</div></div>`;
-  el('calc-alert').innerHTML=`<div class="alert ${remaining>=0?'ok':'ng'}">
-    <strong>${remaining>=0?'✓ 가능':'✗ 현금 부족'}</strong> — 필요현금 대비 <strong>${fmtM(Math.abs(remaining))}</strong> ${remaining>=0?'여유':'부족'}.
-    금리 <strong>${(rate*100).toFixed(2)}%</strong> · 월 원리금 <strong>${fmtW(monthly)}원</strong></div>`;
+
+  /* 매도 흐름 — 중개보수는 기타비용 카드로 이동했으므로 순수령액에서 제외 안 함 */
+  const netSell=sell-loanBal;
+  el('sell-flow').innerHTML=
+    frow('매도가', fmtM(sell),'pos')+
+    frow('- 주담대 상환', fmtM(loanBal),'neg')+
+    `<div class="flow-row total"><span class="lbl">= 순수령액</span><span class="amt ${netSell>=0?'pos':'neg'}">${fmtM(netSell)}</span></div>`+
+    `<div style="height:8px"></div>`+
+    frow('분양가 대비 이득', fmtM(profit),'pos');
+
+  /* 매수 흐름 — 총 필요현금 */
+  const otherCosts=acqTax+agSell+agBuy+moveCost+stamp+interior;
+  const totalNeed=buy-loanAmt+otherCosts;
+  const balanceNeed=buy-loanAmt-buyDep-buyMid;
+
+  el('buy-flow').innerHTML=
+    frow('매입가', fmtM(buy))+
+    frow('- 신규 주담대', fmtM(loanAmt),'pos')+
+    `<div class="flow-row total"><span class="lbl">= 자기자본 필요</span><span class="amt">${fmtM(buy-loanAmt)}</span></div>`+
+    `<div style="height:8px"></div>`+
+    `<div style="font-size:11px;font-weight:700;color:#888780;text-transform:uppercase;letter-spacing:.04em;margin:4px 0 6px">기타 비용</div>`+
+    frow('취득세', fmtM(acqTax),'neg')+
+    frow('매도·매입 중개보수', fmtM(agSell+agBuy),'neg')+
+    frow('이사·인지세 등', fmtM(moveCost+stamp),'neg')+
+    frow('인테리어', fmtM(interior),'neg')+
+    `<div class="flow-row total"><span class="lbl">기타 합계</span><span class="amt neg">-${fmtM(otherCosts)}</span></div>`;
+
+  /* 결과 요약 */
+  const totalAvail=savings+netSell;
+  const remainTotal=totalAvail-totalNeed;
+  const availOnBalance=savings+netSell-buyDep-buyMid;
+  const shortBalance=balanceNeed-availOnBalance;
+
+  const cls=remainTotal>=0?'ok':'ng';
+  el('dash-result').innerHTML=`
+  <div class="result-box ${cls}">
+    <div class="result-title">${remainTotal>=0?'✅ 진행 가능':'❌ 현금 부족'} — 주담대 ${fmtM(loanAmt)} · 금리 ${baseRate.toFixed(2)}% · 월 원리금 ${fmtW(monthly)}원</div>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="rl">① 총 필요현금 (전체)</div>
+        <div class="rv" style="color:${remainTotal>=0?'#1D9E75':'#E24B4A'}">${fmtM(Math.abs(remainTotal))} ${remainTotal>=0?'여유':'부족'}</div>
+        <div style="font-size:11px;color:#888780;margin-top:4px">가용 ${fmtM(totalAvail)} vs 필요 ${fmtM(totalNeed)}</div>
+      </div>
+      <div class="result-item">
+        <div class="rl">② 잔금날 필요현금 (계약금·중도금 제외)</div>
+        <div class="rv" style="color:${availOnBalance>=balanceNeed?'#1D9E75':'#E24B4A'}">${fmtM(balanceNeed)}</div>
+        <div style="font-size:11px;color:#888780;margin-top:4px">잔금날 가용 ${fmtM(availOnBalance)} · ${availOnBalance>=balanceNeed?'✓ 충분':'⚠ '+fmtM(shortBalance)+' 부족'}</div>
+      </div>
+      <div class="result-item">
+        <div class="rl">월 원리금 (실제금리 ${baseRate.toFixed(2)}%)</div>
+        <div class="rv">${fmtW(monthly)}원</div>
+        <div style="font-size:11px;color:#888780;margin-top:4px">${el('c_years').value}년 원리금균등 · 스트레스금리는 DSR 항목 참고</div>
+      </div>
+      <div class="result-item">
+        <div class="rl">수자인 실현이득</div>
+        <div class="rv pos">${fmtM(profit)}</div>
+        <div style="font-size:11px;color:#888780;margin-top:4px">분양가 2.85억 대비</div>
+      </div>
+    </div>
+  </div>`;
+
+  /* DSR */
+  calcDSR(monthly, monthlyStress, stressAdd);
+}
+
+function calcDSR(monthly, monthlyStress, stressAdd){
+  const income=gn('c_income');
+  const otherDebt=gn('c_other_debt');
+  const monthlyIncome=income/12;
+  const totalMonthly=monthly+otherDebt;
+  const totalMonthlyStress=monthlyStress+otherDebt;
+  const dsr=monthlyIncome>0?(totalMonthly/monthlyIncome*100):0;
+  const dsrStress=monthlyIncome>0?(totalMonthlyStress/monthlyIncome*100):0;
+  const limit=40;
+  const barW=Math.min(dsr/limit*100,100);
+  const barWs=Math.min(dsrStress/limit*100,100);
+  const barColor=dsr<=limit?'#1D9E75':'#E24B4A';
+  const barColorS=dsrStress<=limit?'#378ADD':'#E24B4A';
+  el('dsr-result').innerHTML=`
+    <div style="margin-top:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#888780;margin-bottom:3px"><span>실제금리 DSR</span><strong style="color:${dsr<=limit?'#1D9E75':'#E24B4A'}">${dsr.toFixed(1)}% ${dsr<=limit?'✓':'✗ 초과'}</strong></div>
+      <div class="dsr-bar-wrap"><div class="dsr-bar" style="width:${barW}%;background:${barColor}"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#888780;margin-bottom:3px;margin-top:8px"><span>스트레스금리 DSR (+${stressAdd}%)</span><strong style="color:${dsrStress<=limit?'#378ADD':'#E24B4A'}">${dsrStress.toFixed(1)}% ${dsrStress<=limit?'✓':'✗ 초과'}</strong></div>
+      <div class="dsr-bar-wrap"><div class="dsr-bar" style="width:${barWs}%;background:${barColorS}"></div></div>
+      <div style="font-size:11px;color:#888780;margin-top:6px">월소득 ${fmtW(Math.round(monthlyIncome))}원 기준 · 한도선 40%</div>
+    </div>`;
 }
 
 /* ── 신용대출 계산기 ── */
@@ -435,24 +579,21 @@ function calcCredit(){
   const monthlyPrin=Math.round(amt*(mr*Math.pow(1+mr,n))/(Math.pow(1+mr,n)-1));
   const totalPrin=monthlyPrin*n-amt;
   el('credit-result').innerHTML=`
-    <div style="background:#FAEEDA;border-radius:10px;padding:14px 16px">
-      <div style="font-size:12px;font-weight:600;color:#633806;margin-bottom:10px">⏰ 만기일시상환</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">월 이자</span><strong style="color:#E24B4A">${fmtW(monthlyInt)}원</strong></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">만기 원금 일시상환</span><strong>${fmtM(amt)}</strong></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">총 이자 부담</span><strong style="color:#E24B4A">${fmtW(totalInt)}원</strong></div>
+    <div style="background:#FAEEDA;border-radius:8px;padding:12px">
+      <div style="font-size:11px;font-weight:700;color:#633806;margin-bottom:8px">⏰ 만기일시상환</div>
+      <div style="font-size:12px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">월 이자</span><strong style="color:#E24B4A">${fmtW(monthlyInt)}원</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">만기 원금</span><strong>${fmtM(amt)}</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">총 이자</span><strong style="color:#E24B4A">${fmtM(totalInt)}</strong></div>
       </div>
     </div>
-    <div style="background:#F1EFE8;border-radius:10px;padding:14px 16px">
-      <div style="font-size:12px;font-weight:600;color:#444;margin-bottom:10px">📅 원리금균등상환 (${yrs}년)</div>
-      <div style="display:flex;flex-direction:column;gap:7px">
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">월 원리금</span><strong style="color:#E24B4A">${fmtW(monthlyPrin)}원</strong></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">총 상환 기간</span><strong>${yrs}년 (${n}회)</strong></div>
-        <div style="display:flex;justify-content:space-between;font-size:13px"><span style="color:#888780">총 이자 부담</span><strong style="color:#E24B4A">${fmtW(totalPrin)}원</strong></div>
+    <div style="background:#F1EFE8;border-radius:8px;padding:12px">
+      <div style="font-size:11px;font-weight:700;color:#444;margin-bottom:8px">📅 원리금균등 (${yrs}년)</div>
+      <div style="font-size:12px;display:flex;flex-direction:column;gap:5px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">월 원리금</span><strong style="color:#E24B4A">${fmtW(monthlyPrin)}원</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">${yrs}년 (${n}회)</span><strong>${fmtM(amt)} 완납</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#888780">총 이자</span><strong style="color:#E24B4A">${fmtM(totalPrin)}</strong></div>
       </div>
-    </div>
-    <div style="grid-column:1/-1;font-size:12px;color:#888780;background:#f8f8f6;border-radius:6px;padding:8px 12px">
-      💡 금리 <strong>${(rate*100).toFixed(1)}%</strong> · 만기일시상환은 월 이자만 내다가 만기에 원금 전액 상환, 원리금균등은 매달 원금+이자를 ${yrs}년간 분할 상환
     </div>`;
 }
 
@@ -471,15 +612,17 @@ function markPlanDirty(){
 function updateInteriorSummary(){
   const v=gn('p_interior');
   el('interior-summary').innerHTML=`<table class="int-table">
-    <tr><td>계약금 (10%)</td><td>${fmtM(v*0.)}</td></tr>
+    <tr><td>계약금 (10%)</td><td>${fmtM(v*0.1)}</td></tr>
     <tr><td>착수금 (20%)</td><td>${fmtM(v*0.2)}</td></tr>
     <tr><td>중도금 (50%)</td><td>${fmtM(v*0.5)}</td></tr>
     <tr><td>잔금 (20%)</td><td>${fmtM(v*0.2)}</td></tr>
   </table>`;
   const vb=gn('pb_interior');
   el('interior-b-summary').innerHTML=`<table class="int-table">
-    <tr><td>계약금 (30%)</td><td>${fmtM(vb*0.3)}</td></tr>
-    <tr><td>잔금 (70%)</td><td>${fmtM(vb*0.7)}</td></tr>
+    <tr><td>계약금 (10%)</td><td>${fmtM(vb*0.1)}</td></tr>
+    <tr><td>착수금 (40%)</td><td>${fmtM(vb*0.4)}</td></tr>
+    <tr><td>중도금 (40%)</td><td>${fmtM(vb*0.4)}</td></tr>
+    <tr><td>잔금 (10%)</td><td>${fmtM(vb*0.1)}</td></tr>
   </table>`;
 }
 
@@ -506,9 +649,9 @@ function buildPlanRows(){
     {cat:'신미주',  desc:'신미주 계약금 지출',        date:el('p_buy_cd').value,  inn:0,      out:buyDep},
   ];
 
-  /* 인테리어 계약금 — A/B 분기 */
+  /* 인테리어 계약금 — A/B 동일하게 10% */
   if(planB){
-    result.push({cat:'인테리어', desc:'인테리어 계약금 (30%) — B안', date:el('pb_int_cd').value, inn:0, out:Math.round(intAmt*0.3)});
+    result.push({cat:'인테리어', desc:'인테리어 계약금 (10%) — B안', date:el('pb_int_cd').value, inn:0, out:Math.round(intAmt*0.1)});
   } else {
     result.push({cat:'인테리어', desc:'인테리어 계약금 (10%) — A안', date:el('p_int_cd').value,  inn:0, out:Math.round(intAmt*0.1)});
   }
@@ -525,8 +668,10 @@ function buildPlanRows(){
   /* 인테리어 중간 납부 — A/B 분기 */
   if(planB){
     result.push(
-      {cat:'기타',     desc:'7월 월급 저축',              date:'7/31',               inn:monthly, out:0},
-      {cat:'인테리어', desc:'인테리어 잔금 (70%) — B안',  date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.7)},
+      {cat:'인테리어', desc:'인테리어 착수금 (40%) — B안', date:el('pb_int_sd').value, inn:0, out:Math.round(intAmt*0.4)},
+      {cat:'기타',     desc:'7월 월급 저축',                date:'7/31',                inn:monthly, out:0},
+      {cat:'인테리어', desc:'인테리어 중도금 (40%) — B안',  date:el('pb_int_md').value, inn:0, out:Math.round(intAmt*0.4)},
+      {cat:'인테리어', desc:'인테리어 잔금 (10%) — B안',    date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.1)},
     );
   } else {
     result.push(
@@ -616,6 +761,9 @@ function renderFlow(){
     const tr=document.createElement('tr');
     tr.dataset.id=r.id; tr.draggable=true;
     if(r.bal<0) tr.classList.add('neg-row');
+    if(r.desc.includes('신용대출')) tr.classList.add('row-credit');
+    else if(r.cat==='인테리어') tr.classList.add('row-interior');
+    else if(r.cat==='기타') tr.classList.add('row-etc');
     tr.innerHTML=`
       <td><span class="drag-handle"><i class="ti ti-grip-vertical"></i></span></td>
       <td><input type="text" value="${r.date}" data-field="date" data-id="${r.id}" style="width:54px"></td>
@@ -709,7 +857,7 @@ el('filter-bar').addEventListener('click',e=>{
 el('add-area').querySelector('input[name=desc]').addEventListener('keydown',e=>{if(e.key==='Enter')addRow();});
 
 /* init */
-calcLoan();
+calcAll();
 calcCredit();
 renderFlow();
 updateInteriorSummary();
