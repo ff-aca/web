@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>리모델링 견적 비교 · 아키트디자인 vs 크루엘</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c3148;
+    --ink-soft: #4a5b70;
+    --paper: #f2f4f3;
+    --paper-line: #d8dedb;
+    --card: #ffffff;
+    --architect: #2c5d8a;
+    --architect-soft: #e7eef5;
+    --cruel: #b56a2e;
+    --cruel-soft: #f5ead9;
+    --up: #c2410c;
+    --up-soft: #fbe6dc;
+    --down: #157a5e;
+    --down-soft: #dff3ec;
+    --flat: #6b7280;
+    --radius: 14px;
+    --mono: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+    --sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px) 0 0 / 100% 28px,
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px) 0 0 / 28px 100%,
+      var(--paper);
+    background-attachment: fixed;
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 28px 16px 64px;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  .blueprint-frame {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+    padding: 28px 26px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 2px rgba(28,49,72,.04);
+  }
+  .blueprint-frame::before, .blueprint-frame::after,
+  .corner-tl, .corner-br { content: ''; }
+  .corner {
+    position: absolute; width: 16px; height: 16px;
+    border: 2px solid var(--architect); opacity: .55;
+  }
+  .corner.tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+  .corner.tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+  .corner.bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+  .corner.br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .12em;
+    color: var(--architect);
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  h1 {
+    margin: 0 0 6px;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  .legend {
+    display:flex; flex-wrap: wrap; gap: 10px 18px;
+    margin-top: 14px; font-size: 13.5px; color: var(--ink-soft);
+  }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .swatch { width:10px; height:10px; border-radius: 3px; display:inline-block; }
+  .swatch.architect { background: var(--architect); }
+  .swatch.cruel { background: var(--cruel); }
+
+  /* ---------- Summary cards ---------- */
+  .summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.1fr;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .sum-card {
+    background: var(--card);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .sum-card .label {
+    font-size: 12.5px; color: var(--ink-soft); font-weight: 600;
+    display:flex; align-items:center; gap:6px; margin-bottom: 8px;
+  }
+  .sum-card.architect { border-top: 3px solid var(--architect); }
+  .sum-card.cruel { border-top: 3px solid var(--cruel); }
+  .sum-card.diff { border-top: 3px solid var(--ink); background: linear-gradient(180deg, var(--card), var(--paper)); }
+  .sum-amt {
+    font-family: var(--mono); font-weight: 700; font-size: clamp(20px,3.4vw,26px);
+    letter-spacing: -.02em;
+  }
+  .sum-amt .won { font-size: 14px; font-weight: 500; color: var(--ink-soft); margin-left: 2px;}
+  .sum-conclusion { font-size: 13.5px; margin-top: 8px; color: var(--ink-soft); }
+  .sum-conclusion b { color: var(--ink); }
+
+  /* ---------- Category cards ---------- */
+  .cat-card {
+    background: var(--card);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .cat-head {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    user-select: none;
+  }
+  .cat-head::-webkit-details-marker { display: none; }
+  .cat-head:hover { background: #fafbfa; }
+  .cat-num {
+    font-family: var(--mono); font-weight: 700; color: var(--architect);
+    background: var(--architect-soft); border-radius: 7px;
+    padding: 3px 8px; font-size: 13px; flex-shrink:0;
+  }
+  .cat-title { font-weight: 700; font-size: 15.5px; flex-shrink:0; }
+  .cat-sub {
+    margin-left: auto; display:flex; align-items:center; gap:10px;
+    font-size: 12.5px; color: var(--ink-soft);
+  }
+  .cat-sub-amt { font-family: var(--mono); white-space: nowrap; }
+  .cat-sub-amt .vs { color: #b7bdc4; margin: 0 2px; font-family: var(--sans); }
+  .chev {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border-radius: 50%; border: 1.5px solid var(--paper-line);
+    position: relative;
+  }
+  .chev::before {
+    content: ''; position: absolute; left: 5px; top: 7px;
+    width: 6px; height: 6px; border-right: 1.5px solid var(--ink-soft);
+    border-bottom: 1.5px solid var(--ink-soft);
+    transform: rotate(45deg); transition: transform .2s;
+  }
+  details[open] .chev::before { transform: rotate(225deg); top: 8px; }
+
+  .cat-body { border-top: 1px solid var(--paper-line); padding: 4px 0 14px; }
+
+  table.item-table { width: 100%; border-collapse: collapse; }
+  .item-table thead th {
+    text-align: left; font-size: 11.5px; text-transform: uppercase;
+    letter-spacing: .04em; color: var(--ink-soft); font-weight: 600;
+    padding: 10px 18px 8px; background: #fafbfa;
+  }
+  .item-table th:nth-child(2) { color: var(--architect); }
+  .item-table th:nth-child(3) { color: var(--cruel); }
+  .item-table tbody tr { border-top: 1px solid #eef0ee; }
+  .item-table td { padding: 11px 18px; vertical-align: top; font-size: 13.8px; }
+  .item-label { font-weight: 600; }
+
+  td.cell-a, td.cell-c { display: flex; flex-direction: column; gap: 2px; }
+  td.cell-a .desc, td.cell-c .desc { color: var(--ink-soft); font-size: 13px; }
+  td.cell-a .amt, td.cell-c .amt { font-family: var(--mono); font-weight: 600; }
+  td.cell-a .amt { color: var(--architect); }
+  td.cell-c .amt { color: var(--cruel); }
+
+  .item-note, .cat-note {
+    margin-top: 6px; font-size: 12px; color: var(--up);
+    display:flex; gap:6px; align-items:flex-start; line-height: 1.4;
+  }
+  .cat-note { margin: 10px 18px 0; padding: 8px 10px; background: var(--up-soft); border-radius: 8px;}
+  .note-ico {
+    flex-shrink:0; width:14px; height:14px; border-radius:50%;
+    background: var(--up); color:#fff; font-size: 10px; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+
+  .cell-diff { min-width: 120px; }
+  .diff-badge {
+    font-family: var(--mono); font-weight: 700; font-size: 13px;
+    padding: 3px 9px; border-radius: 7px; display:inline-block; white-space: nowrap;
+  }
+  .diff-badge.small { font-size: 12px; padding: 2px 8px; }
+  .diff-badge.up { background: var(--up-soft); color: var(--up); }
+  .diff-badge.down { background: var(--down-soft); color: var(--down); }
+  .diff-badge.flat { background: #eef0ee; color: var(--flat); }
+
+  .diff-bar-track {
+    display:block; margin-top: 6px; height: 4px; width: 100%; max-width: 96px;
+    background: #eef0ee; border-radius: 3px; overflow:hidden;
+  }
+  .diff-bar-fill { display:block; height: 100%; border-radius: 3px; }
+  .diff-bar-fill.up { background: var(--up); }
+  .diff-bar-fill.down { background: var(--down); }
+  .diff-bar-fill.flat { background: var(--flat); }
+
+  /* ---------- General + Final ---------- */
+  .general-row {
+    display:flex; align-items:center; gap: 12px; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--paper-line);
+    border-radius: var(--radius); padding: 14px 18px; margin: 18px 0 12px;
+  }
+  .general-row .cat-num { background:#eef0ee; color: var(--ink-soft); }
+  .general-row .cat-title { font-size: 14.5px; }
+
+  .final-frame {
+    margin-top: 24px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 22px 22px 20px;
+  }
+  .final-frame .eyebrow { color: #9ec1e0; }
+  .final-title { font-size: 16px; font-weight: 700; margin: 0 0 14px; }
+  .final-grid {
+    display:grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 12px;
+  }
+  .final-card {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .final-card .label { font-size: 12px; color: #b9c6d4; margin-bottom: 6px; }
+  .final-card .sum-amt { color: #fff; }
+  .final-card .sum-amt .won { color: #9fb0c0; }
+  .final-card.diff .sum-amt { color: #ffb38a; }
+  .final-note { margin-top: 14px; font-size: 12.5px; color: #b9c6d4; line-height:1.6; }
+
+  footer { text-align:center; color: var(--ink-soft); font-size: 12px; margin-top: 26px; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 700px) {
+    body { padding: 18px 10px 48px; }
+    .blueprint-frame { padding: 22px 16px 18px; }
+    .summary, .final-grid { grid-template-columns: 1fr; }
+    .cat-sub { margin-left: 0; width: 100%; justify-content: space-between; }
+
+    table.item-table thead { display: none; }
+    .item-table tbody tr {
+      display: block; padding: 12px 16px 4px; border-top: 1px solid #eef0ee;
+    }
+    .item-table td {
+      display: block; padding: 6px 0; border: none; font-size: 13.5px;
+    }
+    .item-table td[data-label]::before {
+      content: attr(data-label);
+      display: block; font-size: 10.5px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--ink-soft); margin-bottom: 3px;
+    }
+    td.cell-a[data-label]::before { color: var(--architect); }
+    td.cell-c[data-label]::before { color: var(--cruel); }
+    .cell-diff { min-width: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="blueprint-frame">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+    <p class="eyebrow">Renovation Estimate Comparison</p>
+    <h1>리모델링 견적 비교</h1>
+    <div style="color:var(--ink-soft); font-size:14px;">아키트디자인 vs 크루엘 · 전체 11개 공정 비교</div>
+    <div class="legend">
+      <span><span class="swatch architect"></span>아키트디자인</span>
+      <span><span class="swatch cruel"></span>크루엘</span>
+      <span><span class="diff-badge up small">▲ 차액</span> 아키트디자인이 더 비쌈</span>
+      <span><span class="diff-badge down small">▼ 차액</span> 아키트디자인이 더 저렴</span>
+    </div>
+  </div>
+
+  <div class="summary">
+    <div class="sum-card architect">
+      <div class="label">아키트디자인 총액</div>
+      <div class="sum-amt">44,690,000<span class="won">원</span></div>
+    </div>
+    <div class="sum-card cruel">
+      <div class="label">크루엘 총액</div>
+      <div class="sum-amt">44,400,000<span class="won">원</span></div>
+    </div>
+    <div class="sum-card diff">
+      <div class="label">최종 차액 (아키트 − 크루엘)</div>
+      <div class="sum-amt"><span class="diff-badge up">▲ +290,000원</span></div>
+      <div class="sum-conclusion"><b>크루엘</b>이 아키트디자인보다 <b>290,000원</b> 더 저렴합니다.</div>
+    </div>
+  </div>
+
+  
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">01</span>
+        <span class="cat-title">철거</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 2,817,000 <span class="vs">vs</span> 2,474,000</span>
+          <span class="diff-badge up small">▲ +343,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">폐기물 처리</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">1톤 기준 3식</span>
+            <span class="amt">1,050,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">폐기물처리 1식</span>
+            <span class="amt">900,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +150,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:7%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">바닥 철거</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">마루 12평, 장판 3개소</span>
+            <span class="amt">420,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">공용부 마루</span>
+            <span class="amt">504,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −84,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:4%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">가구 철거</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">싱크대, 냉장고장, 붙박이장</span>
+            <span class="amt">480,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">씽크대, 신발장, 냉장고장 등</span>
+            <span class="amt">420,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +60,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:3%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">마감/기타 철거</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">몰딩, 도어, 타일, 잡철물</span>
+            <span class="amt">867,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">몰딩, 도배지, 등기구, 장판, 샷시</span>
+            <span class="amt">650,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +217,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:11%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">02</span>
+        <span class="cat-title">설비/방수</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 1,800,000 <span class="vs">vs</span> 1,950,000</span>
+          <span class="diff-badge down small">▼ −150,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">욕실 철거</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">욕실 전체 철거</span>
+            <span class="amt">1,200,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">욕실 전체 철거</span>
+            <span class="amt">1,400,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −200,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:10%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">욕실 방수</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">욕실방수 (2차 탄성도막방수)</span>
+            <span class="amt">600,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">욕실방수 (2차 탄성도막방수)</span>
+            <span class="amt">400,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +200,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:10%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">가스배관 철거</span><div class="item-note"><span class="note-ico">!</span>아키트디자인 견적서 메모: 약 10만원 소요되나 견적 금액에는 미반영</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">가스배관 철거</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">가스배관 철거</span>
+            <span class="amt">150,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −150,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:7%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">03</span>
+        <span class="cat-title">창호</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 1,200,000 <span class="vs">vs</span> 900,000</span>
+          <span class="diff-badge up small">▲ +300,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">샷시/터닝도어</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">터닝도어</span>
+            <span class="amt">1,200,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">주방 외부 단창 (KCC)</span>
+            <span class="amt">650,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +550,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:27%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">주방 창문 (옵션)</span><div class="item-note"><span class="note-ico">!</span>아키트디자인 메모: 주방 창문 교체 시 약 100만원 추가 예상 (현 견적 미반영)</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">샷시 철거</span>
+            <span class="amt">250,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −250,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:12%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">04</span>
+        <span class="cat-title">목공</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 6,130,000 <span class="vs">vs</span> 4,750,000</span>
+          <span class="diff-badge up small">▲ +1,380,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">몰딩/걸레받이</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">천장몰딩/걸레받이 (자재만)</span>
+            <span class="amt">340,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">몰딩/걸레받이 자재+시공</span>
+            <span class="amt">1,550,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −1,210,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:59%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">도어</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">영림 5세트</span>
+            <span class="amt">1,250,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">영림 ABS 도어 5세트</span>
+            <span class="amt">800,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +450,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:22%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">문선/문틀</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">9mm 5세트</span>
+            <span class="amt">750,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">9mm 문선/경첩교체 5세트</span>
+            <span class="amt">750,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge flat">ㅡ 0</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill flat" style="width:0%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">중문</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">제작 스윙 여닫이</span>
+            <span class="amt">1,150,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">원 슬라이드 중문</span>
+            <span class="amt">1,100,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +50,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:2%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">마감/보강</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">커튼박스, 기기 보강</span>
+            <span class="amt">290,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">우물 평탄화, 실링팬 보강 등</span>
+            <span class="amt">550,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −260,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:13%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">부자재</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적은 부자재비가 각 항목에 포함되어 별도 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">본드, 폼, 실리콘 등</span>
+            <span class="amt">300,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +300,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:15%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">목공 인건비</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적은 인건비가 각 목공 세부 항목 금액에 포함되어 별도 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">인건비 5품</span>
+            <span class="amt">2,050,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +2,050,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:100%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">05</span>
+        <span class="cat-title">필름/도장</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 3,280,000 <span class="vs">vs</span> 4,650,000</span>
+          <span class="diff-badge down small">▼ −1,370,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">문틀/게이트 필름</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">문틀 5세트</span>
+            <span class="amt">750,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">문틀 5조 + 현관/드레스룸 게이트</span>
+            <span class="amt">950,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −200,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:10%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">창호(샷시) 필름</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">단/이중/시스템창 총 8개소</span>
+            <span class="amt">1,520,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">단창 9조, 이중창 1조 (총 10개소)</span>
+            <span class="amt">2,200,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −680,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:33%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">베란다 탄성코트</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">탄성코트 4개소</span>
+            <span class="amt">1,010,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">베란다 탄성코트 5개소</span>
+            <span class="amt">1,500,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −490,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:24%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">06</span>
+        <span class="cat-title">타일</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 5,976,000 <span class="vs">vs</span> 4,100,000</span>
+          <span class="diff-badge up small">▲ +1,876,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 자재 · 현관</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">현관 600×600 포세린</span>
+            <span class="amt">152,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">현관바닥 600각</span>
+            <span class="amt">500,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −348,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:17%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 자재 · 주방</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">주방 600×600 포세린</span>
+            <span class="amt">304,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">주방 벽 800각</span>
+            <span class="amt">700,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −396,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:19%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 자재 · 공용욕실</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">공용욕실 300×600</span>
+            <span class="amt">630,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">공용욕실 시공+부자재</span>
+            <span class="amt">550,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +80,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:4%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 자재 · 안방욕실</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">안방욕실 300×600</span>
+            <span class="amt">560,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">안방욕실 시공+부자재</span>
+            <span class="amt">500,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +60,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:3%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 자재 · 발코니</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적에는 발코니 타일 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">발코니 300×300</span>
+            <span class="amt">420,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +420,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:20%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 부자재</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적은 부자재비가 시공비에 포함</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">래미탈, 에폭시, 아덱스매지 등 1식</span>
+            <span class="amt">700,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +700,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:34%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">타일 인건비</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">전체 타일 인건비 (기공/조공 8품)</span>
+            <span class="amt">3,210,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">욕조 타일 마감</span>
+            <span class="amt">1,850,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +1,360,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:66%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">07</span>
+        <span class="cat-title">욕실 (2칸)</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 3,608,355 <span class="vs">vs</span> 4,690,000</span>
+          <span class="diff-badge down small">▼ −1,081,645</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">천장재</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">SMC 2세트 (다운라이트 포함)</span>
+            <span class="amt">400,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">SMC 2세트 (다운라이트 포함)</span>
+            <span class="amt">440,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −40,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:2%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">안방 도기</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">실버프레임 샤워부스</span>
+            <span class="amt">550,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">강화유리 파티션</span>
+            <span class="amt">250,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +300,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:15%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">공용 도기</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">아크릴 욕조</span>
+            <span class="amt">308,181원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">욕조+타일 마감</span>
+            <span class="amt">600,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −291,819</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:14%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">양변기 (2개)</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">대림 투피스 CC 735</span>
+            <span class="amt">505,454원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">대림 280 일체형 (고급형)</span>
+            <span class="amt">760,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −254,546</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:12%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">세면대 (2개)</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">대림 반다리 CL 371</span>
+            <span class="amt">345,454원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">대림 370 반다리</span>
+            <span class="amt">400,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −54,546</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:3%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">수납장</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">대림 슬라이딩장 DL-C1200D</span>
+            <span class="amt">336,362원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">슬라이드 거울장</span>
+            <span class="amt">460,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −123,638</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:6%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">수전류 (총 4개)</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">비반트 세면 2 · 욕조/샤워 2</span>
+            <span class="amt">173,816원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">비반트 무광 세면 2 · 샤워 2</span>
+            <span class="amt">380,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −206,184</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:10%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">악세사리/기타</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">비반트 악세사리·수건걸이·일반유가</span>
+            <span class="amt">106,908원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">유가·악세사리 2·라인유가</span>
+            <span class="amt">240,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −133,092</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:6%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">환풍기</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">제로크</span>
+            <span class="amt">142,180원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">휴젠뜨1 환풍기 1개</span>
+            <span class="amt">420,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −277,820</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:14%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">기타 설비</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적의 세부 내역 미기재 (금액만 기재)</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">욕실 젠다이 조적 2곳</span>
+            <span class="amt">410,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">240,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +170,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:8%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">설치 인건비</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적의 세부 내역 미기재 (금액만 기재)</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">욕실 세팅 인건비 1품</span>
+            <span class="amt">330,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">500,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −170,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:8%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">08</span>
+        <span class="cat-title">바닥재</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 3,065,600 <span class="vs">vs</span> 3,767,000</span>
+          <span class="diff-badge down small">▼ −701,400</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">강마루</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">동화 진 그란데 32평</span>
+            <span class="amt">3,065,600원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">동화 나투스 진 그란데 1식</span>
+            <span class="amt">3,767,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −701,400</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:34%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">09</span>
+        <span class="cat-title">가구</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 6,520,000 <span class="vs">vs</span> 7,797,000</span>
+          <span class="diff-badge down small">▼ −1,277,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">싱크대 상하부장</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">PET 무광 5m</span>
+            <span class="amt">3,300,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">한솔 라솔라 4.6m</span>
+            <span class="amt">2,730,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +570,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:28%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">싱크대 상판</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">하이막스 인조대리석</span>
+            <span class="amt">1,350,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">LX 하이막스 12T</span>
+            <span class="amt">782,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +568,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:28%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">보조주방</span><div class="item-note"><span class="note-ico">!</span>아키트디자인 견적에는 보조주방 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">하부장 3.5m</span>
+            <span class="amt">1,645,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −1,645,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:80%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">냉장고장</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">냉장고장 1개</span>
+            <span class="amt">150,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">냉장고장</span>
+            <span class="amt">470,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −320,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:16%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">후드</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">빌드인 하이드후드</span>
+            <span class="amt">150,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">하츠 하이드후드</span>
+            <span class="amt">150,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge flat">ㅡ 0</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill flat" style="width:0%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">싱크볼+수전</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">콰이어트 860 (캄포르떼 +20만)</span>
+            <span class="amt">470,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">백조캄포르떼+랜디와이드 수전</span>
+            <span class="amt">650,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −180,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:9%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">수납 가구</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">현관장</span>
+            <span class="amt">800,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">신발장 7자 하부조명형</span>
+            <span class="amt">1,120,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −320,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:16%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">공틀장 시공비</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적에는 별도 항목 없음 (포함 여부 확인 필요)</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">시공비</span>
+            <span class="amt">300,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +300,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:15%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">자동소화기</span><div class="item-note"><span class="note-ico">!</span>아키트디자인 견적에는 자동소화기 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">자동소화기</span>
+            <span class="amt">250,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −250,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:12%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">10</span>
+        <span class="cat-title">전기/조명</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 2,505,300 <span class="vs">vs</span> 3,814,000</span>
+          <span class="diff-badge down small">▼ −1,308,700</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">배선 및 기구교체</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">콘센트+스위치+기타 자재</span>
+            <span class="amt">420,300원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">르그랑 아펠라 스위치·콘센트·손잡이 등</span>
+            <span class="amt">1,184,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −763,700</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:37%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">조명 기구</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">다운라이트 40ea, 간접조명</span>
+            <span class="amt">340,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">방등, 엣지조명, 다운라이트 등</span>
+            <span class="amt">1,230,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −890,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:43%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">전기 배선공사</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적의 세부 내역 미기재 (금액만 기재)</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">타공·배선작업, 간접조명 포설 및 분배</span>
+            <span class="amt">965,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">800,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +165,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:8%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">인건비 (시공/마감)</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">시공, 마감 등</span>
+            <span class="amt">690,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">기구+조명 설치비</span>
+            <span class="amt">600,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +90,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:4%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">인건비 (실링팬)</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적에는 별도 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">실링팬 설치</span>
+            <span class="amt">90,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +90,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:4%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        
+      </div>
+    </details>
+
+    <details class="cat-card">
+      <summary class="cat-head">
+        <span class="cat-num">11</span>
+        <span class="cat-title">기타/마감</span>
+        <span class="cat-sub">
+          <span class="cat-sub-amt">소계 720,000 <span class="vs">vs</span> 500,000</span>
+          <span class="diff-badge up small">▲ +220,000</span>
+        </span>
+        <span class="chev" aria-hidden="true"></span>
+      </summary>
+      <div class="cat-body">
+        <table class="item-table">
+          <thead>
+            <tr><th>항목</th><th>아키트디자인</th><th>크루엘</th><th>차액</th></tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td data-label="항목"><span class="item-label">마감 시공비</span><div class="item-note"><span class="note-ico">!</span>크루엘 견적에는 별도 항목 없음</div></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">공사 마감 실리콘 마감 시공비</span>
+            <span class="amt">320,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">—</span>
+            <span class="amt">0원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +320,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:16%"></span></span>
+          </td>
+        </tr>
+        <tr>
+          <td data-label="항목"><span class="item-label">입주민 동의대행+보양</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">입주민 동의대행 및 보양 작업</span>
+            <span class="amt">400,000원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">입주민 동의대행+보양</span>
+            <span class="amt">500,000원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge down">▼ −100,000</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill down" style="width:5%"></span></span>
+          </td>
+        </tr>
+          </tbody>
+        </table>
+        <div class="cat-note"><span class="note-ico">!</span>아키트디자인 견적 메모: 준공청소(평당 15,000원), 빨래건조대(100,000원)는 별도 언급되었으나 금액 미반영 상태</div>
+      </div>
+    </details>
+
+  <div class="general-row">
+    <span class="cat-num">12</span>
+    <span class="cat-title">일반관리비</span>
+    <span class="cat-sub">
+      <span class="cat-sub-amt">아키트 7,072,180 <span class="vs">vs</span> 크루엘 5,081,460</span>
+    </span>
+  </div>
+  <div style="background:var(--card); border:1px solid var(--paper-line); border-radius:var(--radius); padding:4px 0 4px; margin-bottom: 8px;">
+    <table class="item-table">
+      <tbody>
+        
+        <tr>
+          <td data-label="항목"><span class="item-label">일반관리비</span></td>
+          <td data-label="아키트디자인" class="cell-a">
+            <span class="desc">보험료 + 현장관리비 + 기업이윤</span>
+            <span class="amt">7,072,180원</span>
+          </td>
+          <td data-label="크루엘" class="cell-c">
+            <span class="desc">공과잡비 + 현장관리비 + 이윤</span>
+            <span class="amt">5,081,460원</span>
+          </td>
+          <td data-label="차액" class="cell-diff">
+            <span class="diff-badge up">▲ +1,990,720</span>
+            <span class="diff-bar-track"><span class="diff-bar-fill up" style="width:97%"></span></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="final-frame">
+    <p class="eyebrow">Bottom Line</p>
+    <p class="final-title">최종 합계 (단위절삭 반영)</p>
+    <div class="final-grid">
+      <div class="final-card">
+        <div class="label">아키트디자인 (단위절삭 -4,435원 포함)</div>
+        <div class="sum-amt">44,690,000<span class="won">원</span></div>
+      </div>
+      <div class="final-card">
+        <div class="label">크루엘 (단위절삭 -73,460원 포함)</div>
+        <div class="sum-amt">44,400,000<span class="won">원</span></div>
+      </div>
+      <div class="final-card diff">
+        <div class="label">최종 차액</div>
+        <div class="sum-amt">▲ +290,000<span class="won">원</span></div>
+      </div>
+    </div>
+    <p class="final-note">
+      세부 산출 근거: 11개 공정 소계 합산 아키트디자인 44,694,435원 / 크루엘 44,473,460원 → 단위절삭 후 최종 견적가 산정.
+      각 항목별 ! 표시는 한쪽 견적에 누락되었거나 세부 내역이 기재되지 않은 부분이니, 계약 전 해당 업체에 포함 여부를 다시 확인하는 것을 권장합니다.
+    </p>
+  </div>
+
+  <footer>리모델링 견적 비교 표 · 업로드된 견적서 기준 자동 생성</footer>
+
+</div>
+</body>
+</html>
