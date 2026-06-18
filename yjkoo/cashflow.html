@@ -298,10 +298,10 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
         <!-- 인테리어 A/B 선택 -->
         <div style="display:flex;gap:16px;margin-bottom:12px">
           <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px">
-            <input type="radio" name="interior_plan" value="a" checked onchange="markPlanDirty()"> A안 사용
+            <input type="radio" name="interior_plan" value="a" onchange="markPlanDirty()"> A안 사용
           </label>
           <label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px">
-            <input type="radio" name="interior_plan" value="b" onchange="markPlanDirty()"> B안 사용
+            <input type="radio" name="interior_plan" value="b" checked onchange="markPlanDirty()"> B안 사용
           </label>
         </div>
 
@@ -645,44 +645,45 @@ function buildPlanRows(){
 
   const result=[
     {cat:'기타',    desc:'보유현금 (시작)',          date:'6/4',               inn:savings,  out:0},
-    {cat:'수자인',  desc:'수자인 계약금 수령',        date:el('p_sell_cd').value, inn:dep,    out:0},
-    {cat:'신미주',  desc:'신미주 계약금 지출',        date:el('p_buy_cd').value,  inn:0,      out:buyDep},
+    {cat:'수자인',  desc:'수자인 계약금 수령 ✔️',        date:el('p_sell_cd').value, inn:dep,    out:0},
+    {cat:'신미주',  desc:'신미주 계약금 지출 ✔️',        date:el('p_buy_cd').value,  inn:0,      out:buyDep},
   ];
 
   /* 인테리어 계약금 — A/B 동일하게 10% */
   if(planB){
-    result.push({cat:'인테리어', desc:'인테리어 계약금 (10%) — B안', date:el('pb_int_cd').value, inn:0, out:Math.round(intAmt*0.1)});
+    result.push({cat:'인테리어', desc:'‼️ 인테리어 계약금 (10%) — B안', date:el('pb_int_cd').value, inn:0, out:Math.round(intAmt*0.1)});
   } else {
-    result.push({cat:'인테리어', desc:'인테리어 계약금 (10%) — A안', date:el('p_int_cd').value,  inn:0, out:Math.round(intAmt*0.1)});
+    result.push({cat:'인테리어', desc:'‼️ 인테리어 계약금 (10%) — A안', date:el('p_int_cd').value,  inn:0, out:Math.round(intAmt*0.1)});
   }
 
   result.push(
     {cat:'신미주', desc:'신미주 중도금 지출', date:el('p_buy_md').value, inn:0, out:buyMid},
-    {cat:'기타',   desc:'6월 월급 저축',      date:'6/30',               inn:monthly, out:0},
+    {cat:'기타',   desc:'💰 6월 월급 저축',      date:'6/30',               inn:monthly, out:0},
   );
 
   if(creditOn){
-    result.push({cat:'기타', desc:'신용대출 실행 💳', date:creditDate, inn:creditAmt, out:0});
+    result.push({cat:'기타', desc:'🚨 신용대출 실행', date:creditDate, inn:creditAmt, out:0});
   }
 
   /* 인테리어 중간 납부 — A/B 분기 */
   if(planB){
     result.push(
-      {cat:'인테리어', desc:'인테리어 착수금 (40%) — B안', date:el('pb_int_sd').value, inn:0, out:Math.round(intAmt*0.4)},
-      {cat:'기타',     desc:'7월 월급 저축',                date:'7/31',                inn:monthly, out:0},
-      {cat:'인테리어', desc:'인테리어 중도금 (40%) — B안',  date:el('pb_int_md').value, inn:0, out:Math.round(intAmt*0.4)},
-      {cat:'인테리어', desc:'인테리어 잔금 (10%) — B안',    date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.1)},
+      {cat:'인테리어', desc:'‼️ 인테리어 착수금 (40%) — B안', date:el('pb_int_sd').value, inn:0, out:Math.round(intAmt*0.4)},
+      {cat:'기타',     desc:'💰 7월 월급 저축',                date:'7/31',                inn:monthly, out:0},
+      {cat:'인테리어', desc:'‼️ 인테리어 중도금 (40%) — B안',  date:el('pb_int_md').value, inn:0, out:Math.round(intAmt*0.4)},
+      {cat:'인테리어', desc:'‼️ 인테리어 잔금 (10%) — B안',    date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.1)},
     );
   } else {
     result.push(
-      {cat:'인테리어', desc:'인테리어 착수금 (20%) — A안', date:el('p_int_sd').value, inn:0, out:Math.round(intAmt*0.2)},
-      {cat:'기타',     desc:'7월 월급 저축',               date:'7/31',               inn:monthly, out:0},
-      {cat:'인테리어', desc:'인테리어 중도금 (50%) — A안', date:el('p_int_md').value, inn:0, out:Math.round(intAmt*0.5)},
-      {cat:'인테리어', desc:'인테리어 잔금 (20%) — A안',   date:el('p_int_bd').value, inn:0, out:Math.round(intAmt*0.2)},
+      {cat:'인테리어', desc:'‼️ 인테리어 착수금 (20%) — A안', date:el('p_int_sd').value, inn:0, out:Math.round(intAmt*0.2)},
+      {cat:'기타',     desc:'💰💵 7월 월급 저축',               date:'7/31',               inn:monthly, out:0},
+      {cat:'인테리어', desc:'‼️ 인테리어 중도금 (50%) — A안', date:el('p_int_md').value, inn:0, out:Math.round(intAmt*0.5)},
+      {cat:'인테리어', desc:'‼️ 인테리어 잔금 (20%) — A안',   date:el('p_int_bd').value, inn:0, out:Math.round(intAmt*0.2)},
     );
   }
 
   result.push(
+    {cat:'인테리어',   desc:'‼️ 도배-정록',             date:'8/25', inn:0,       out:3000000},
     {cat:'기타',   desc:'이사비용',             date:el('p_sell_bd').value, inn:0,       out:3000000},
     {cat:'수자인', desc:'수자인 매도 잔금 수령', date:el('p_sell_bd').value, inn:sellBal, out:0},
     {cat:'수자인', desc:'기존 주담대 상환',      date:el('p_sell_bd').value, inn:0,       out:lbal},
@@ -691,15 +692,9 @@ function buildPlanRows(){
     {cat:'신미주', desc:'신미주 매입 잔금 지출',  date:el('p_buy_bd').value, inn:0,       out:buyBal},
     {cat:'신미주', desc:'신미주 중개보수',         date:el('p_buy_bd').value, inn:0,       out:agBuy},
     {cat:'기타',   desc:'취득세 등 세금',          date:el('p_buy_bd').value, inn:0,       out:taxEtc},
-    {cat:'기타',   desc:'8월 월급 저축',           date:'8/31',               inn:monthly, out:0},
+    {cat:'기타',   desc:'💰8월 월급 저축',           date:'8/31',               inn:monthly, out:0},
   );
 
-  if(creditOn){
-    result.push(
-      {cat:'기타', desc:'신용대출 원금 상환 💳',         date:creditRepayDate, inn:0, out:creditAmt},
-      {cat:'기타', desc:'신용대출 이자 (7%, 약 2개월)',  date:creditRepayDate, inn:0, out:creditInterest},
-    );
-  }
 
   return result.map((r,i)=>({id:i+1,...r}));
 }
