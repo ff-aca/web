@@ -756,7 +756,6 @@ function renderFlow(){
   filtered.forEach(r=>{
     const tr=document.createElement('tr');
     tr.dataset.id=r.id; tr.draggable=true;
-    if(r.bal<0) tr.classList.add('neg-row');
     if(r.desc.includes('신용대출')) tr.classList.add('row-credit');
     else if(r.cat==='인테리어') tr.classList.add('row-interior');
     else if(r.cat==='기타') tr.classList.add('row-etc');
