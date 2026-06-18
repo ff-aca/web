@@ -661,9 +661,6 @@ function buildPlanRows(){
     {cat:'기타',   desc:'💰 6월 월급 저축',      date:'6/30',               inn:monthly, out:0},
   );
 
-  if(creditOn){
-    result.push({cat:'기타', desc:'🚨 신용대출 실행', date:creditDate, inn:creditAmt, out:0});
-  }
 
   /* 인테리어 중간 납부 — A/B 분기 */
   if(planB){
@@ -682,6 +679,10 @@ function buildPlanRows(){
     );
   }
 
+  if(creditOn){
+    result.push({cat:'기타', desc:'🚨 신용대출 실행', date:creditDate, inn:creditAmt, out:0});
+  }
+  
   result.push(
     {cat:'인테리어',   desc:'‼️ 도배-정록',             date:'8/25', inn:0,       out:3000000},
     {cat:'기타',   desc:'이사비용',             date:el('p_sell_bd').value, inn:0,       out:3000000},
