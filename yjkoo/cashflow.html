@@ -658,7 +658,7 @@ function buildPlanRows(){
 
   result.push(
     {cat:'신미주', desc:'신미주 중도금 지출', date:el('p_buy_md').value, inn:0, out:buyMid},
-    {cat:'기타',   desc:'💰 6월 월급 저축',      date:'6/30',               inn:monthly, out:0},
+    {cat:'기타',   desc:'💰 6월 월급 저축',      date:'7/10',               inn:monthly, out:0},
   );
 
 
@@ -666,14 +666,14 @@ function buildPlanRows(){
   if(planB){
     result.push(
       {cat:'인테리어', desc:'‼️ 인테리어 착수금 (40%) — B안', date:el('pb_int_sd').value, inn:0, out:Math.round(intAmt*0.4)},
-      {cat:'기타',     desc:'💰 7월 월급 저축',                date:'7/31',                inn:monthly, out:0},
+      {cat:'기타',     desc:'💰 7월 월급 저축',                date:'8/10',                inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 중도금 (40%) — B안',  date:el('pb_int_md').value, inn:0, out:Math.round(intAmt*0.4)},
       {cat:'인테리어', desc:'‼️ 인테리어 잔금 (10%) — B안',    date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.1)},
     );
   } else {
     result.push(
       {cat:'인테리어', desc:'‼️ 인테리어 착수금 (20%) — A안', date:el('p_int_sd').value, inn:0, out:Math.round(intAmt*0.2)},
-      {cat:'기타',     desc:'💰💵 7월 월급 저축',               date:'7/31',               inn:monthly, out:0},
+      {cat:'기타',     desc:'💰 7월 월급 저축',               date:'8/10',               inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 중도금 (50%) — A안', date:el('p_int_md').value, inn:0, out:Math.round(intAmt*0.5)},
       {cat:'인테리어', desc:'‼️ 인테리어 잔금 (20%) — A안',   date:el('p_int_bd').value, inn:0, out:Math.round(intAmt*0.2)},
     );
@@ -685,6 +685,7 @@ function buildPlanRows(){
   
   result.push(
     {cat:'인테리어',   desc:'‼️ 도배-정록',             date:'8/25', inn:0,       out:3000000},
+    {cat:'인테리어',   desc:'‼️ 입주 청소 등',             date:'8/25', inn:0,       out:2000000},
     {cat:'기타',   desc:'이사비용',             date:el('p_sell_bd').value, inn:0,       out:3000000},
     {cat:'수자인', desc:'수자인 매도 잔금 수령', date:el('p_sell_bd').value, inn:sellBal, out:0},
     {cat:'수자인', desc:'기존 주담대 상환',      date:el('p_sell_bd').value, inn:0,       out:lbal},
@@ -693,7 +694,7 @@ function buildPlanRows(){
     {cat:'신미주', desc:'신미주 매입 잔금 지출',  date:el('p_buy_bd').value, inn:0,       out:buyBal},
     {cat:'신미주', desc:'신미주 중개보수',         date:el('p_buy_bd').value, inn:0,       out:agBuy},
     {cat:'기타',   desc:'취득세 등 세금',          date:el('p_buy_bd').value, inn:0,       out:taxEtc},
-    {cat:'기타',   desc:'💰8월 월급 저축',           date:'8/31',               inn:monthly, out:0},
+    {cat:'기타',   desc:'💰 8월 월급 저축',           date:'9/10',               inn:monthly, out:0},
   );
 
 
