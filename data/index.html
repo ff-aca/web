@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy 데이터 분석 교육</title>
+<style>
+  :root{
+    --bg-base:#ffffff;
+    --bg-elev-1:#f8fafc;
+    --text-hi:#0f172a;
+    --text-md:#334155;
+    --text-lo:#94a3b8;
+    --accent:#5355d0;
+    --accent-2:#7c3aed;
+    --accent-soft:#eef0fc;
+    --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:var(--bg-base);
+    color:var(--text-hi);
+  }
+
+  .wrap{
+    max-width:680px;
+    margin:0 auto;
+    padding:88px 28px 64px;
+  }
+
+  /* ===== HEADER ===== */
+  .kicker{
+    font-size:13px;font-weight:700;color:var(--text-lo);
+    letter-spacing:.26em;margin-bottom:22px;
+  }
+  h1{
+    font-size:clamp(30px,6vw,44px);font-weight:800;
+    line-height:1.3;letter-spacing:-0.01em;
+  }
+  h1 .hl{color:var(--accent);}
+  .subhead{
+    font-size:16px;font-weight:500;color:var(--text-md);
+    margin-top:18px;line-height:1.7;
+  }
+
+  /* ===== TIMELINE (vertical) ===== */
+  .timeline{
+    position:relative;
+    margin-top:64px;
+    padding-left:34px;
+  }
+  .timeline::before{
+    content:'';position:absolute;left:9px;top:6px;bottom:6px;width:2px;
+    background:var(--line);
+  }
+  .stage{position:relative;margin-bottom:52px;}
+  .stage:last-child{margin-bottom:0;}
+  .stage-dot{
+    position:absolute;left:-34px;top:3px;
+    width:20px;height:20px;border-radius:50%;
+    background:var(--bg-base);border:2px solid var(--line);
+  }
+  .stage.done .stage-dot{background:var(--accent);border-color:var(--accent);}
+
+  .stage-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .stage-eyebrow{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.12em;}
+  .stage-date{font-size:13px;color:var(--text-lo);font-weight:600;}
+  .stage-title{font-size:22px;font-weight:800;color:var(--text-hi);margin-top:8px;line-height:1.4;}
+  .stage-desc{font-size:14px;color:var(--text-md);margin-top:8px;line-height:1.65;}
+
+  /* curriculum list */
+  .curriculum{
+    list-style:none;margin-top:18px;
+    background:var(--bg-elev-1);border-radius:12px;
+    padding:18px 20px;
+  }
+  .curriculum li{
+    font-size:14px;color:var(--text-md);line-height:1.7;
+    padding-left:18px;position:relative;
+  }
+  .curriculum li + li{margin-top:8px;}
+  .curriculum li::before{
+    content:'—';position:absolute;left:0;color:var(--accent);font-weight:700;
+  }
+
+  /* resource cards (vertical stack, room for multiple per stage) */
+  .resources{display:flex;flex-direction:column;gap:12px;margin-top:18px;}
+  .resource-card{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;background:var(--bg-base);
+    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+  }
+  a.resource-link{text-decoration:none;color:inherit;}
+  a.resource-link .resource-card.active:hover{
+    border-color:var(--accent);transform:translateY(-2px);
+    box-shadow:0 10px 24px rgba(83,85,208,0.12);
+  }
+  .resource-card.disabled{opacity:.55;}
+  .resource-name{font-size:15px;font-weight:700;color:var(--text-hi);}
+  .resource-desc{font-size:13px;color:var(--text-md);margin-top:3px;}
+  .badge{
+    flex-shrink:0;
+    font-size:11px;font-weight:700;letter-spacing:.04em;
+    padding:6px 12px;border-radius:999px;white-space:nowrap;
+  }
+  .badge.ready{background:var(--accent-soft);color:var(--accent);}
+  .badge.soon{background:#fff;color:var(--text-lo);border:1px solid var(--line);}
+
+  /* ===== FOOTER ===== */
+  .footer{
+    margin-top:72px;padding-top:28px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:28px;justify-content:space-between;
+  }
+  .footer-block{font-size:13px;color:var(--text-lo);line-height:1.7;}
+  .footer-block strong{display:block;color:var(--text-md);font-size:13px;font-weight:700;margin-bottom:6px;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <div class="kicker">FF ACADEMY</div>
+    <h1>데이터 분석 교육 <span class="hl">자료실</span></h1>
+    <p class="subhead">패파 데이터, 내 손으로 확인하기 — 사전 교육부터 1주차, 2주차까지 자료를 한 곳에서 확인하세요.</p>
+
+    <div class="timeline">
+
+      <!-- PRE-TRAINING -->
+      <div class="stage done">
+        <div class="stage-dot"></div>
+        <div class="stage-top">
+          <div class="stage-eyebrow">PRE-TRAINING</div>
+          <div class="stage-date">상시 열람 가능</div>
+        </div>
+        <div class="stage-title">사전 교육 자료</div>
+        <div class="stage-desc">교육 목표, 일정, 담당자 소개와 수료 기준을 담은 오리엔테이션 자료입니다.</div>
+
+        <div class="resources">
+          <a class="resource-link" href="pre.html">
+            <div class="resource-card active">
+              <div>
+                <div class="resource-name">사전 학습 자료</div>
+              </div>
+              <div class="badge ready">열람 가능</div>
+            </div>
+          </a>
+        </div>
+        <div class="resources">
+          <a class="resource-link" href="ot.html">
+            <div class="resource-card active">
+              <div>
+                <div class="resource-name">Orientation(6/18)</div>
+              </div>
+              <div class="badge ready">열람 가능</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- WEEK 1 -->
+      <div class="stage">
+        <div class="stage-dot"></div>
+        <div class="stage-top">
+          <div class="stage-eyebrow">WEEK 1 · 1회차</div>
+          <div class="stage-date">6.18 (목)</div>
+        </div>
+        <div class="stage-title">데이터 활용 &amp; SQL 기초</div>
+
+        <ul class="curriculum">
+          <li>우리 회사 데이터가 어디에 어떻게 쌓여 있는지 파악하기</li>
+          <li>BigQuery 콘솔에서 직접 쿼리 작성 · 실행해보기</li>
+          <li>핵심 키워드 실습 — SELECT · WHERE · ORDER BY · COUNT</li>
+          <li>실제 사내 테이블로 기본 실습 진행하기</li>
+        </ul>
+
+        <!-- 아래 href="" 안에 실제 자료 링크를 넣어주세요 -->
+        <div class="resources">
+          <a class="resource-link" href="자료1_링크를_여기에_입력">
+            <div class="resource-card active">
+              <div>
+                <div class="resource-name">자료 1</div>
+                <div class="resource-desc">자료 설명을 입력해주세요</div>
+              </div>
+              <div class="badge ready">바로가기</div>
+            </div>
+          </a>
+          <a class="resource-link" href="자료2_링크를_여기에_입력">
+            <div class="resource-card active">
+              <div>
+                <div class="resource-name">자료 2</div>
+                <div class="resource-desc">자료 설명을 입력해주세요</div>
+              </div>
+              <div class="badge ready">바로가기</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- WEEK 2 -->
+      <div class="stage">
+        <div class="stage-dot"></div>
+        <div class="stage-top">
+          <div class="stage-eyebrow">WEEK 2 · 2회차</div>
+          <div class="stage-date">6.25 (목)</div>
+        </div>
+        <div class="stage-title">SQL 활용 &amp; 실무 적용</div>
+
+        <ul class="curriculum">
+          <li>GROUP BY · 집계함수로 데이터 묶고 요약하기</li>
+          <li>실제 업무 질문을 SQL로 직접 풀어보기</li>
+          <li>결과를 스프레드시트로 내보내고 차트화하기</li>
+          <li>막혔을 때 꿀팁!</li>
+        </ul>
+
+        <div class="resources">
+          <div class="resource-card disabled">
+            <div>
+              <div class="resource-name">2주차 자료</div>
+              <div class="resource-desc">업로드되는 대로 이곳에서 바로 확인하실 수 있어요.</div>
+            </div>
+            <div class="badge soon">준비중</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer">
+      <div class="footer-block">
+        <strong>질문하기</strong>
+        Slack #패파아카데미_data분석
+      </div>
+      <div class="footer-block">
+        <strong>담당자</strong>
+        구연정 · yj.koo@fastfive.co.kr
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
