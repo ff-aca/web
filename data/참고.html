@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BigQuery SQL 입문 가이드 — 지점 테이블 예제</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#F3F6F8;
+  --surface:#FFFFFF;
+  --ink:#142235;
+  --muted:#5C6B7A;
+  --border:#DCE3EA;
+
+  --select:#2E86AB;   --select-bg:#E7F2F8;
+  --where:#D9692E;    --where-bg:#FBEAE0;
+  --groupby:#6A4C93;  --groupby-bg:#EFE7F6;
+  --orderby:#1F8A76;  --orderby-bg:#E1F3EE;
+  --note:#B23A6E;     --note-bg:#FBE6EE;
+  --cost:#9C6B17;     --cost-bg:#FBF1DD;
+
+  --code-bg:#0E1B2C;
+  --code-text:#D8E2EE;
+  --kw:#7FD9B0;
+  --str:#F2C879;
+  --num:#7FB2E5;
+  --fn:#C9A8F2;
+  --cm:#5F7188;
+  --ident:#79D6E0;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+  line-height:1.75;
+  padding-bottom:90px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px;}
+strong{color:var(--ink);}
+code.inline{
+  font-family:'JetBrains Mono',monospace;
+  background:#EAEFF3;
+  border:1px solid var(--border);
+  padding:1px 6px;
+  border-radius:5px;
+  font-size:.92em;
+  color:#1B3A55;
+}
+
+/* ===== HERO ===== */
+.hero{
+  background:linear-gradient(170deg,#0E1B2C 0%, #16294A 100%);
+  color:#fff;
+  padding:54px 22px 60px;
+  margin-bottom:44px;
+}
+.hero-inner{max-width:860px;margin:0 auto;}
+.eyebrow-top{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:600;letter-spacing:.1em;
+  color:#8FE0C4;
+  background:rgba(143,224,196,.1);
+  border:1px solid rgba(143,224,196,.35);
+  padding:5px 12px;border-radius:20px;margin-bottom:20px;
+}
+h1.title{font-size:31px;font-weight:800;margin:0 0 10px;letter-spacing:-0.02em;}
+.subtitle{color:#9FB1C7;font-size:15.5px;margin:0 0 34px;max-width:600px;}
+
+.pipeline{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:8px;}
+.pill{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12.5px;
+  padding:8px 13px;border-radius:7px;color:#08111D;white-space:nowrap;
+}
+.pill.c1{background:#7FC3E8;} .pill.c2{background:#7FC3E8;}
+.pill.c3{background:#F0A876;color:#3A1F0A;}
+.pill.c4{background:#C7A8E8;color:#2B1640;} .pill.c5{background:#C7A8E8;color:#2B1640;}
+.pill.c6{background:#6FD6BD;color:#06342A;} .pill.c7{background:#6FD6BD;color:#06342A;}
+.arrow{color:#4C6079;font-size:15px;}
+.pipeline-caption{color:#7E91A8;font-size:13px;margin-top:14px;}
+
+/* ===== SECTIONS ===== */
+.section{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:30px 32px;
+  margin-bottom:26px;
+  box-shadow:0 1px 2px rgba(20,34,53,.04);
+}
+.section.select{border-left:5px solid var(--select);}
+.section.where{border-left:5px solid var(--where);}
+.section.groupby{border-left:5px solid var(--groupby);}
+.section.orderby{border-left:5px solid var(--orderby);}
+
+.badge{
+  display:inline-block;font-family:'JetBrains Mono',monospace;
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;
+  padding:4px 11px;border-radius:6px;margin-bottom:14px;
+}
+.badge.select{background:var(--select-bg);color:var(--select);}
+.badge.where{background:var(--where-bg);color:var(--where);}
+.badge.groupby{background:var(--groupby-bg);color:var(--groupby);}
+.badge.orderby{background:var(--orderby-bg);color:var(--orderby);}
+.badge.note{background:var(--note-bg);color:var(--note);}
+.badge.neutral{background:#EEF2F5;color:#3A4A5E;}
+
+h2{font-size:21px;font-weight:700;margin:0 0 12px;}
+h3{font-size:16.5px;font-weight:700;margin:26px 0 10px;}
+p{margin:0 0 14px;color:#334256;}
+
+/* ===== BQ PARTS BREAKDOWN ===== */
+.bq-parts{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 8px;}
+.bq-part{flex:1;min-width:140px;background:#F8FAFB;border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.bq-code{display:block;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;margin-bottom:6px;}
+.bq-code.proj{color:var(--select);}
+.bq-code.ds{color:var(--groupby);}
+.bq-code.tbl{color:var(--orderby);}
+.bq-tag{font-size:12px;color:var(--muted);}
+
+/* ===== CODE BLOCK ===== */
+.code-block{background:var(--code-bg);border-radius:10px;overflow:hidden;margin:16px 0 18px;}
+.code-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;background:#0A1422;border-bottom:1px solid #1C2C42;
+}
+.dots{display:flex;gap:6px;}
+.dot{width:9px;height:9px;border-radius:50%;}
+.dot.r{background:#E5605A;} .dot.y{background:#E5B85A;} .dot.g{background:#5AC97A;}
+.code-lang{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5F7188;letter-spacing:.08em;}
+.copy-btn{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:#9FB1C7;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  padding:3px 10px;border-radius:5px;cursor:pointer;transition:.15s;
+}
+.copy-btn:hover{background:rgba(255,255,255,.14);color:#fff;}
+pre{margin:0;padding:18px;overflow-x:auto;}
+code{font-family:'JetBrains Mono',monospace;font-size:13.5px;line-height:1.8;color:var(--code-text);}
+.k{color:var(--kw);font-weight:600;}
+.s{color:var(--str);}
+.n{color:var(--num);}
+.fn{color:var(--fn);font-weight:600;}
+.cm{color:var(--cm);font-style:italic;}
+.id{color:var(--ident);}
+
+/* ===== TABLES ===== */
+.table-scroll{overflow-x:auto;}
+table.result{width:100%;border-collapse:collapse;margin:10px 0 18px;font-size:13.5px;min-width:480px;}
+table.result th{
+  text-align:left;font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:.03em;color:#fff;padding:9px 11px;white-space:nowrap;
+}
+table.result.select th{background:var(--select);}
+table.result.where th{background:var(--where);}
+table.result.groupby th{background:var(--groupby);}
+table.result.orderby th{background:var(--orderby);}
+table.result.neutral th{background:#3A4A5E;}
+table.result td{padding:8px 11px;border-bottom:1px solid var(--border);color:#334256;white-space:nowrap;}
+table.result tr:nth-child(even) td{background:#FAFBFC;}
+
+table.ref{width:100%;border-collapse:collapse;margin:10px 0 6px;font-size:13.8px;}
+table.ref th{text-align:left;padding:8px 10px;background:#EEF2F5;color:var(--muted);font-size:12px;font-weight:700;border-bottom:2px solid var(--border);}
+table.ref td{padding:9px 10px;border-bottom:1px solid var(--border);}
+table.ref code.inline{font-size:.88em;}
+
+/* ===== CALLOUTS ===== */
+.callout{border-radius:10px;padding:14px 16px;margin:16px 0;font-size:14px;display:flex;gap:10px;}
+.callout .ic{font-size:16px;line-height:1.5;}
+.callout.tip{background:var(--orderby-bg);color:#0E5443;}
+.callout.warn{background:var(--where-bg);color:#7A3A14;}
+.callout.cost{background:var(--cost-bg);color:#7A540F;}
+.callout p{margin:0;color:inherit;}
+
+/* ===== NOTE SECTION ===== */
+.section.note{
+  border:1px dashed #D89BB6;
+  background:repeating-linear-gradient(135deg,#FFFFFF,#FFFFFF 12px,#FCF3F7 12px,#FCF3F7 24px);
+}
+
+/* ===== CHEAT SHEET ===== */
+.cheat{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0;}
+.cheat-row{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--border);background:#fff;}
+.cheat-row:last-child{border-bottom:none;}
+.cheat-num{
+  font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;margin-right:14px;flex-shrink:0;
+}
+.cheat-kw{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;width:110px;flex-shrink:0;}
+.cheat-desc{color:#475569;font-size:13.8px;}
+
+/* ===== DETAILS / PRACTICE ===== */
+details{background:#fff;border:1px solid var(--border);border-radius:10px;margin:10px 0;overflow:hidden;}
+summary{
+  cursor:pointer;padding:13px 16px;font-weight:600;font-size:14px;
+  background:#F6F8FA;list-style:none;display:flex;align-items:center;gap:8px;
+}
+summary::-webkit-details-marker{display:none;}
+summary:before{content:"▸";color:var(--select);transition:.15s;}
+details[open] summary:before{content:"▾";}
+details .inner{padding:4px 16px 16px;}
+
+footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
+
+@media(max-width:600px){
+  .section{padding:24px 20px;}
+  .cheat-kw{width:88px;font-size:12.5px;}
+  .bq-parts{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow-top">● BigQuery (GoogleSQL) 기준</span>
+    <h1 class="title">올려주신 지점(branch) 테이블로<br>SQL 기초 다시 정리하기</h1>
+    <p class="subtitle">실제로 쓰시는 <code class="inline">branch</code> 테이블 구조를 그대로 예제로 써서, BigQuery 문법까지 한 번에 익히는 가이드입니다.</p>
+    <div class="pipeline">
+      <span class="pill c1">SELECT</span><span class="arrow">›</span>
+      <span class="pill c2">FROM</span><span class="arrow">›</span>
+      <span class="pill c3">WHERE</span><span class="arrow">›</span>
+      <span class="pill c4">GROUP BY</span><span class="arrow">›</span>
+      <span class="pill c5">HAVING</span><span class="arrow">›</span>
+      <span class="pill c6">ORDER BY</span><span class="arrow">›</span>
+      <span class="pill c7">LIMIT</span>
+    </div>
+    <p class="pipeline-caption">필요한 키워드만 골라 쓰면 되고, 쓸 때는 반드시 이 순서를 지켜야 합니다.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 개념 + 예제 테이블 -->
+  <div class="section">
+    <span class="badge neutral">개념</span>
+    <h2>예제 테이블: branch (지점 정보)</h2>
+    <p>이 가이드 전체에서 아래 <code class="inline">branch</code> 테이블 하나를 계속 사용합니다. (보내주신 화면의 구조를 단순화한 예시 데이터입니다)</p>
+    <div class="table-scroll">
+    <table class="result neutral">
+      <thead><tr><th>id</th><th>name</th><th>sub_brand</th><th>address</th><th>city</th><th>seats</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>강남1호점</td><td>spaceone</td><td>서울 강남구 테헤란로 123</td><td>서울</td><td>320</td></tr>
+        <tr><td>2</td><td>강남2호점</td><td>spaceone</td><td>서울 강남구 역삼로 45</td><td>서울</td><td>280</td></tr>
+        <tr><td>3</td><td>산노루 강남점</td><td>partner</td><td>서울 강남구 삼성동 12</td><td>서울</td><td>150</td></tr>
+        <tr><td>4</td><td>선릉1호점</td><td>spaceone</td><td>서울 강남구 선릉로 88</td><td>서울</td><td>200</td></tr>
+        <tr><td>5</td><td>판교1호점</td><td>spaceone</td><td>경기 성남시 판교역로 6</td><td>경기</td><td>260</td></tr>
+        <tr><td>6</td><td>홍대점</td><td>spaceone</td><td>서울 마포구 양화로 10</td><td>서울</td><td>180</td></tr>
+        <tr><td>7</td><td>인천송도점</td><td>partner</td><td>인천 연수구 송도과학로 1</td><td>인천</td><td>220</td></tr>
+        <tr><td>8</td><td>강남3호점</td><td>spaceone</td><td>서울 강남구 봉은사로 99</td><td>서울</td><td>300</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="margin-bottom:18px;">가로 한 줄(예: 강남1호점의 정보 전체)이 <strong>행(row)</strong>, 세로 한 줄(예: seats 전체)이 <strong>열(column)</strong>입니다.</p>
+
+    <h3>BigQuery에서 테이블 이름은 3단계 구조</h3>
+    <p>일반 SQL과 가장 큰 차이는 <code class="inline">FROM</code> 뒤에 오는 이름입니다. BigQuery는 테이블 하나를 <strong>project.dataset.table</strong> 형태로 가리킵니다.</p>
+    <div class="bq-parts">
+      <div class="bq-part"><span class="bq-code proj">fastfive-data-mart</span><span class="bq-tag">프로젝트 (project)</span></div>
+      <div class="bq-part"><span class="bq-code ds">cms</span><span class="bq-tag">데이터셋 (dataset)</span></div>
+      <div class="bq-part"><span class="bq-code tbl">branch</span><span class="bq-tag">테이블 (table)</span></div>
+    </div>
+    <p style="margin-bottom:0;">프로젝트 이름에 하이픈(<code class="inline">-</code>)처럼 특수문자가 들어있으면, 셋을 합친 전체 이름을 반드시 백틱(<code class="inline">`</code>)으로 감싸야 합니다. 하이픈은 일반 식별자에 쓸 수 없는 특수문자라서, project.dataset.table 전체를 백틱으로 감싸야 BigQuery가 "이건 진짜 이름이야"라고 인식합니다.</p>
+  </div>
+
+  <!-- STEP 1 : SELECT / FROM -->
+  <div class="section select">
+    <span class="badge select">STEP 01 · 조회</span>
+    <h2>SELECT / FROM — 데이터 조회하기</h2>
+    <p><code class="inline">SELECT</code>는 "어떤 열을 보고 싶은지", <code class="inline">FROM</code>은 "어느 테이블에서 가져올지"를 정합니다.</p>
+
+    <div class="code-block">
+      <div class="code-head">
+        <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
+        <span class="code-lang">googlesql</span>
+        <button class="copy-btn" onclick="copyCode(this)">복사</button>
+      </div>
+      <pre><code><span class="k">SELECT</span> name, seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>;</code></pre>
+    </div>
+
+    <div class="table-scroll">
+    <table class="result select">
+      <thead><tr><th>name</th><th>seats</th></tr></thead>
+      <tbody>
+        <tr><td>강남1호점</td><td>320</td></tr><tr><td>강남2호점</td><td>280</td></tr>
+        <tr><td>산노루 강남점</td><td>150</td></tr><tr><td>선릉1호점</td><td>200</td></tr>
+        <tr><td>판교1호점</td><td>260</td></tr><tr><td>홍대점</td><td>180</td></tr>
+        <tr><td>인천송도점</td><td>220</td></tr><tr><td>강남3호점</td><td>300</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>모든 열을 다 보고 싶다면 <strong>"전부"</strong>라는 뜻의 <code class="inline">*</code>(별표)를 씁니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> *
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>;</code></pre>
+    </div>
+    <div class="callout cost">
+      <span class="ic">💰</span>
+      <p><strong>BigQuery 실전 팁</strong> — <code class="inline">SELECT *</code>는 모든 컬럼을 다 읽기 때문에 과금되는 스캔 데이터 양이 늘어납니다. 실무에서는 꼭 필요한 컬럼만 선택하는 습관을 들이는 게 좋아요.</p>
+    </div>
+  </div>
+
+  <!-- STEP 2 : WHERE -->
+  <div class="section where">
+    <span class="badge where">STEP 02 · 조건</span>
+    <h2>WHERE — 조건으로 걸러내기</h2>
+    <p>조건을 만족하는 행만 골라낼 때 사용합니다.</p>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> name, seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">WHERE</span> seats &gt;= <span class="n">250</span>;</code></pre>
+    </div>
+    <div class="table-scroll">
+    <table class="result where">
+      <thead><tr><th>name</th><th>seats</th></tr></thead>
+      <tbody>
+        <tr><td>강남1호점</td><td>320</td></tr><tr><td>강남2호점</td><td>280</td></tr>
+        <tr><td>판교1호점</td><td>260</td></tr><tr><td>강남3호점</td><td>300</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>자주 쓰는 조건 연산자</h3>
+    <table class="ref">
+      <thead><tr><th>연산자</th><th>의미</th><th>예시</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">=</code></td><td>같다</td><td><code class="inline">WHERE city = '서울'</code></td></tr>
+        <tr><td><code class="inline">!=</code> / <code class="inline">&lt;&gt;</code></td><td>다르다</td><td><code class="inline">WHERE sub_brand != 'partner'</code></td></tr>
+        <tr><td><code class="inline">&gt;</code> <code class="inline">&lt;</code> <code class="inline">&gt;=</code> <code class="inline">&lt;=</code></td><td>크다 / 작다</td><td><code class="inline">WHERE seats &gt; 200</code></td></tr>
+        <tr><td><code class="inline">AND</code></td><td>그리고 (둘 다 만족)</td><td><code class="inline">WHERE city='서울' AND seats&gt;250</code></td></tr>
+        <tr><td><code class="inline">OR</code></td><td>또는 (하나만 만족)</td><td><code class="inline">WHERE city='서울' OR city='경기'</code></td></tr>
+        <tr><td><code class="inline">BETWEEN</code></td><td>범위 안에 있음</td><td><code class="inline">WHERE seats BETWEEN 200 AND 300</code></td></tr>
+        <tr><td><code class="inline">IN</code></td><td>목록 중 하나</td><td><code class="inline">WHERE city IN ('서울','인천')</code></td></tr>
+        <tr><td><code class="inline">IS NULL</code></td><td>값이 비어있음</td><td><code class="inline">WHERE address IS NULL</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>🔍 LIKE와 와일드카드 — 보내주신 쿼리가 바로 이거예요</h3>
+    <p><code class="inline">LIKE</code>는 정확히 일치하지 않아도 <strong>비슷한 패턴</strong>의 문자열을 찾을 때 씁니다. 보내주신 화면의 <code class="inline">WHERE address LIKE '%강남%'</code>이 바로 이 문법입니다.</p>
+    <table class="ref">
+      <thead><tr><th>기호</th><th>의미</th><th>예시</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">%</code></td><td>0개 이상의 <strong>임의의 문자</strong></td><td><code class="inline">LIKE '%강남%'</code> → "강남"이 어디든 포함</td></tr>
+        <tr><td><code class="inline">_</code></td><td>정확히 <strong>1개</strong>의 임의의 문자</td><td><code class="inline">LIKE '강남_호점'</code> → "강남" 다음 1글자 + "호점"</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="cm">-- 주소에 "강남"이 포함된 지점 (보내주신 쿼리와 동일)</span>
+<span class="k">SELECT</span> *
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">WHERE</span> address <span class="k">LIKE</span> <span class="s">'%강남%'</span>;</code></pre>
+    </div>
+    <div class="table-scroll">
+    <table class="result where">
+      <thead><tr><th>name</th><th>address</th></tr></thead>
+      <tbody>
+        <tr><td>강남1호점</td><td>서울 강남구 테헤란로 123</td></tr>
+        <tr><td>강남2호점</td><td>서울 강남구 역삼로 45</td></tr>
+        <tr><td>산노루 강남점</td><td>서울 강남구 삼성동 12</td></tr>
+        <tr><td>선릉1호점</td><td>서울 강남구 선릉로 88</td></tr>
+        <tr><td>강남3호점</td><td>서울 강남구 봉은사로 99</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="callout tip">
+      <span class="ic">💡</span>
+      <p>반대로 "강남"이 포함되지 <strong>않은</strong> 지점을 찾고 싶다면 <code class="inline">WHERE address NOT LIKE '%강남%'</code>처럼 <code class="inline">NOT</code>을 붙이면 됩니다. <code class="inline">%</code>와 <code class="inline">_</code>는 자유롭게 조합해서 쓸 수 있어요.</p>
+    </div>
+  </div>
+
+  <!-- STEP 3 : ORDER BY / LIMIT -->
+  <div class="section orderby">
+    <span class="badge orderby">STEP 03 · 정렬</span>
+    <h2>ORDER BY / LIMIT — 정렬과 개수 제한</h2>
+    <p><code class="inline">ORDER BY</code>는 결과를 정렬하고, <code class="inline">LIMIT</code>은 보여줄 결과 개수를 제한합니다.</p>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> name, seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">ORDER BY</span> seats <span class="k">DESC</span>
+<span class="k">LIMIT</span> <span class="n">3</span>;</code></pre>
+    </div>
+    <div class="table-scroll">
+    <table class="result orderby">
+      <thead><tr><th>name</th><th>seats</th></tr></thead>
+      <tbody><tr><td>강남1호점</td><td>320</td></tr><tr><td>강남3호점</td><td>300</td></tr><tr><td>강남2호점</td><td>280</td></tr></tbody>
+    </table>
+    </div>
+    <table class="ref">
+      <thead><tr><th>키워드</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">ASC</code></td><td>오름차순 (작은 값 → 큰 값, 기본값이라 생략 가능)</td></tr>
+        <tr><td><code class="inline">DESC</code></td><td>내림차순 (큰 값 → 작은 값)</td></tr>
+      </tbody>
+    </table>
+    <div class="callout cost">
+      <span class="ic">💰</span>
+      <p><strong>BigQuery 실전 팁</strong> — <code class="inline">LIMIT</code>은 화면에 보여지는 행 수만 줄일 뿐, 실제로 스캔하는 데이터 양(과금 기준)을 줄여주지는 않습니다. 비용을 아끼려면 <code class="inline">WHERE</code>로 미리 범위를 좁히는 게 중요해요.</p>
+    </div>
+  </div>
+
+  <!-- STEP 4 : GROUP BY -->
+  <div class="section groupby">
+    <span class="badge groupby">STEP 04 · 집계</span>
+    <h2>GROUP BY — 그룹으로 묶어서 집계하기</h2>
+    <p>같은 값을 가진 행끼리 묶어서, <strong>집계 함수</strong>로 합계나 평균을 계산할 때 사용합니다.</p>
+    <table class="ref">
+      <thead><tr><th>함수</th><th>의미</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">COUNT()</code></td><td>개수</td></tr>
+        <tr><td><code class="inline">SUM()</code></td><td>합계</td></tr>
+        <tr><td><code class="inline">AVG()</code></td><td>평균</td></tr>
+        <tr><td><code class="inline">MAX()</code> / <code class="inline">MIN()</code></td><td>최댓값 / 최솟값</td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> city, <span class="fn">COUNT</span>(*) <span class="k">AS</span> branch_count, <span class="fn">AVG</span>(seats) <span class="k">AS</span> avg_seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">GROUP BY</span> city;</code></pre>
+    </div>
+    <div class="table-scroll">
+    <table class="result groupby">
+      <thead><tr><th>city</th><th>branch_count</th><th>avg_seats</th></tr></thead>
+      <tbody><tr><td>서울</td><td>6</td><td>238.3</td></tr><tr><td>경기</td><td>1</td><td>260</td></tr><tr><td>인천</td><td>1</td><td>220</td></tr></tbody>
+    </table>
+    </div>
+
+    <p>그룹으로 묶은 <strong>결과 자체</strong>에 다시 조건을 걸고 싶다면 <code class="inline">WHERE</code>가 아니라 <code class="inline">HAVING</code>을 사용합니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> city, <span class="fn">AVG</span>(seats) <span class="k">AS</span> avg_seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">GROUP BY</span> city
+<span class="k">HAVING</span> <span class="fn">AVG</span>(seats) &gt;= <span class="n">230</span>;</code></pre>
+    </div>
+    <div class="callout warn">
+      <span class="ic">⚠️</span>
+      <p><strong>WHERE</strong>는 그룹으로 묶기 <strong>전</strong> 개별 행을 거르고, <strong>HAVING</strong>은 그룹으로 묶은 <strong>후</strong> 결과를 거릅니다. 헷갈리기 쉬운 부분이니 꼭 기억해두세요.</p>
+    </div>
+  </div>
+
+  <!-- 백틱 설명 -->
+  <div class="section note">
+    <span class="badge note">참고 · 기호 정리</span>
+    <h2>따옴표 3총사 — ' " ` 는 뭐가 다른가요?</h2>
+    <p>SQL을 보다 보면 작은따옴표, 큰따옴표, 백틱(`) 세 가지가 비슷하게 생겨서 헷갈립니다. 역할이 완전히 다릅니다.</p>
+    <table class="ref">
+      <thead><tr><th>기호</th><th>이름</th><th>용도</th><th>주로 쓰는 곳</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">'단어'</code></td><td>작은따옴표</td><td><strong>문자열 값</strong>을 감쌀 때</td><td>모든 SQL 공통</td></tr>
+        <tr><td><code class="inline">"단어"</code></td><td>큰따옴표</td><td>식별자(테이블/컬럼명)를 감쌀 때</td><td>표준 SQL, PostgreSQL</td></tr>
+        <tr><td><code class="inline">`단어`</code></td><td>백틱</td><td>식별자(테이블/컬럼명)를 감쌀 때</td><td><strong>BigQuery(GoogleSQL)</strong>, MySQL</td></tr>
+      </tbody>
+    </table>
+    <p>BigQuery에서 백틱이 가장 자주 등장하는 이유는 <strong>프로젝트 이름에 하이픈(-)이 들어가는 경우가 많기 때문</strong>입니다. 하이픈은 일반 식별자에 쓸 수 없는 특수문자라서, <code class="inline">project.dataset.table</code> 전체를 백틱으로 감싸야 BigQuery가 "이건 진짜 이름이야"라고 인식합니다.</p>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="cm">-- my-company-data 처럼 프로젝트 이름에 하이픈(-)이 있어서 백틱이 꼭 필요한 경우</span>
+<span class="k">SELECT</span> *
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">WHERE</span> city = <span class="s">'서울'</span>;</code></pre>
+    </div>
+    <div class="callout tip">
+      <span class="ic">💡</span>
+      <p>컬럼명이 <code class="inline">order</code>처럼 SQL 예약어와 겹치거나 공백을 포함할 때도 백틱이 필요합니다. 반대로 <code class="inline">city</code>, <code class="inline">seats</code>처럼 평범한 이름은 굳이 백틱 없이도 잘 동작해요.</p>
+    </div>
+  </div>
+
+  <!-- 종합 예제 -->
+  <div class="section">
+    <span class="badge neutral">종합</span>
+    <h2>전체 조합 예제</h2>
+    <p>지금까지 배운 모든 키워드를 한 문장에 합쳐보겠습니다.</p>
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span> city, <span class="fn">AVG</span>(seats) <span class="k">AS</span> avg_seats, <span class="fn">COUNT</span>(*) <span class="k">AS</span> branch_count
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">WHERE</span> sub_brand = <span class="s">'spaceone'</span>
+<span class="k">GROUP BY</span> city
+<span class="k">HAVING</span> <span class="fn">AVG</span>(seats) &gt;= <span class="n">230</span>
+<span class="k">ORDER BY</span> avg_seats <span class="k">DESC</span>
+<span class="k">LIMIT</span> <span class="n">2</span>;</code></pre>
+    </div>
+    <div class="table-scroll">
+    <table class="result neutral">
+      <thead><tr><th>city</th><th>avg_seats</th><th>branch_count</th></tr></thead>
+      <tbody><tr><td>경기</td><td>260</td><td>1</td></tr><tr><td>서울</td><td>256</td><td>5</td></tr></tbody>
+    </table>
+    </div>
+    <p style="margin-bottom:0;">우리말로 풀면: <em>"sub_brand가 spaceone인 지점만 골라서, 도시별로 묶고, 평균 좌석수가 230 이상인 도시만 남긴 뒤, 평균이 높은 순으로 정렬해 상위 2개만 보여줘."</em></p>
+  </div>
+
+  <!-- 치트시트 -->
+  <div class="section">
+    <span class="badge neutral">정리</span>
+    <h2>작성 순서 치트시트</h2>
+    <div class="cheat">
+      <div class="cheat-row"><div class="cheat-num" style="background:#2E86AB;">1</div><div class="cheat-kw" style="color:#2E86AB;">SELECT</div><div class="cheat-desc">보고 싶은 열 고르기</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#2E86AB;">2</div><div class="cheat-kw" style="color:#2E86AB;">FROM</div><div class="cheat-desc">project.dataset.table 정하기</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#D9692E;">3</div><div class="cheat-kw" style="color:#D9692E;">WHERE</div><div class="cheat-desc">조건에 맞는 행 거르기 (그룹화 전)</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#6A4C93;">4</div><div class="cheat-kw" style="color:#6A4C93;">GROUP BY</div><div class="cheat-desc">특정 기준으로 그룹 묶기</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#6A4C93;">5</div><div class="cheat-kw" style="color:#6A4C93;">HAVING</div><div class="cheat-desc">그룹화된 결과 거르기 (그룹화 후)</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#1F8A76;">6</div><div class="cheat-kw" style="color:#1F8A76;">ORDER BY</div><div class="cheat-desc">결과 정렬하기</div></div>
+      <div class="cheat-row"><div class="cheat-num" style="background:#1F8A76;">7</div><div class="cheat-kw" style="color:#1F8A76;">LIMIT</div><div class="cheat-desc">결과 개수 제한하기</div></div>
+    </div>
+  </div>
+
+  <!-- 연습문제 -->
+  <div class="section">
+    <span class="badge neutral">연습</span>
+    <h2>직접 풀어보는 연습문제</h2>
+    <p>branch 테이블을 기준으로 아래 질문에 맞는 SQL을 직접 작성해보세요.</p>
+
+    <details>
+      <summary>1. name과 city만 조회하기</summary>
+      <div class="inner">
+        <div class="code-block"><pre><code><span class="k">SELECT</span> name, city <span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>;</code></pre></div>
+      </div>
+    </details>
+    <details>
+      <summary>2. 좌석수(seats)가 250 이상인 지점 조회하기</summary>
+      <div class="inner">
+        <div class="code-block"><pre><code><span class="k">SELECT</span> * <span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span> <span class="k">WHERE</span> seats &gt;= <span class="n">250</span>;</code></pre></div>
+      </div>
+    </details>
+    <details>
+      <summary>3. address에 "강남"이 포함된 지점 찾기 (LIKE)</summary>
+      <div class="inner">
+        <div class="code-block"><pre><code><span class="k">SELECT</span> * <span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span> <span class="k">WHERE</span> address <span class="k">LIKE</span> <span class="s">'%강남%'</span>;</code></pre></div>
+      </div>
+    </details>
+    <details>
+      <summary>4. 좌석수 많은 순으로 정렬해서 전체 보여주기</summary>
+      <div class="inner">
+        <div class="code-block"><pre><code><span class="k">SELECT</span> * <span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span> <span class="k">ORDER BY</span> seats <span class="k">DESC</span>;</code></pre></div>
+      </div>
+    </details>
+    <details>
+      <summary>5. sub_brand별 지점 수와 평균 좌석수 구하기</summary>
+      <div class="inner">
+        <div class="code-block"><pre><code><span class="k">SELECT</span> sub_brand, <span class="fn">COUNT</span>(*) <span class="k">AS</span> branch_count, <span class="fn">AVG</span>(seats) <span class="k">AS</span> avg_seats
+<span class="k">FROM</span> <span class="id">`my-company-data.cms.branch`</span>
+<span class="k">GROUP BY</span> sub_brand;</code></pre></div>
+      </div>
+    </details>
+  </div>
+
+  <footer>다음 단계로는 JOIN(여러 테이블 연결), INSERT/UPDATE/DELETE, 서브쿼리를 배워보세요.</footer>
+</div>
+
+<script>
+function copyCode(btn){
+  const code = btn.closest('.code-block').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    const old = btn.innerText;
+    btn.innerText = '복사됨!';
+    setTimeout(()=>{ btn.innerText = old; }, 1200);
+  });
+}
+</script>
+
+</body>
+</html>

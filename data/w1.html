@@ -489,6 +489,10 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
         <tr><td><code class="inline">DESC</code></td><td>내림차순 (큰 값 → 작은 값)</td></tr>
       </tbody>
     </table>
+      <div class="callout warn">
+      <span class="ic">💰</span>
+      <p><strong>BigQuery 실전 팁</strong> — <code class="inline">LIMIT</code>은 화면에 보여지는 행 수만 줄일 뿐, 실제로 스캔하는 데이터 양(과금 기준)을 줄여주지는 않습니다. 비용을 아끼려면 <code class="inline">WHERE</code>로 미리 범위를 좁히는 게 중요해요.</p>
+    </div>
   </div>
 
   <!-- 백틱 설명 -->
@@ -611,7 +615,6 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
     </div>
   </div>
 
-  
   <!-- 연습문제 -->
   <div class="section">
     <span class="badge neutral">연습</span>
