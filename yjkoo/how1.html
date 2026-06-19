@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>우리 집 운영 점검표</title>
+<style>
+  :root{
+    --bg: #EFF2F1;
+    --paper: #FFFFFF;
+    --ink: #1E2A28;
+    --ink-soft: #56625F;
+    --line: #D8DEDC;
+    --teal: #2A6F6B;
+    --teal-soft: #E3EFEE;
+    --coral: #D85A42;
+    --coral-soft: #FBEBE6;
+    --gold: #C7922F;
+    --gold-soft: #FAF1DE;
+    --navy: #25323F;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    line-height:1.6;
+    padding:48px 20px 80px;
+  }
+  .wrap{max-width:920px; margin:0 auto;}
+
+  /* HERO */
+  .hero{
+    background:var(--navy);
+    color:#fff;
+    border-radius:20px;
+    padding:44px 40px;
+    margin-bottom:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .eyebrow{
+    font-size:13px; letter-spacing:0.12em; color:#9FB6AE; font-weight:600; margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:30px; font-weight:800; line-height:1.4; margin-bottom:14px;
+  }
+  .hero p{
+    font-size:15px; color:#C7D2CD; max-width:560px;
+  }
+  .hero .tags{display:flex; gap:8px; margin-top:22px; flex-wrap:wrap;}
+  .hero .tag{
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18);
+    padding:6px 12px; border-radius:999px; font-size:12.5px; color:#E4EAE7;
+  }
+
+  /* ICEBERG SECTION */
+  .iceberg-card{
+    background:var(--paper); border-radius:20px; padding:36px 40px; margin-bottom:28px;
+    border:1px solid var(--line);
+  }
+  .section-title{font-size:18px; font-weight:800; margin-bottom:6px;}
+  .section-sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:24px;}
+
+  .iceberg-grid{
+    display:grid; grid-template-columns: 280px 1fr; gap:32px; align-items:start;
+  }
+  .iceberg-svg-box{display:flex; justify-content:center;}
+
+  .iceberg-text{display:flex; flex-direction:column; gap:18px;}
+  .ib-block{padding:16px 18px; border-radius:14px;}
+  .ib-block.above{background:var(--teal-soft); border:1px solid #BFE0DB;}
+  .ib-block.below{background:var(--coral-soft); border:1px solid #F0C9BD;}
+  .ib-label{font-size:12px; font-weight:700; letter-spacing:0.04em; margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+  .ib-block.above .ib-label{color:var(--teal);}
+  .ib-block.below .ib-label{color:var(--coral);}
+  .ib-block ul{padding-left:18px; font-size:13.5px; color:var(--ink);}
+  .ib-block li{margin-bottom:4px;}
+  .ib-note{font-size:12.5px; color:var(--ink-soft); margin-top:4px;}
+
+  /* CATEGORY CARDS */
+  .cat-card{
+    background:var(--paper); border-radius:20px; padding:30px 36px; margin-bottom:20px;
+    border:1px solid var(--line);
+  }
+  .cat-head{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+  .cat-num{
+    width:34px; height:34px; border-radius:10px; background:var(--navy); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0;
+  }
+  .cat-title{font-size:17px; font-weight:800;}
+
+  .cat-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:680px){ .cat-grid{grid-template-columns:1fr;} .iceberg-grid{grid-template-columns:1fr;} }
+
+  .col{padding:16px 18px; border-radius:14px; background:#F7F8F8; border:1px solid var(--line);}
+  .col-label{font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink-soft); margin-bottom:10px; text-transform:uppercase;}
+  .col ul{padding-left:18px; font-size:13.5px;}
+  .col li{margin-bottom:6px;}
+  .col.gap{background:var(--coral-soft); border-color:#F0C9BD;}
+  .col.gap .col-label{color:var(--coral);}
+
+  .proposal{
+    margin-top:16px; padding:14px 18px; background:var(--gold-soft); border:1px solid #EBD49C;
+    border-radius:12px; font-size:13.5px; display:flex; gap:10px; align-items:flex-start;
+  }
+  .proposal b{color:#8A6312;}
+
+  /* SUMMARY TABLE */
+  .summary-card{
+    background:var(--navy); color:#fff; border-radius:20px; padding:36px 40px; margin-top:8px;
+  }
+  .summary-card .section-title{color:#fff;}
+  .summary-card .section-sub{color:#AEBEB7;}
+  table{width:100%; border-collapse:collapse; margin-top:18px;}
+  th, td{padding:12px 14px; text-align:left; font-size:13.5px; border-bottom:1px solid rgba(255,255,255,0.12);}
+  th{color:#9FB6AE; font-weight:700; font-size:12px; letter-spacing:0.04em;}
+  td.area{font-weight:700;}
+  td{color:#E4EAE7;}
+
+  .closing{
+    text-align:center; margin-top:30px; font-size:14px; color:var(--ink-soft);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">💔 연정이를 살려주세요 💔 · 2026</div>
+    <h1>둘 다 힘들고, 둘 다 워라밸이 없다.<br>근데 이게 맞나?</h1>
+    <p>물리적으로 하는 일의 '횟수'만 보면 비슷해 보일 수 있어요. <br>하지만 일이 잘 굴러가려면 '기획하고, 확인하고, 마무리하는 사람'이 따로 필요합니다. <br>지금은 그 역할이 한쪽에 쏠려 있어요.</p>
+    <div class="tags">
+      <span class="tag">육아·아이케어</span>
+      <span class="tag">가사노동</span>
+      <span class="tag">집안 경영·행정</span>
+      <span class="tag">자동차</span>
+      <span class="tag">양가 가족</span>
+      <span class="tag">반려동물</span>
+      <span class="tag">이사 준비</span>
+    </div>
+  </div>
+
+  <div class="iceberg-card">
+    <div class="section-title">보이는 노동 vs 보이지 않는 노동</div>
+    <div class="section-sub">둘 다 '하긴' 한다. 문제는 그 일을 끝까지 책임지고 챙기는 사람이 따로 있다는 것.</div>
+
+    <div class="iceberg-grid">
+      <div class="iceberg-svg-box">
+        <svg width="240" height="260" viewBox="0 0 240 260" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="240" height="100" fill="#E3EFEE"/>
+          <rect x="0" y="100" width="240" height="160" fill="#FBEBE6"/>
+          <line x1="0" y1="100" x2="240" y2="100" stroke="#2A6F6B" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <polygon points="90,28 150,28 175,100 65,100" fill="#7FB8B2"/>
+          <polygon points="55,100 185,100 215,250 25,250" fill="#3C8C86" opacity="0.85"/>
+          <polygon points="100,28 140,28 160,100 80,100" fill="#9FCFC9"/>
+          <text x="120" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#2A6F6B">물리적 실행</text>
+          <text x="120" y="245" text-anchor="middle" font-size="11" font-weight="700" fill="#C24B33">기획 · 관리 · 마무리</text>
+        </svg>
+      </div>
+
+      <div class="iceberg-text">
+        <div class="ib-block above">
+          <div class="ib-label">▲ 수면 위 — 둘 다 자주 하는 일</div>
+          <ul>
+            <li>등원·하원 준비, 실행</li>
+            <li>아이 놀아주기</li>
+            <li>집안일(청소, 설거지, 빨래 등)</li>
+          </ul>
+          <div class="ib-note">횟수로만 보면 분담이 되어 있는 것처럼 보임</div>
+        </div>
+        <div class="ib-block below">
+          <div class="ib-label">▼ 수면 아래 — 거의 혼자 챙기는 일</div>
+          <ul>
+            <li>알림장 확인, 준비물·계절 옷 체크, 선생님 소통</li>
+            <li>왜 밥을 안먹는가, 균형잡힌 식재료 고민</li>
+            <li>집안일 <strong>제대로 마무리</strong>, 경제 관리, 대출·이사 행정</li>
+          </ul>
+          <div class="ib-note">이게 빠지면 '한 사람이라도 안 하면 멈추는 일'이 됨</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. 육아 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">1</div><div class="cat-title">육아 및 아이케어</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>등·하원 물리적으로 많이 담당</li>
+          <li>식사 챙기는 횟수는 많음</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>알림장 확인 누락, 친구 생일파티 준비물 등</li>
+          <li>계절에 안 맞는 옷차림, 약과 함께 투약의뢰서 보내기</li>
+          <li>식단 균형·다양성 고민 부족 (메뉴 반복)</li>
+          <li>어린이집 소통·병원 예약·용품 구매</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> 등하원 '데려다주기'와 별개로, 알림장 확인 + 준비물 체크는 전날 밤 5분 점검하는 루틴으로.</div></div>
+  </div>
+
+  <!-- 2. 가사노동 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">2</div><div class="cat-title">가사 노동</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>빨래, 청소, 설거지 <strong>시간과 체력이 허락할 때</strong> 많이 담당하는 편</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>실수가 잦은데 반복하지 않으려는 시도는 부족</li>
+          <li>ex. 빨래, 건조 실수 ^^ </li>
+          <li>물걸레질은 해본 적 없음</li>
+          <li>로봇청소기도 연정이 재택일 때, 주말 같이 외출할 때만 돌아감</li>
+          <li>피곤하면 당연히 내일로 미룰 수 있으나, 내일 해도 되는지 고민하고 미뤄야함(그릇 부족 등).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> "많이 하는 것"과 "잘 하는 것"은 다름. '빨래 냄새 안나게하는 법', '건조기 돌리면 안되는 옷' 검색이라도 해보자.</div></div>
+  </div>
+
+  <!-- 3. 집안 경영 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">3</div><div class="cat-title">집안 경영 및 행정</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>가계부 같이 씀(양식 연정 제작)</li>
+          <li>캘린더 공유</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>생활비 작성 주기 김. 기록만 하고 개선 계획 부족</li>
+          <li>종합소득세 믿고 신경 안썼으나 5월 마감까지 미처리</li>
+          <li>꾸북스토어 믿고 맡겼으나 결과적으로 적자</li>
+          <li>가족 행사, 경조사 등 공통일정은 주로 연정이 업뎃</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b>이 일을 왜 하는지를 생각해보자.</div></div>
+  </div>
+
+  <!-- 4. 자동차 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">4</div><div class="cat-title">자동차 관리</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>"한다 한다" 말은 자주 함</li>
+          <li>주유할 때 기계 세차 함</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>아이가 매일 타는 차인데 내부 청결 관리 안 됨</li>
+          <li>엔진오일, 타이어 교체 등 정비가 계속 밀림</li>
+          <li>저렴하게 정비할 수 있는 곳 리서치 시도 없음(타이어 ㅎㅎ 늘 연정이 알아봤었음)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> 차량 정비는 위험한 일이 발생하기 전에 미리미리 일정 알람 해놓고 하기</div></div>
+  </div>
+
+  <!-- 5. 양가 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">5</div><div class="cat-title">양가 가족 챙기기</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>경조사 자체는 인지하고 있음</li>
+          <li>참석을 위한 운전</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>장인 칠순 식당 고민 없음</li>
+          <li>형님 출산대비 물려줄 물건도 연정이 미리 챙겨둠</li>
+          <li>풀리오 구매해준다했는데 곧 애기 나옴 ㅎ</li>
+          <li>가족 사진 촬영 갬성돋게 얘기해놓고.......</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> 양가 부모님과의 시간이 얼마 남지 않았음을 늘 가슴에 새기기</div></div>
+  </div>
+
+  <!-- 6. 반려동물 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">6</div><div class="cat-title">딱지 케어</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>아침 저녁 산책</li>
+          <li>양치/목욕/발톱 등 위생 케어 담당</li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>산책 후 발 제대로 안 닦아서 거실이 더러워짐</li>
+          <li>배변(응가·쉬) 흔적을 제대로 안 치워서 물티슈로 한 번 더 닦게 됨</li>
+          <li>딱지 물그릇 제대로 안닦고 물만 채워줌</li>
+          <li>발 제대로 안말려서 습진,.,,</li>
+          <li>양치는 언제 했는지 기억 안남</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> 산책은 '데려갔다 왔다'가 아니라 발 닦기까지가 한 세트라고 기준을 맞추기.</div></div>
+  </div>
+
+  <!-- 7. 이사 준비 -->
+  <div class="cat-card">
+    <div class="cat-head"><div class="cat-num">7</div><div class="cat-title">최근 이사 준비</div></div>
+    <div class="cat-grid">
+      <div class="col">
+        <div class="col-label">지금 하고 있는 것</div>
+        <ul>
+          <li>인테리어 업체 알아보기 — 연정이 먼저 시작한 후 드디어 상헌도 시작</li>
+          <li>동탄까지 운전하기 </li>
+        </ul>
+      </div>
+      <div class="col gap">
+        <div class="col-label">놓치고 있는 부분</div>
+        <ul>
+          <li>대출 상담 및 공부해서 공유 — 연정이 전담</li>
+          <li>부동산 소통 및 계약 — 연정이 전담</li>
+          <li>인테리어 — 연정이 먼저 공부, 아빠는 '잡도리' 받고서야 시작. 아마 아직 자재는 모를듯</li>
+          <li>상헌은 현장직이라 ㅇㅋ. 연정이 공부해서 브리핑 해드리는데 숙지 잘 안됨</li>
+          <li>자금 계산, 견적 비교 다 연정이 자료 만들어 드렸으나 숙지 안됨</li>
+          <li>'숙지'의 기준=머릿속으로 다 이해해서 제3자에게 설명할 수 있는가?</li>
+
+          <li>이사 전체 스케줄 조율 앞으로 누가하게 될까?</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proposal"><span>💡</span><div><b>제안:</b> 연정이도 태어나서 처음 접하는 지식들이다. 궁금한건 연정이 아니라 AI와 네이버에 물어보자.</div></div>
+  </div>
+
+  <div class="iceberg-card" style="background:var(--coral-soft); border-color:#F0C9BD;">
+    <div class="section-title" style="color:#A8412A;">소통 방식에 대해서도</div>
+    <div class="section-sub" style="color:#8A4633;">평소 연락할 때 연정도 일하는 중인데, 매번 남편이 편한 방식·시간에 맞춰 연락이 옴. 통화가 어렵다고 여러번 말했으나 복직 5개월차 최근에야 좀 개선됨(연정이 셀 수 없이 감정적으로 말하고 나서야..^^). 이런 부분에서 배려받고 있지 않다는 느낌이 듦.</div>
+    <div class="proposal" style="background:#fff; border-color:#F0C9BD;"><span>💡</span><div><b>제안:</b> 급한일 아니면 통화 지양. 카톡 치기 어려우면 음성인식 기능 이용하기. 예약·전화처럼 평일 낮에 처리해야 하는 일은 가능하면 아빠가 직접 하기.</div></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="section-title">이렇게 나눠보면 어떨까?</div>
+    <div class="section-sub">물리적 실행은 지금처럼 함께, 대신 영역별로 '끝까지 책임지는 사람'을 한 명씩 정하기</div>
+    <table>
+      <tr><th>영역</th><th>이번 주부터 시도해볼 것</th></tr>
+      <tr><td class="area">육아</td><td>전날 밤 알림장·준비물 5분 점검 같이 하기</td></tr>
+      <tr><td class="area">가사</td><td>실수 잦은 영역 하나 정해 개선 방법 찾아보기</td></tr>
+      <tr><td class="area">집안 행정</td><td>맡은 일은 마감일 캘린더 등록 + 완료 공유</td></tr>
+      <tr><td class="area">자동차</td><td>분기별 정비 알림 설정, 정비소 리서치</td></tr>
+      <tr><td class="area">반려동물</td><td>산책 후 발 닦기·배변 흔적 확인까지 책임지기</td></tr>
+      <tr><td class="area">이사 준비</td><td>어느 한 분야라도 아빠가 메인으로 하기</td></tr>
+      <tr><td class="area">소통 방식</td><td>통화보다는 카톡하기. 둘다 정신 없어서 텍스트로 남기는게 더 좋기도 함.</td></tr>
+    </table>
+  </div>
+
+  <div class="closing">완벽하게 똑같이 나누자는 게 아니라, 둘 다 덜 지치는 방향을 같이 찾고 싶어서 정리해봤어요.</div>
+
+</div>
+</body>
+</html>
