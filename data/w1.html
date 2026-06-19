@@ -234,7 +234,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
       <span class="eyebrow-top bq">Week 1 - 보충자료</span>
     </div>
     <h1 class="title">생소한 SQL,<br>이 순서대로만 따라오면 됩니다</h1>
-    <p class="subtitle">SQL은 결국 정해진 순서대로 키워드를 나열하는 것뿐입니다. 아래 8단계가 BigQuery에서 SQL 문장을 "쓰는 순서"입니다.</p>
+    <p class="subtitle">SQL은 결국 정해진 순서대로 키워드를 나열하는 것뿐입니다. <br> 아래 8단계가 BigQuery에서 SQL 문장을 "쓰는 순서"입니다.</p>
     <div class="pipeline">
       <span class="pill c1">SELECT</span><span class="arrow">›</span>
       <span class="pill c2">FROM</span><span class="arrow">›</span>
@@ -267,58 +267,8 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
         <tr><td>6</td><td>수아</td><td>C</td><td>88</td><td>서울</td></tr>
       </tbody>
     </table>
-    <p style="margin-bottom:0;">가로 한 줄(예: 민준의 정보 전체)이 <strong>행(row)</strong>, 세로 한 줄(예: score 전체)이 <strong>열(column)</strong>입니다. BigQuery에서는 테이블을 <code class="inline">프로젝트.데이터셋.테이블</code> 형태의 전체 경로로 부르는 경우가 많은데, 아래 예제에서는 <code class="inline">myproject.mydataset.students</code>로 표기하겠습니다.</p>
-  </div>
-
-  <!-- 데이터 타입 -->
-  <div class="section types">
-    <span class="badge types">참고 · 데이터 타입</span>
-    <h2>BigQuery에서 자주 쓰는 데이터 타입</h2>
-    <p>테이블의 각 열(컬럼)은 정해진 <strong>데이터 타입</strong>을 가집니다. 타입을 알아야 어떤 연산(계산, 비교, 정렬)이 가능한지 알 수 있습니다.</p>
-
-    <table class="ref">
-      <thead><tr><th>타입</th><th>분류</th><th>설명</th><th>예시 값</th></tr></thead>
-      <tbody>
-        <tr><td><span class="type-chip txt">STRING</span></td><td>문자형</td><td>문자열 텍스트</td><td><code class="inline">'강남점'</code></td></tr>
-        <tr><td><span class="type-chip num">INT64</span></td><td>숫자형</td><td>정수</td><td><code class="inline">1, 100, -5</code></td></tr>
-        <tr><td><span class="type-chip num">FLOAT64</span></td><td>숫자형</td><td>실수 (부동소수점)</td><td><code class="inline">3.14</code></td></tr>
-        <tr><td><span class="type-chip num">NUMERIC</span></td><td>숫자형</td><td>정밀한 소수 (금액 등)</td><td><code class="inline">1234.56</code></td></tr>
-        <tr><td><span class="type-chip dt">DATE</span></td><td>날짜/시간</td><td>날짜만</td><td><code class="inline">2026-06-19</code></td></tr>
-        <tr><td><span class="type-chip dt">DATETIME</span></td><td>날짜/시간</td><td>날짜+시간 (타임존 없음)</td><td><code class="inline">2026-06-19 14:30:00</code></td></tr>
-        <tr><td><span class="type-chip dt">TIMESTAMP</span></td><td>날짜/시간</td><td>날짜+시간 (UTC 타임존 포함)</td><td><code class="inline">2026-06-19T05:30:00Z</code></td></tr>
-        <tr><td><span class="type-chip bool">BOOL</span></td><td>논리형</td><td>참 / 거짓</td><td><code class="inline">TRUE, FALSE</code></td></tr>
-        <tr><td><span class="type-chip etc">ARRAY</span></td><td>기타</td><td>같은 타입 값 여러 개를 담는 리스트</td><td><code class="inline">[1, 2, 3]</code></td></tr>
-        <tr><td><span class="type-chip etc">STRUCT</span></td><td>기타</td><td>여러 필드를 묶은 중첩 구조</td><td><code class="inline">{name:'강남점'}</code></td></tr>
-      </tbody>
-    </table>
-    <div class="callout info">
-      <span class="ic">ℹ️</span>
-      <p><code class="inline">ARRAY</code>와 <code class="inline">STRUCT</code>는 한 셀 안에 여러 값을 중첩해서 담을 수 있는 BigQuery(GoogleSQL)만의 특징적인 타입입니다. 처음에는 STRING / INT64 / FLOAT64 / DATE / TIMESTAMP / BOOL 정도만 알아도 충분합니다.</p>
-    </div>
-
-    <h3>⚙️ 타입 변환이 필요한 이유</h3>
-    <p>예를 들어 <code class="inline">branch_id</code> 컬럼이 <code class="inline">STRING</code>으로 저장되어 있다면, <code class="inline">ORDER BY</code>로 정렬했을 때 "10"이 "2"보다 먼저 오는 등 숫자가 아니라 문자 순서로 정렬되는 문제가 생깁니다. 이럴 때는 명시적으로 <strong>타입을 변환</strong>해줘야 합니다.</p>
-
-    <div class="code-block">
-      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
-      <pre><code><span class="k">SELECT</span>
-  <span class="fn">CAST</span>(branch_id <span class="k">AS</span> <span class="tb">INT64</span>) <span class="k">AS</span> branch_id_num,
-  <span class="fn">SAFE_CAST</span>(open_date <span class="k">AS</span> <span class="tb">DATE</span>) <span class="k">AS</span> open_date_parsed
-<span class="k">FROM</span> `myproject.mydataset.branch`;</code></pre>
-    </div>
-
-    <table class="ref">
-      <thead><tr><th>함수</th><th>용도</th></tr></thead>
-      <tbody>
-        <tr><td><code class="inline">CAST(값 AS 타입)</code></td><td>타입 변환. 변환할 수 없는 값이 있으면 <strong>에러 발생</strong></td></tr>
-        <tr><td><code class="inline">SAFE_CAST(값 AS 타입)</code></td><td>타입 변환. 변환할 수 없는 값은 에러 대신 <strong>NULL 반환</strong> (더 안전)</td></tr>
-        <tr><td><code class="inline">PARSE_DATE('%Y%m%d', 값)</code></td><td>'20260619' 같은 특정 포맷의 문자열을 DATE로 변환</td></tr>
-      </tbody>
-    </table>
-    <div class="callout tip">
-      <span class="ic">💡</span>
-      <p>실무 데이터는 형식이 깨끗하지 않은 경우가 많아서, 에러로 쿼리 전체가 멈추는 <code class="inline">CAST</code>보다 <code class="inline">SAFE_CAST</code>를 기본으로 쓰는 것을 추천합니다.</p>
-    </div>
+    <p style="margin-bottom:0;">가로 한 줄(예: 민준의 정보 전체)이 <strong>행(row)</strong>, 세로 한 줄(예: score 전체)이 <strong>열(column)</strong>입니다. 
+        <br> BigQuery에서는 테이블을 <code class="inline">프로젝트.데이터셋.테이블</code> 형태의 전체 경로로 부르는 경우가 많은데, 아래 예제에서는 <code class="inline">myproject.mydataset.students</code>로 표기하겠습니다.</p>
   </div>
 
   <!-- STEP 1 : SELECT / FROM -->
@@ -609,6 +559,59 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
     </div>
   </div>
 
+
+  <!-- 데이터 타입 -->
+  <div class="section types">
+    <span class="badge types">참고 · 데이터 타입</span>
+    <h2>BigQuery에서 자주 쓰는 데이터 타입</h2>
+    <p>테이블의 각 열(컬럼)은 정해진 <strong>데이터 타입</strong>을 가집니다. 타입을 알아야 어떤 연산(계산, 비교, 정렬)이 가능한지 알 수 있습니다.</p>
+
+    <table class="ref">
+      <thead><tr><th>타입</th><th>분류</th><th>설명</th><th>예시 값</th></tr></thead>
+      <tbody>
+        <tr><td><span class="type-chip txt">STRING</span></td><td>문자형</td><td>문자열 텍스트</td><td><code class="inline">'강남점'</code></td></tr>
+        <tr><td><span class="type-chip num">INT64</span></td><td>숫자형</td><td>정수</td><td><code class="inline">1, 100, -5</code></td></tr>
+        <tr><td><span class="type-chip num">FLOAT64</span></td><td>숫자형</td><td>실수 (부동소수점)</td><td><code class="inline">3.14</code></td></tr>
+        <tr><td><span class="type-chip num">NUMERIC</span></td><td>숫자형</td><td>정밀한 소수 (금액 등)</td><td><code class="inline">1234.56</code></td></tr>
+        <tr><td><span class="type-chip dt">DATE</span></td><td>날짜/시간</td><td>날짜만</td><td><code class="inline">2026-06-19</code></td></tr>
+        <tr><td><span class="type-chip dt">DATETIME</span></td><td>날짜/시간</td><td>날짜+시간 (타임존 없음)</td><td><code class="inline">2026-06-19 14:30:00</code></td></tr>
+        <tr><td><span class="type-chip dt">TIMESTAMP</span></td><td>날짜/시간</td><td>날짜+시간 (UTC 타임존 포함)</td><td><code class="inline">2026-06-19T05:30:00Z</code></td></tr>
+        <tr><td><span class="type-chip bool">BOOL</span></td><td>논리형</td><td>참 / 거짓</td><td><code class="inline">TRUE, FALSE</code></td></tr>
+        <tr><td><span class="type-chip etc">ARRAY</span></td><td>기타</td><td>같은 타입 값 여러 개를 담는 리스트</td><td><code class="inline">[1, 2, 3]</code></td></tr>
+        <tr><td><span class="type-chip etc">STRUCT</span></td><td>기타</td><td>여러 필드를 묶은 중첩 구조</td><td><code class="inline">{name:'강남점'}</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout info">
+      <span class="ic">ℹ️</span>
+      <p><code class="inline">ARRAY</code>와 <code class="inline">STRUCT</code>는 한 셀 안에 여러 값을 중첩해서 담을 수 있는 BigQuery(GoogleSQL)만의 특징적인 타입입니다. 처음에는 STRING / INT64 / FLOAT64 / DATE / TIMESTAMP / BOOL 정도만 알아도 충분합니다.</p>
+    </div>
+
+    <h3>⚙️ 타입 변환이 필요한 이유</h3>
+    <p>예를 들어 <code class="inline">branch_id</code> 컬럼이 <code class="inline">STRING</code>으로 저장되어 있다면, <code class="inline">ORDER BY</code>로 정렬했을 때 "10"이 "2"보다 먼저 오는 등 숫자가 아니라 문자 순서로 정렬되는 문제가 생깁니다. 이럴 때는 명시적으로 <strong>타입을 변환</strong>해줘야 합니다.</p>
+
+    <div class="code-block">
+      <div class="code-head"><div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div><span class="code-lang">googlesql</span><button class="copy-btn" onclick="copyCode(this)">복사</button></div>
+      <pre><code><span class="k">SELECT</span>
+  <span class="fn">CAST</span>(branch_id <span class="k">AS</span> <span class="tb">INT64</span>) <span class="k">AS</span> branch_id_num,
+  <span class="fn">SAFE_CAST</span>(open_date <span class="k">AS</span> <span class="tb">DATE</span>) <span class="k">AS</span> open_date_parsed
+<span class="k">FROM</span> `myproject.mydataset.branch`;</code></pre>
+    </div>
+
+    <table class="ref">
+      <thead><tr><th>함수</th><th>용도</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">CAST(값 AS 타입)</code></td><td>타입 변환. 변환할 수 없는 값이 있으면 <strong>에러 발생</strong></td></tr>
+        <tr><td><code class="inline">SAFE_CAST(값 AS 타입)</code></td><td>타입 변환. 변환할 수 없는 값은 에러 대신 <strong>NULL 반환</strong> (더 안전)</td></tr>
+        <tr><td><code class="inline">PARSE_DATE('%Y%m%d', 값)</code></td><td>'20260619' 같은 특정 포맷의 문자열을 DATE로 변환</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip">
+      <span class="ic">💡</span>
+      <p>실무 데이터는 형식이 깨끗하지 않은 경우가 많아서, 에러로 쿼리 전체가 멈추는 <code class="inline">CAST</code>보다 <code class="inline">SAFE_CAST</code>를 기본으로 쓰는 것을 추천합니다.</p>
+    </div>
+  </div>
+
+  
   <!-- 연습문제 -->
   <div class="section">
     <span class="badge neutral">연습</span>
@@ -667,7 +670,6 @@ footer{color:var(--muted);font-size:13px;text-align:center;margin-top:40px;}
     </details>
   </div>
 
-  <footer>다음 단계로는 서브쿼리(쿼리 안의 쿼리), 윈도우 함수(RANK, ROW_NUMBER), UNION을 배워보세요.</footer>
 </div>
 
 <script>
