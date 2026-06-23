@@ -309,18 +309,18 @@ table.flow td input:focus,table.flow td select:focus{outline:none;border-color:#
           <div>
             <div style="font-size:12px;font-weight:600;color:#2D5A0E;background:#EAF3DE;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 A안 (계약금 10·착수금 20·중도금 50·잔금 20%)</div>
             <div class="field-row"><label>총 비용</label><input class="num-input" id="p_interior" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,markPlanDirty)"></div>
-            <div class="field-row"><label>계약금일</label><input type="text" id="p_int_cd" value="6/20" oninput="markPlanDirty()"></div>
-            <div class="field-row"><label>착수금일</label><input type="text" id="p_int_sd" value="7/20" oninput="markPlanDirty()"></div>
-            <div class="field-row"><label>중도금일</label><input type="text" id="p_int_md" value="8/10" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>계약금일</label><input type="text" id="p_int_cd" value="6/30" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>착수금일</label><input type="text" id="p_int_sd" value="7/13" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>중도금일</label><input type="text" id="p_int_md" value="7/27" oninput="markPlanDirty()"></div>
             <div class="field-row"><label>잔금일</label><input type="text" id="p_int_bd" value="8/25" oninput="markPlanDirty()"></div>
             <div id="interior-summary" style="margin-top:10px"></div>
           </div>
           <div>
             <div style="font-size:12px;font-weight:600;color:#0C447C;background:#E6F1FB;padding:5px 10px;border-radius:6px;margin-bottom:10px">🔨 인테리어 B안 (계약금 10·착수금 40·중도금 40·잔금 10%)</div>
             <div class="field-row"><label>총 비용</label><input class="num-input" id="pb_interior" value="50,000,000" data-raw="50000000" oninput="onNumInput(this,markPlanDirty)"></div>
-            <div class="field-row"><label>계약금일</label><input type="text" id="pb_int_cd" value="6/20" oninput="markPlanDirty()"></div>
-            <div class="field-row"><label>착수금일</label><input type="text" id="pb_int_sd" value="7/20" oninput="markPlanDirty()"></div>
-            <div class="field-row"><label>중도금일</label><input type="text" id="pb_int_md" value="8/10" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>계약금일</label><input type="text" id="pb_int_cd" value="6/30" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>착수금일</label><input type="text" id="pb_int_sd" value="7/13" oninput="markPlanDirty()"></div>
+            <div class="field-row"><label>중도금일</label><input type="text" id="pb_int_md" value="7/27" oninput="markPlanDirty()"></div>
             <div class="field-row"><label>잔금일</label><input type="text" id="pb_int_bd" value="8/25" oninput="markPlanDirty()"></div>
             <div id="interior-b-summary" style="margin-top:10px"></div>
           </div>
@@ -666,15 +666,15 @@ function buildPlanRows(){
   if(planB){
     result.push(
       {cat:'인테리어', desc:'‼️ 인테리어 착수금 (40%) — B안', date:el('pb_int_sd').value, inn:0, out:Math.round(intAmt*0.4)},
-      {cat:'기타',     desc:'💰 7월 월급 저축',                date:'8/10',                inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 중도금 (40%) — B안',  date:el('pb_int_md').value, inn:0, out:Math.round(intAmt*0.4)},
+      {cat:'기타',     desc:'💰 7월 월급 저축',                date:'8/10',                inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 잔금 (10%) — B안',    date:el('pb_int_bd').value, inn:0, out:Math.round(intAmt*0.1)},
     );
   } else {
     result.push(
       {cat:'인테리어', desc:'‼️ 인테리어 착수금 (20%) — A안', date:el('p_int_sd').value, inn:0, out:Math.round(intAmt*0.2)},
-      {cat:'기타',     desc:'💰 7월 월급 저축',               date:'8/10',               inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 중도금 (50%) — A안', date:el('p_int_md').value, inn:0, out:Math.round(intAmt*0.5)},
+      {cat:'기타',     desc:'💰 7월 월급 저축',               date:'8/10',               inn:monthly, out:0},
       {cat:'인테리어', desc:'‼️ 인테리어 잔금 (20%) — A안',   date:el('p_int_bd').value, inn:0, out:Math.round(intAmt*0.2)},
     );
   }
@@ -684,13 +684,13 @@ function buildPlanRows(){
   }
   
   result.push(
-    {cat:'인테리어',   desc:'‼️ 도배-정록',             date:'8/25', inn:0,       out:3000000},
-    {cat:'인테리어',   desc:'‼️ 입주 청소 등',             date:'8/25', inn:0,       out:2000000},
+    {cat:'인테리어',   desc:'‼️ 도배-정록',             date:'8/25', inn:0,       out:3500000},
+    {cat:'인테리어',   desc:'‼️ 입주 청소 등',             date:'8/25', inn:0,       out:2500000},
     {cat:'기타',   desc:'이사비용',             date:el('p_sell_bd').value, inn:0,       out:3000000},
     {cat:'수자인', desc:'수자인 매도 잔금 수령', date:el('p_sell_bd').value, inn:sellBal, out:0},
     {cat:'수자인', desc:'기존 주담대 상환',      date:el('p_sell_bd').value, inn:0,       out:lbal},
     {cat:'수자인', desc:'수자인 중개보수',        date:el('p_sell_bd').value, inn:0,       out:agSell},
-    {cat:'신미주', desc:'신미주 주담대 대출 실행', date:el('p_buy_bd').value, inn:newLoan, out:0},
+    {cat:'신미주', desc:'신미주 주담대 대출 실행',   date:el('p_buy_bd').value, inn:newLoan, out:0},
     {cat:'신미주', desc:'신미주 매입 잔금 지출',  date:el('p_buy_bd').value, inn:0,       out:buyBal},
     {cat:'신미주', desc:'신미주 중개보수',         date:el('p_buy_bd').value, inn:0,       out:agBuy},
     {cat:'기타',   desc:'취득세 등 세금',          date:el('p_buy_bd').value, inn:0,       out:taxEtc},
