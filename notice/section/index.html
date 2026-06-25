@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy — 패파의 시선: 업계지도 스터디 모집</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0b0d;
+    --surface: #15171c;
+    --surface-2: #1b1e25;
+    --border: #2a2d35;
+    --border-soft: #20232a;
+    --text-primary: #f3f2ed;
+    --text-secondary: #d5d7df;
+    --text-muted: #9fa1a8;
+    --gold: #dfb839;
+    --gold-bright: #e8c75a;
+    --gold-dim: rgba(201,168,39,0.12);
+    --teal: #4abf9b;
+    --teal-dim: rgba(74,191,155,0.12);
+    --flat: #6c6f78;
+    --flat-dim: rgba(108,111,120,0.12);
+    --sans: 'Pretendard', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+
+  .ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.65rem 0;
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    gap: 2.5rem;
+    white-space: nowrap;
+    animation: ticker-scroll 48s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker-track { animation: none; }
+  }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .tick-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+  }
+  .tick-dot { color: var(--teal); font-size: 0.6rem; }
+  .tick-name { color: var(--text-primary); font-weight: 500; }
+  .tick-sector { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3.5rem 1.5rem 6rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.1rem;
+  }
+
+  .hero-title {
+    font-size: 2.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 0.9rem;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold-bright);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    max-width: 700px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-sub strong { color: var(--text-primary); font-weight: 600; }
+
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.65rem 1rem;
+    min-width: 110px;
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .brief {
+    border-left: 2px solid var(--gold);
+    padding: 0.2rem 0 0.2rem 1.25rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .brief-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+
+  .brief p {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.85;
+  }
+
+  .brief p strong { color: var(--text-primary); font-weight: 600; }
+
+  .section { margin-bottom: 3.5rem; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin-bottom: 1.3rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-code {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .section-note {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .disclosure { width: 100%; border-collapse: collapse; }
+  .disclosure tr { border-bottom: 1px solid var(--border-soft); }
+  .disclosure tr:last-child { border-bottom: none; }
+  .disclosure td {
+    padding: 0.85rem 0;
+    vertical-align: top;
+    font-size: 0.88rem;
+  }
+  .disclosure td:first-child {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    width: 110px;
+    padding-top: 0.92rem;
+  }
+  .disclosure td:last-child { color: var(--text-primary); }
+  .disclosure small { display: block; font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem; }
+
+  /* ── GOAL PROSE ── */
+  .goal-prose {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .goal-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .goal-num {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    padding-top: 0.18rem;
+    flex-shrink: 0;
+    width: 2rem;
+  }
+
+  .goal-text {
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+
+  .goal-text strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ── HOW IT WORKS ── */
+  .how-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .how-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .how-row:last-child { border-bottom: none; }
+
+  .how-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--surface-2);
+    border-right: 1px solid var(--border-soft);
+    padding: 0.95rem 1.1rem;
+    width: 120px;
+    flex-shrink: 0;
+    line-height: 1.5;
+  }
+
+  .how-content {
+    padding: 0.95rem 1.2rem;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    flex: 1;
+  }
+
+  .how-content strong { color: var(--text-primary); font-weight: 600; }
+
+  .how-content .mono-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(201,168,39,0.25);
+    border-radius: 3px;
+    padding: 0.1rem 0.45rem;
+    margin-right: 0.35rem;
+    vertical-align: middle;
+  }
+
+  .how-content .day-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .day-pill {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--teal);
+    background: var(--teal-dim);
+    border: 1px solid rgba(74,191,155,0.2);
+    border-radius: 3px;
+    padding: 0.18rem 0.5rem;
+  }
+
+  /* ── SECTOR BOARD ── */
+  .category-block { margin-bottom: 1.6rem; }
+  .category-block:last-child { margin-bottom: 0; }
+
+  .category-head {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .category-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--bg);
+    background: var(--gold);
+    padding: 0.18rem 0.5rem;
+    border-radius: 3px;
+  }
+
+  .category-name {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .category-count {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.84rem;
+    color: var(--text-primary);
+  }
+
+  .pill::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .pill.flat::before { background: var(--flat); }
+
+  .curri-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  .curri-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+    border-radius: 0 0 8px 8px;
+    padding: 1rem 0.9rem;
+    position: relative;
+  }
+
+  .curri-week {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin-bottom: 0.2rem;
+  }
+
+  .curri-format {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .curri-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+  .curri-card li {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    padding-left: 0.7rem;
+    position: relative;
+  }
+  .curri-card li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  .conditions {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .condition {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--surface);
+  }
+
+  .condition:last-child { border-bottom: none; }
+
+  .condition-mark {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--gold);
+    margin-top: 0.15rem;
+  }
+
+  .condition-text {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .condition-text strong { color: var(--text-primary); font-weight: 600; }
+
+  .cta-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem 1.75rem;
+    text-align: center;
+  }
+
+  .cta-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.7rem;
+  }
+
+  .cta-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .cta-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.6rem;
+  }
+
+  .apply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gold);
+    color: #1a1505;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    font-weight: 700;
+    padding: 0.85rem 2.1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+  }
+
+  .apply-btn:hover { background: var(--gold-bright); transform: translateY(-1px); }
+
+  .cta-note {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 1.1rem;
+  }
+
+  .footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer-logo {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-note {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 640px) {
+    .hero-title { font-size: 1.9rem; }
+    .curri-grid { grid-template-columns: 1fr 1fr; }
+    .disclosure td:first-child { width: 84px; }
+    .how-label { width: 90px; font-size: 0.62rem; }
+  }
+
+  @media (max-width: 420px) {
+    .curri-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-wrap">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<div class="page">
+
+  <div class="eyebrow">FF Academy · Sector Study · 2026</div>
+  <h1 class="hero-title">패파의 <em>시선</em></h1>
+  <p class="hero-sub">내 앞에 앉은 고객이 어떤 산업에서 왔는지, 그 업계에서 지금 무슨 일이 벌어지고 있는지 — <strong>알고 대화하는 것과
+    <br> 모르고 대화하는 건 완전히 다릅니다.</strong> 우리 멤버사들이 어떤 사업을 하고 있는지 직접 공부해보는 4주입니다.</p>
+
+  <div class="brief">
+    <div class="brief-label">Why this study</div>
+    <p>어떤 직무에 있든, 산업을 아는 사람은 다릅니다. 세일즈에서는 고객의 언어로 대화할 수 있고, 운영에서는 고객의 상황을 먼저 이해할 수 있고, 기획에서는 시장 흐름을 읽는 눈이 생깁니다. <strong>이 스터디에서의 경험은 지금 이 회사에서만이 아니라, 커리어 전반에 걸쳐 자산이 됩니다.</strong> 멤버들의 비즈니스에 대한 공부는, 내가 만나는 세상을 더 넓게 바라 보는 연습입니다.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-code">00</span>
+      <span class="section-title">교육 개요</span>
+    </div>
+    <table class="disclosure">
+      <tr><td>대상</td><td>전 부서 임직원</td></tr>
+      <tr><td>모집 인원</td><td>20명 이내</td></tr>
+      <tr><td>교육 기간</td><td>7/7(화) ~ 7/28(화), 총 4주 <small>1주차 대면 OT → 2~3주차 자율 리서치 → 4주차 대면 발표</small></td></tr>
+      <tr><td>교육 장소</td><td>삼성4호점 오후 7시(예정)</td></tr>
+      <tr><td>신청 마감</td><td>7/1(수) 16시</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-code">01</span>
+      <span class="section-title">교육 목표</span>
+    </div>
+    <div class="goal-prose">
+      <div class="goal-item">
+        <span class="goal-num">01</span>
+        <p class="goal-text">고객 업종의 <strong>시장 구조·트렌드·주요 플레이어</strong>를 스스로 파악하고, 전문성 있는 대화를 나눌 수 있는 역량을 갖춥니다.</p>
+      </div>
+      <div class="goal-item">
+        <span class="goal-num">02</span>
+        <p class="goal-text">담당 업종을 직접 리서치하고 정리하는 과정에서, <strong>스스로 공부하는 습관과 분석하는 눈</strong>을 기릅니다.</p>
+      </div>
+      <div class="goal-item">
+        <span class="goal-num">03</span>
+        <p class="goal-text">각자 공부한 내용을 공유하며 <strong>하나의 업종을 넘어 시장 전체를 조망하는 거시적 시각</strong>을 형성합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-code">02</span>
+      <span class="section-title">이런 스터디입니다</span>
+    </div>
+    <div class="how-block">
+      <div class="how-row">
+        <div class="how-label">Self-directed<br>Case Study</div>
+        <div class="how-content">
+          강의를 듣는 교육이 아닙니다. <strong>담당한 업종을 스스로 파헤치는 케이스 스터디</strong>입니다. <br> 어떤 회사들이 있는지, 지금 어떤 이슈가 있는지, 그 시장은 어떤 구조인지 — 직접 찾고, 정리합니다.
+        </div>
+      </div>
+      <div class="how-row">
+        <div class="how-label">주 3회<br>루틴</div>
+        <div class="how-content">
+          교육 기간 동안 슬랙 챌린지를 통해 꾸준히 공부 흔적을 남깁니다.<br>
+          일회성이 아니라 <strong>출근길 루틴처럼</strong> 반복하는 게 이 스터디의 핵심입니다.        
+        </div>
+      </div>
+      <div class="how-row">
+        <div class="how-label">2인 1조</div>
+        <div class="how-content">
+          혼자 하지 않습니다. <strong>매칭된 파트너</strong>와 함께 서로 모르는 걸 채워주고 독려합니다.
+        </div>
+      </div>
+      <div class="how-row">
+        <div class="how-label">발표로<br>마무리</div>
+        <div class="how-content">
+          4주차 대면 세션에서 업종 브리핑을 발표합니다. <strong>여러 업종의 지형도가 완성되는 시간</strong>으로, 내가 맡은 업종 외의 시장도 한꺼번에 흡수할 수 있습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-code">03</span>
+      <span class="section-title">운영 일정</span>
+      <span class="section-note">4 WEEKS</span>
+    </div>
+    <div class="curri-grid">
+      <div class="curri-card">
+        <div class="curri-week">1주차</div>
+        <div class="curri-format">대면 · OT</div>
+        <ul>
+          <li>오리엔테이션</li>
+          <li>업종 배정 및 2인 1조 매칭</li>
+        </ul>
+      </div>
+      <div class="curri-card">
+        <div class="curri-week">2~3주차</div>
+        <div class="curri-format">비대면 · 자율</div>
+        <ul>
+          <li>업종 분석 리서치</li>
+          <li>슬랙 챌린지 — 매주 월·수·금<br><span style="font-size:0.68rem;color:var(--text-muted);font-family:var(--mono);">기업 소개 / 업계 이슈 등 공유</span></li>
+        </ul>
+      </div>
+      <div class="curri-card">
+        <div class="curri-week">4주차</div>
+        <div class="curri-format">대면 · 발표</div>
+        <ul>
+          <li>업종 브리핑 발표 및 공유</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <span class="section-code">04</span>
+      <span class="section-title">수료 기준</span>
+    </div>
+    <div class="conditions">
+      <div class="condition">
+        <span class="condition-mark">01</span>
+        <div class="condition-text"><strong>대면 세션 모두 참석</strong> — 1주차, 4주차 필참</div>
+      </div>
+      <div class="condition">
+        <span class="condition-mark">02</span>
+        <div class="condition-text">
+          <strong>슬랙 챌린지 90% 이상 완료</strong> — 주 3회<br>
+        </div>
+      </div>
+      <div class="condition">
+        <span class="condition-mark">03</span>
+        <div class="condition-text"><strong>업종 브리핑 발표 완료</strong></div>
+      </div>
+      <div class="condition">
+        <span class="condition-mark">⚠️</span>
+        <div class="condition-text">이 스터디는 <strong>꾸준히 참여할 준비가 된 분</strong>을 위한 과정입니다. 
+          <br> 수료 조건 미충족 시 수료 불인정되며, 이후 FF Academy 프로그램 신청 시 불이익이 적용될 수 있습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <div class="cta-eyebrow">Apply now</div>
+    <div class="cta-title">패파의 시선이 궁금하다면, 함께 해요</div>
+    <a href="https://forms.gle/WNHn5vbUDZ8k5Zf6A" class="apply-btn" target="blank">신청하기 →</a>
+    <div class="cta-note">신청 마감: 7/1(수) 16시</div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-logo">FF <span>Academy</span></div>
+    <div class="footer-note">문의 · @구연정</div>
+  </div>
+
+</div>
+
+<script>
+  const sectors = [
+    ["TC01","솔루션/SI/ERP/CRM"], ["TC02","과학기술/연구개발"], ["TC03","핀테크"],
+    ["TC04","버추얼/AI 콘텐츠"], ["TC05","헬스케어 디지털솔루션"],
+    ["CM01","도소매/유통"], ["CM02","이커머스/D2C 브랜드"], ["CM03","제조"],
+    ["CM04","푸드테크"], ["CM05","펫테크"],
+    ["MD01","방송/미디어/콘텐츠"], ["MD02","광고/홍보/전시"], ["MD03","게임 · 건설"],
+    ["PS01","전문서비스"], ["PS02","교육서비스업"]
+  ];
+
+  function buildTicker() {
+    const track = document.getElementById('tickerTrack');
+    const item = (code, name) =>
+      `<span class="tick-item"><span class="tick-dot">●</span><span class="tick-name">${name}</span></span>`;
+    const html = sectors.map(([c, n]) => item(c, n)).join('');
+    track.innerHTML = html + html;
+  }
+  buildTicker();
+</script>
+
+</body>
+</html>
