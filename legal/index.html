@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy | legal 교육</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --border: #e4e2dc;
+    --border2: #d6d3ca;
+    --text-primary: #1a1a1a;
+    --text-secondary: #4a4a4a;
+    --text-muted: #8a8a8a;
+    --accent: #e8421a;
+    --accent-dim: #fdf1ee;
+    --accent-dim2: rgba(232,66,26,0.06);
+    --black: #111111;
+    --black-dim: rgba(17,17,17,0.05);
+    --sans: 'Pretendard', -apple-system, sans-serif;
+    --green: #1e8c46;
+    --green-dim: #f3faf5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  .page { max-width: 880px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+
+  /* ── 헤더 ── */
+  .doc-header { border-bottom: 2px solid var(--text-primary); padding-bottom: 2rem; margin-bottom: 2.5rem; }
+  .doc-label {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.6rem;
+  }
+  .doc-title { font-size: 2.1rem; font-weight: 800; line-height: 1.35; margin-bottom: 0.5rem; color: var(--black); }
+  .doc-sub { font-size: 1rem; color: var(--text-secondary); font-weight: 400; line-height: 1.6; }
+
+  /* ── TOC (6번이 잘리지 않고 예쁘게 두 줄로 떨어지도록 개선) ── */
+  .toc-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(247,246,243,0.96);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.8rem 2rem; margin: 0 -2rem 2.5rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    flex-wrap: wrap; /* 두 줄 개행 허용 */
+  }
+  .toc-bar-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; color: var(--text-muted); white-space: nowrap; margin-right: 0.5rem;
+  }
+  .toc-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 0.9rem; height: 32px; border-radius: 16px;
+    border: 1.5px solid var(--border2); background: transparent;
+    font-size: 0.75rem; font-weight: 600; color: var(--text-secondary);
+    cursor: pointer; flex-shrink: 0; transition: all 0.18s; text-decoration: none;
+    margin-bottom: 2px;
+  }
+  .toc-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim2); }
+  .toc-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* ── 섹션 ── */
+  .section { margin-bottom: 5rem; scroll-margin-top: 5.5rem; }
+  .section-num {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-size: 1.5rem; font-weight: 800; line-height: 1.35; color: var(--black);
+    margin-bottom: 0.4rem; padding-bottom: 0.8rem; border-bottom: 2px solid var(--border);
+  }
+  .section-sub { font-size: 0.88rem; color: var(--text-muted); margin: -0.15rem 0 1.5rem; }
+
+  /* ── 본문 ── */
+  .body-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.9; margin-bottom: 1.2rem; text-align: justify; }
+  .body-text strong { color: var(--text-primary); font-weight: 700; }
+  .text-highlight { color: var(--accent); font-weight: 600; }
+  .text-black { color: var(--black); font-weight: 600; }
+
+  h3 { font-size: 1.1rem; font-weight: 700; color: var(--black); margin: 2.2rem 0 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+  h3 i { color: var(--accent); font-size: 1rem; }
+
+  /* ── 안내 박스 ── */
+  .analogy {
+    background: var(--accent-dim2); border: 1px solid rgba(232,66,26,0.18);
+    border-left: 5px solid var(--accent); padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+  }
+  .analogy-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem; }
+  .analogy p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+  .warning {
+    background: #fff8f0; border: 1px solid rgba(200,120,20,0.18);
+    border-left: 5px solid #c8781e; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0;
+  }
+  .warning-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: #c8781e; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+  .warning p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.8; }
+
+  .point-box {
+    background: var(--black-dim); border: 1px solid rgba(17,17,17,0.08);
+    padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-radius: 8px;
+  }
+  .point-box-title { font-size: 0.88rem; font-weight: 700; color: var(--black); margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.4rem; }
+  .point-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .point-list li { font-size: 0.9rem; color: var(--text-secondary); padding-left: 1.1rem; position: relative; line-height: 1.7; }
+  .point-list li::before { content: '·'; position: absolute; left: 0.2rem; color: var(--accent); font-weight: 900; font-size: 1.3rem; top: -3px; }
+
+  /* ── 도식화 레이아웃 ── */
+  .flow-chart-container {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.8rem; margin: 1.8rem 0; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  .flow-subtitle { font-size: 0.85rem; color: var(--text-secondary); background: #f1f1f1; padding: 0.4rem 0.8rem; border-radius: 4px; margin-bottom: 1rem; font-weight: 600; }
+  .flow-track { display: flex; align-items: stretch; gap: 0.5rem; margin-bottom: 1.5rem; width: 100%; }
+  .flow-step {
+    background: var(--bg); border: 1px solid var(--border2); border-radius: 6px;
+    padding: 0.7rem 0.6rem; text-align: center; flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; position: relative;
+  }
+  .flow-step.dark-step { background: #333; border-color: #111; }
+  .flow-step.dark-step .flow-step-title { color: #fff; }
+  .flow-step.dark-step .flow-step-desc { color: #bbb; }
+  .flow-step.accent-step { border-color: var(--accent); background: var(--accent-dim); }
+  .flow-step.accent-step .flow-step-title { color: var(--accent); }
+  .flow-step-title { font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem; word-break: keep-all; }
+  .flow-step-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.3; word-break: keep-all; }
+  .flow-arrow { display: flex; align-items: center; color: var(--border2); font-size: 0.9rem; padding: 0 0.1rem; }
+  .flow-break-arrow { text-align: center; color: var(--border2); font-size: 1.2rem; margin: -0.8rem 0 0.5rem 0; }
+
+  /* ── 표 레이아웃 ── */
+  .table-wrapper { width: 100%; overflow-x: auto; margin: 1.8rem 0; border-radius: 8px; border: 1px solid var(--border); }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; background: #fff; table-layout: fixed; min-width: 750px; }
+  
+  .compare-table th {
+    background: var(--black); color: #fff; padding: 0.9rem 1rem; font-weight: 700;
+    font-size: 0.85rem; text-align: center; border: 1px solid var(--border2); vertical-align: middle;
+  }
+  
+  .compare-table td.row-label {
+    background: var(--bg); color: var(--text-primary); font-weight: 700;
+    text-align: center; vertical-align: middle; border-right: 1px solid var(--border2);
+  }
+  .compare-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; line-height: 1.6; word-break: keep-all; }
+  .compare-table td:last-child { border-right: none; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:nth-child(even) td:not(.row-label) { background: rgba(247,246,243,0.4); }
+  
+  /* 균등 고정 폭 클래스 */
+  .grid-5-cols th, .grid-5-cols td { width: 20% !important; }
+  .grid-4-cols th, .grid-4-cols td { width: 25% !important; }
+  .grid-3-cols th, .grid-3-cols td { width: 33.33% !important; }
+
+  .compare-table .list-cell ul { padding-left: 1.2rem; list-style-type: disc; }
+  .compare-table .list-cell ul li { margin-bottom: 0.3rem; }
+
+  /* 스텝 */
+  .step-list { display: flex; flex-direction: column; gap: 1.2rem; margin: 1.5rem 0; }
+  .step { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-dim); border: 1.5px solid rgba(232,66,26,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: var(--accent); margin-top: 2px; }
+  .step-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.3rem; }
+  .step-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+
+  /* 로직 박스 */
+  .logic-container { background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; }
+  .logic-switch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.2rem; }
+  .logic-case-box { border-radius: 8px; padding: 1.2rem; border-left: 5px solid; }
+  .logic-case-box.blue-case { background: var(--black-dim); border-color: var(--black); }
+  .logic-case-box.orange-case { background: var(--accent-dim); border-color: var(--accent); }
+  .logic-case-title { font-size: 0.92rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+  .logic-badge { font-size: 0.65rem; font-weight: 700; color: #fff; padding: 1px 6px; border-radius: 3px; }
+  .logic-case-box.blue-case .logic-badge { background: var(--black); }
+  .logic-case-box.orange-case .logic-badge { background: var(--accent); }
+  .logic-case-desc { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.65; }
+
+  /* 체크리스트 */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+  .checklist li { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+  .check-box { width: 18px; height: 18px; border: 2px solid var(--border2); border-radius: 4px; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: transparent; cursor: pointer; transition: all 0.15s; }
+  .checklist li.checked .check-box { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+  .doc-footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .doc-footer-logo { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); }
+  .doc-footer-logo em { font-style: normal; color: var(--accent); }
+  .doc-footer-note { font-size: 0.78rem; color: var(--text-muted); }
+
+  @media (max-width: 600px) {
+    .toc-bar { flex-direction: row; flex-wrap: wrap; }
+    .flow-track { grid-template-columns: 1fr; flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); justify-content: center; margin: 0.3rem 0; }
+    .logic-switch-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 헤더 -->
+  <div class="doc-header">
+    <div class="doc-label">FF ACADEMY · COG/OSG legal 교육</div>
+    <h1 class="doc-title">공유 오피스 계약 실무 가이드북</h1>
+  </div>
+  
+  <div style="background: var(--black-dim); border: 1px solid var(--border2); border-radius: 6px; padding: 0.6rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+    <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
+      <i class="fa-solid fa-scale-balanced" style="color: var(--accent);"></i> 
+      실무 중 판단이 어렵거나 예외적인 케이스는 법무팀의 공식 가이드를 먼저 확인해 주세요.
+    </div>
+    <a href="https://sites.google.com/fastfive.co.kr/fastfive/%EC%97%85%EB%AC%B4-%EA%B0%80%EC%9D%B4%EB%93%9C/%EB%B2%95%EB%AC%B4" target="_blank" style="background: var(--black); color: #ffffff; font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-decoration: none; transition: background 0.15s; white-space: nowrap;">
+      법무팀 가이드 바로가기 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem; margin-left: 2px;"></i>
+    </a>
+  </div>
+
+  <!-- TOC -->
+  <nav class="toc-bar" id="toc-bar">
+    <span class="toc-bar-label">INDEX</span>
+    <a class="toc-btn" id="btn-s1" href="#s1">01. 주체별 기본 개념</a>
+    <a class="toc-btn" id="btn-s2" href="#s2">02. 특수법인/단체 가이드</a>
+    <a class="toc-btn" id="btn-s3" href="#s3">03. 사업자 등록 프로세스</a>
+    <a class="toc-btn" id="btn-s4" href="#s4">04. 법인 설립 및 비용</a>
+    <a class="toc-btn" id="btn-s5" href="#s5">05. 주소지 설정 원칙</a>
+    <a class="toc-btn" id="btn-s6" href="#s6">06. 패파 실전 계약 매뉴얼</a>
+    <a class="toc-btn" id="btn-s7" href="#s7">07. 대리인·대표권 유의사항</a>
+  </nav>
+
+  <!-- 01 개인 vs 개인사업자 vs 법인 -->
+  <section class="section" id="s1">
+    <div class="section-num">Section 01</div>
+    <h2 class="section-title">개인 vs 개인사업자 vs 법인 기본 개념</h2>
+    <p class="section-sub">비즈니스를 하는 고객들의 3가지 기본 유형과 특징 이해하기</p>
+    <p class="body-text">멤버사를 응대하다 보면 다양한 유형의 계약 명의를 접하게 됩니다. 계약 명의자와 실제 사용자, 돈을 주고 받는 영수증(세금계산서)의 이름이 완전히 같아야 정상적인 계약입니다.</p>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-4-cols">
+        <thead>
+          <tr>
+            <th>구분 항목</th>
+            <th>개인</th>
+            <th>개인사업자</th>
+            <th>법인</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">개념</td>
+            <td>법적인 권리와 권한을 가진 일반적인 <strong>'사람(자연인)'</strong></td>
+            <td>세무서에 신청해서 사업자 번호를 받은 <strong>'개인'</strong> <br>(사업자와 내가 한 몸)</td>
+            <td>법에 의해서 사람처럼 행동할 수 있는 자격을 부여받은 <strong>'새로운 회사 주체'</strong></td>
+          </tr>
+          <tr>
+            <td class="row-label">설립 절차</td>
+            <td>출생</td>
+            <td>세무서에 사업자 등록<br>(무료, 약 1~3일 소요)</td>
+            <td>대법원 등기소에 설립 등기 후, 세무서에 사업자 등록(절차 복잡, 비용 발생)</td>
+          </tr>
+          <tr>
+            <td class="row-label">책임 범위</td>
+            <td>본인의 행위에 대해 무한 책임</td>
+            <td>사업상 발생한 모든 부채와 리스크에 대해 대표자가 무한 책임</td>
+            <td>주주들은 자기가 낸 자본금(투자금) 한도 내에서만 책임을 지는 유한 책임</td>
+          </tr>
+          <tr>
+            <td class="row-label">과세 방식</td>
+            <td>사업용 증빙을 발행하지 않으며 일상 소득세 적용</td>
+            <td><span class="text-highlight">종합소득세(6%~45%, 개인 소득에 합산)</span> <br>매출이 커질수록 내야 하는 세금 비율이 급격하게 늘어남</td>
+            <td><span class="text-highlight">법인세(9%~24%, 개인 소득과 분리)</span> <br>매출이 클때는 최고 세율이 개인사업자보다 낮아서 유리함.</td>
+          </tr>
+          <tr>
+            <td class="row-label">SF 고유식별번호</td>
+            <td>주민등록번호</td>
+            <td>사업자등록번호</td>
+            <td>법인등록번호</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>왜 법인으로 전환할까요?</h3>
+    <p class="body-text">사업 규모가 커진 개인사업자 대표님들이 법인으로 전환을 고민하는 데는 다음과 같은 이유가 있습니다. 멤버사가 왜 굳이 복잡하게 법인을 만드나 궁금할 때 아래 맥락을 기억해 두면 전문가처럼 대응할 수 있습니다.</p>
+
+    <div class="point-box">
+      <div class="point-box-title"><i class="fa-solid fa-arrow-up-right-from-square"></i> 대표님들이 법인을 만드는 4가지 핵심 이유</div>
+      <ul class="point-list">
+        <li><strong>책임 분리</strong> — 사업이 힘들어지거나 채무가 생겨도 대표자 개인 재산(집, 자동차 등)까지 위험해지지 않는 유한책임 구조를 원하기 때문입니다.</li>
+        <li><strong>세금 구조의 유리함</strong> — 소득 규모가 일정 수준 이상으로 커지면 누진세율이 적용되는 개인 종합소득세보다 법인세율 구조가 훨씬 이득이 되는 지점이 생깁니다.</li>
+        <li><strong>대외 신인도(신뢰도) 향상</strong> — 외부 투자 유치, 정부 지원사업 신청, 대기업이나 공공기관과의 공식 거래 등에서 법인 형태의 사업체만 자격을 요구하는 경우가 많습니다.</li>
+        <li><strong>사업 승계 및 확장 용이성</strong> — 나중에 회사를 물려주거나 지분을 쪼개어 투자자들에게 나눠주기 편리하며, 대표자가 바뀌어도 사업체 자체는 중단 없이 그대로 유지하고 싶을 때 유리합니다.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 02 외국법인, 영업소, 연락사무소, 그 외 비영리단체 -->
+  <section class="section" id="s2">
+    <div class="section-num">Section 02</div>
+    <h2 class="section-title">외국법인·영업소·연락사무소·비영리단체 개념</h2>
+    <p class="section-sub">글로벌 기업 및 특수 단체의 한국 진출 형태와 계약 주체 파악하기</p>
+    <p class="body-text">한국에 본사를 둔 기업 외에도, 해외에 본사를 두고 한국 지사를 내거나 비영리 목적으로 패파를 찾는 고객들이 있습니다. 이들은 각각 발급받는 증빙서류의 명칭과 세무 처리가 완전히 다르므로 아래 표를 통해 숙지해두면 좋습니다.</p>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-5-cols">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>외국법인<br>(본점 직접)</th>
+            <th>한국지점<br>(영업소)</th>
+            <th>연락사무소<br>(대표사무소)</th>
+            <th>국내 비영리단체</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">개념</td>
+            <td>해외 본사가 지점 없이 직접 계약</td>
+            <td>외국 법인이 국내 영업(수익 창출) 위해 설치, 등기 필수</td>
+            <td>비영업 기능(시장조사·연락·홍보 등)만 수행, 실질적 매출 없음</td>
+            <td>비영리 목적 단체(사단법인·협회·조합 등). 법인격 있는 경우와 없는 경우(임의단체)로 나뉨</td>
+          </tr>
+          <tr>
+            <td class="row-label">계약 명의</td>
+            <td>해외 본점 명의 + 본사 대표(위임자) 서명</td>
+            <td>"○○○ 한국지점" + 국내 지점대표 서명</td>
+            <td>"○○○ 연락사무소", 실질적 법적 계약 당사자는 본점(외국법인)</td>
+            <td>법인명의+대표자 날인 / 임의단체는 대표자 개인명의</td>
+          </tr>
+          <tr>
+            <td class="row-label">책임 범위</td>
+            <td>법인 책임(칙적 유한책임). 국내에서 채권 회수·강제집행 어려울 수 있음</td>
+            <td>법인격은 외국 본점에 있지만, 국내 영업활동으로 발생한 채무는 국내 지점 재산 기준으로 이행</td>
+            <td>독립된 법적 주체가 아니므로 본점(외국법인)이 전적으로 책임</td>
+            <td>법인=유한책임 / 임의단체=개인 책임 소지</td>
+          </tr>
+          <tr>
+            <td class="row-label">사업자등록</td>
+            <td>등록 대상이 아님</td>
+            <td><span class="text-black">필수</span></td>
+            <td><span class="text-black">불필요</span>. 증빙을 위해 세무서에서 고유번호증 발급받는 경우 있음</td>
+            <td><span class="text-black">고유번호증 발급</span>. 수익사업 병행 시 그 부분에 한해 사업자등록</td>
+          </tr>
+          <tr>
+            <td class="row-label">과세·증빙</td>
+            <td>원천징수 위주, 전자세금계산서는 수기 계산서나 <span class="text-highlight">Invoice로 대체</span></td>
+            <td>법인세 신고 의무 있음, <span class="text-highlight">세금계산서 가능</span></td>
+            <td>법인세 신고 의무 없으므로 매출세금계산서 불가. <span class="text-highlight">고유번호증으로 매입세금계산서</span> 가능</td>
+            <td>고유목적 비과세 / 수익사업만 과세+<span class="text-highlight">세금계산서 가능</span></td>
+          </tr>
+          <tr>
+            <td class="row-label">고유식별번호</td>
+            <td>없음 (본국 법인등록번호로 대조)<br>SF에는 999999-9999999로 등록</td>
+            <td><strong>사업자등록번호</strong></td>
+            <td><strong>고유번호</strong></td>
+            <td><strong>고유번호</strong> (수익사업 시 사업자번호 병행)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="analogy" style="background: rgba(30,138,70,0.04); border-color: rgba(30,138,70,0.2); border-left: 5px solid var(--green);">
+      <div class="analogy-label" style="color: var(--green); font-weight: 700;"><i class="fa-solid fa-lightbulb"></i> TIP: 비영리단체여도 수익활동이 가능합니다!</div>
+      <p style="font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary);">
+        비영리법인의 본질은 '돈을 벌면 안 된다'가 아니라, <strong>'사업으로 번 이익금을 주주나 임원에게 개인적으로 나누어주지(배당하지) 않는다'</strong>는 뜻입니다. 따라서 단체의 고유 공익 목적인 소외계층 지원이나 연구비 마련 등을 위해 인형/에코백 같은 굿즈를 유료로 판매하거나 수강료를 받는 <strong>수익 사업을 얼마든지 병행할 수 있습니다.</strong><br>
+        이처럼 수익 사업을 개시하는 비영리단체는 기존에 쓰던 세무서 신분증인 <strong>'고유번호증'을 반납하고, '수익사업용 사업자등록증'으로 전환 발급</strong>받아 세금을 신고하게 됩니다.
+      </p>
+    </div>
+
+    <h3>📍 한국에 대리인이 없는 외국법인 계약시</h3>
+    <p class="body-text">외국에 본사를 둔 기업인데 한국에 아직 상주하는 직원이 없어서 본사와 직접 계약 절차를 밟아야 하는 특수한 경우가 있습니다. 이때는 아래 원칙을 반드시 준수하여 서류의 법적 효력을 확보해야 합니다.</p>
+    
+    <div class="point-box">
+      <div class="point-box-title"><i class="fa-solid fa-plane"></i> 해외 본사 직접 계약 시 서류 수령 가이드</div>
+      <ul class="point-list">
+        <li><strong>원칙 — 실물 수령:</strong> 외국법인과 계약할 때는 반드시 **영문본 계약서를 국제 우편(DHL, FedEx 등)을 통해 본사의 실제 도장/사인이 날인된 실물 문서로 직접 수령**해야 합니다. 이메일로 주고받은 PDF 파일은 실제 체결본보다 법적인 증빙 효력 순위가 밀리기 때문입니다.</li>
+        <li><strong>예외 — 긴급 처리 프로세스:</strong> 일정이 너무 급한 경우에는 당사자 간의 의사가 합치된 것으로 보고, **우선 이메일 PDF 파일로 계약서 사본을 받아 입주 및 계약을 진행**할 수 있습니다. 다만, 이 경우에도 **사후적으로 반드시 DHL 등을 통해 실제 날인본 실물을 전달받아 보관**하는 것이 안전합니다. (※ 당연히 실제 날인본과 사전에 주고받은 PDF 파일의 내용은 단 한 글자도 다름없이 완벽히 일치해야 합니다!)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 사업자 등록 절차 및 비용 -->
+  <section class="section" id="s3">
+    <div class="section-num">Section 03</div>
+    <h2 class="section-title">사업자 등록 절차 및 비용</h2>
+    <p class="section-sub">개인사업자가 사업을 시작하기 위해 밟는 행정 단계</p>
+    <p class="body-text">입주사가 사업자등록을 진행할 때 패스트파이브에 가장 많이 요청하는 것이 사업장 소재지를 증빙할 서류예요. 멤버사 입장에서 사업자 등록 흐름을 알아봅니다.</p>
+    
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">사무실 공간 확보 (패파 계약)</div>
+          <div class="step-desc">사업을 할 주소가 실제로 존재해야 하므로 패스트파이브와 사무공간 계약을 맺고 멤버십등록계약서를 받습니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">홈택스 또는 관할 세무서 신청</div>
+          <div class="step-desc">첨부 서류를 들고 관할 세무서 민원실을 방문하거나 국세청 홈택스 웹사이트를 통해 신청서를 작성합니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">서류 심사 후 사업자등록증 발급</div>
+          <div class="step-desc">세무서에서 주소지와 업종을 확인한 뒤 문제가 없으면 즉시 혹은 1~3일 안에 정식 등록증을 발급해 줍니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-3-cols">
+        <thead>
+          <tr>
+            <th>준비 서류</th>
+            <th>평균 소요 기간</th>
+            <th>행정 비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="list-cell" style="padding: 1.2rem 1rem; vertical-align: top; text-align: left;">
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin: 0 0 0.8rem 0; font-size: 0.84rem; color: var(--text-secondary);">
+                <li style="margin-bottom: 0.35rem;">사업자등록 신청서</li>
+                <li style="margin-bottom: 0.35rem;">대표자 신분증</li>
+                <li style="margin-bottom: 0.35rem;">
+                  임대차 계약서 
+                  <span style="background: var(--accent-dim); color: var(--accent); font-size: 0.72rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; margin-left: 4px; border: 1px solid rgba(232,66,26,0.15);">패파 제공</span>
+                </li>
+                <li style="margin-bottom: 0;">인허가증 <span style="font-size: 0.75rem; color: var(--text-muted);">(허가 대상 업종만)</span></li>
+              </ul>
+              
+              <div style="background: var(--accent-dim2); border: 1px solid rgba(232,66,26,0.15); border-radius: 6px; padding: 0.65rem 0.75rem; margin-top: 0.6rem;">
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.25rem;">
+                  <i class="fa-solid fa-file-invoice" style="font-size: 0.75rem;"></i> 패파 제공 서류 (사업장 소재지 증빙)
+                </div>
+                <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.6;">
+                  <li style="margin-bottom: 0.25rem; position: relative; padding-left: 0.6rem;">
+                    <span style="position: absolute; left: 0; color: var(--accent);">-</span> 멤버십등록계약서
+                  </li>
+                  <li style="margin-bottom: 0.25rem; position: relative; padding-left: 0.6rem;">
+                    <span style="position: absolute; left: 0; color: var(--accent);">-</span> (예치금 지점) 위탁운영공문 + 위탁동의서
+                  </li>
+                  <li style="margin: 0.15rem 0; font-size: 0.7rem; font-weight: 700; color: var(--accent); text-align: center; letter-spacing: 0.05em;">── OR ──</li>
+                  <li style="margin-bottom: 0; position: relative; padding-left: 0.6rem;">
+                    <span style="position: absolute; left: 0; color: var(--accent);">-</span> (보증금 지점) 전대차계약서 + 전대동의서
+                  </li>
+                </ul>
+              </div>
+            </td>
+            <td style="text-align: center; vertical-align: middle; padding: 1.2rem 1rem;">
+              <strong style="font-size: 0.9rem; color: var(--black);">신청 당일 ~ 최대 3일 이내</strong>
+            </td>
+            <td style="text-align: center; vertical-align: middle; padding: 1.2rem 1rem;">
+              <span class="text-highlight" style="font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 0.3rem;">0원 (무료)</span>
+              <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; display: block;">세무서에 신청할 때 발생하는 국가 행정 수수료는 없습니다.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 법인 설립 절차 및 비용 -->
+  <section class="section" id="s4">
+    <div class="section-num">Section 04</div>
+    <h2 class="section-title">법인 설립 절차 및 소요 비용</h2>
+    <p class="section-sub">새로운 법인 인격을 법원 등기소에 등록하기 위한 전체 과정</p>
+
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num" style="background: var(--black-dim); color: var(--black); border-color: var(--border2);">0</div>
+        <div class="step-content">
+          <div class="step-title">대표자 개인 명의로 사업장 계약</div>
+          <div class="step-desc">회사가 설립되기 전이므로 등기부등본에 등록할 사업장 주소지를 먼저 확보해야 합니다. **대표자 개인 명의로 임대차 계약<span class="text-highlight">(패파의 경우, 멤버십등록계약)</span>을 먼저 체결**하여 공식 주소지를 선점합니다.</div>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">정관(회사 규칙) 작성</div>
+          <div class="step-desc">0단계에서 확보한 주소를 본점 소재지로 지정하고, 회사의 상호, 사업 목적, 자본금, 주주와 임원진을 구성하여 회사의 헌법인 '정관'을 만듭니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">발기인 총회 및 자본금 납입</div>
+          <div class="step-desc">설립 발기인이 모여 정관을 승인하고, 대표자 개인 통장에 자본금을 일시에 예치하여 은행 잔고증명서를 발급받습니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">설립등기 신청 및 세금 납부</div>
+          <div class="step-desc">등록면허세와 지방교육세를 납부하고, 관할 법원 등기소에 법인 설립 등기를 신청합니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">법인 사업자등록</div>
+          <div class="step-desc">설립 등기 완료 후, 세무서에 사업자 등록을 신청합니다. 일반적으로 사업 개시일부터 20일 이내에 신청해야 하며 이때, <span class="text-highlight">임대차 계약 명의를 법인으로 전환(Section 06 참고)</span>하여 발급받은 법인 임대차 서류를 세무서에 제출합니다.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">법인 통장 개설</div>
+          <div class="step-desc">법인 사업자등록증과 법인 인감을 지참하여 법인 명의 통장을 개설합니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-3-cols">
+        <thead>
+          <tr>
+            <th>준비 서류(영리법인 기준)</th>
+            <th>평균 소요 기간</th>
+            <th>행정 비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: left; vertical-align: top; padding: 1.2rem 1rem;">
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="fa-solid fa-gavel"></i> 1단계: 법인 설립 등기 
+                <span style="font-size: 0.72rem; background: var(--accent-dim); padding: 2px 5px; border-radius: 3px; font-weight: 600;">등기소 제출</span>
+              </div>
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin: 0; font-size: 0.84rem; color: var(--text-secondary);">
+                <li style="margin-bottom: 0.3rem;">법인 설립등기 신청서</li>
+                <li style="margin-bottom: 0.3rem;">정관</li>
+                <li style="margin-bottom: 0.3rem;">조사보고서</li>
+                <li style="margin-bottom: 0.3rem;">주주명부</li>
+                <li style="margin-bottom: 0.3rem;">취임승낙서</li>
+                <li style="margin-bottom: 0.3rem;">발기인총회 의사록</li>
+                <li style="margin-bottom: 0.3rem;">은행 자본금 잔고증명서</li>
+                <li style="margin-bottom: 0.3rem;">주식발행사항 동의서</li>
+                <li style="margin-bottom: 0.3rem;">인감신고서</li>
+                <li style="margin-bottom: 0.3rem;">임원진 전원의 인감증명서 등</li>
+              </ul>
+            </td>
+            <td style="text-align: center; vertical-align: middle; padding: 1.2rem 1rem;">
+              <strong style="font-size: 0.9rem; color: var(--black);">약 3~5 영업일 소요</strong><br>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">(법원 등기소 심사 기간 기준)</span>
+            </td>
+            <td style="padding: 1.2rem 1rem; vertical-align: top;">
+              <strong style="color: var(--black); font-size: 0.88rem; display: block; margin-bottom: 0.3rem;">1. 국가 세금/수수료 (필수):</strong>
+              <span style="font-size: 0.84rem; color: var(--text-secondary); display: block; margin-bottom: 0.2rem;">- <strong>등록면허세:</strong> 자본금의 0.4% 기본 부과 (서울/수도권 등 <span class="text-highlight">과밀억제권역에 설립하면 3배 중과세</span> 적용, 최저 112,500원 이상)</span>
+              <span style="font-size: 0.84rem; color: var(--text-secondary); display: block; margin-bottom: 0.2rem;">- <strong>지방교육세:</strong> 등록면허세의 20% 부과</span>
+              <span style="font-size: 0.84rem; color: var(--text-secondary); display: block; margin-bottom: 0.8rem;">- <strong>등기 수수료:</strong> 서류 약 30,000원 / 전자 약 15,000원</span>
+              
+              <strong style="color: var(--black); font-size: 0.88rem; display: block; margin-bottom: 0.3rem;">2. 대행 수수료 (선택):</strong>
+              <span style="font-size: 0.84rem; color: var(--text-secondary);">- 법무사 등 대행 업체 이용 시 약 30~50만 원 선 별도 발생</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: left; vertical-align: top; padding: 1.2rem 1rem; border-top: 1px solid var(--border);">
+              <div style="font-size: 0.85rem; font-weight: 700; color: var(--green); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.3rem;">
+                <i class="fa-solid fa-building"></i> 2단계: 법인 사업자등록 
+                <span style="font-size: 0.72rem; background: var(--green-dim); color: var(--green); padding: 2px 5px; border-radius: 3px; font-weight: 600;">세무서 제출</span>
+              </div>
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin: 0 0 0.8rem 0; font-size: 0.84rem; color: var(--text-secondary);">
+                <li style="margin-bottom: 0.3rem;">법인 사업자등록신청서</li>
+                <li style="margin-bottom: 0.3rem;">법인등기부등본 <span style="font-size: 0.75rem; color: var(--text-muted);">(1단계 완료 후 발급)</span></li>
+                <li style="margin-bottom: 0.3rem;">대표자 신분증 사본</li>
+                <li style="margin-bottom: 0.3rem;">법인인감증명서 & 법인인감도장 지참</li>
+                <li style="margin-bottom: 0.3rem;">법인 명의 임대차 계약서<span style="background: var(--accent-dim); color: var(--accent); font-size: 0.72rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; margin-left: 4px; border: 1px solid rgba(232,66,26,0.15);">패파 제공</span></li>
+                <li style="margin-bottom: 0.3rem;">주주명부, 정관</li>
+                <li style="margin-bottom: 0;">인허가증 <span style="font-size: 0.75rem; color: var(--text-muted);">(허가 대상 업종만)</span></li>
+              </ul>
+              
+              <div style="background: var(--accent-dim2); border: 1px solid rgba(232,66,26,0.15); border-radius: 6px; padding: 0.6rem 0.7rem; margin-top: 0.4rem;">
+                <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent); margin-bottom: 0.3rem;">
+                  <i class="fa-solid fa-file-invoice" style="font-size: 0.75rem;"></i> 패파 제공 서류 (사업장 소재지 증빙)
+                </div>
+                <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5;">
+                  <li style="margin-bottom: 0.2rem; position: relative; padding-left: 0.6rem;"><span style="position: absolute; left: 0; color: var(--accent);">-</span> 멤버십등록계약서</li>
+                  <li style="margin-bottom: 0.2rem; position: relative; padding-left: 0.6rem;"><span style="position: absolute; left: 0; color: var(--accent);">-</span> (예치금식) 위탁운영공문 + 위탁동의서</li>
+                  <li style="margin: 0.1rem 0; font-size: 0.7rem; font-weight: 700; color: var(--accent); text-align: center;">── OR ──</li>
+                  <li style="margin-bottom: 0; position: relative; padding-left: 0.6rem;"><span style="position: absolute; left: 0; color: var(--accent);">-</span> (보증금식) 전대차계약서 + 전대동의서</li>
+                </ul>
+              </div>
+            </td>
+            <td style="text-align: center; vertical-align: middle; padding: 1.2rem 1rem; border-top: 1px solid var(--border);">
+              <strong style="font-size: 0.9rem; color: var(--black);">신청 당일 ~ 최대 3일 이내</strong><br>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">(세무서 담당 사업자 교부 기간 기준)</span>
+            </td>
+            <td style="vertical-align: middle; text-align: center; padding: 1.2rem 1rem; border-top: 1px solid var(--border);">
+              <span class="text-highlight" style="font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 0.3rem;">0원 (무료)</span>
+              <span style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; display: block;">세무서에 신청할 때 발생하는 국가 행정 수수료는 없습니다.</span>
+            </td>      
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 05 주소지 등록 기준, 필요성, 절차, 비용 -->
+  <section class="section" id="s5">
+    <div class="section-num">Section 05</div>
+    <h2 class="section-title">주소지 등록 기준, 필요성, 절차, 비용</h2>
+    <p class="section-sub">공유오피스 주소를 사용할 때 지켜야 할 약속과 중요성</p>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-4-cols">
+        <thead>
+          <tr>
+            <th>① 주소지 등록 기준</th>
+            <th>② 등록의 필요성</th>
+            <th>③ 행정 처리 절차</th>
+            <th>④ 소요 비용</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>이름이 같아야 합니다:</strong><br>
+              패파 계약서에 적힌 계약자 이름(또는 법인명)과 세무서에 등록할 사업자 이름이 완벽하게 일치해야 합니다. 계약이 끝나는 순간 주소 사용 권리도 사라집니다.
+            </td>
+            <td>
+              <strong>우편물 수령의 기준:</strong><br>
+              국세청 세금 고지서나 법원 공문 등 관공서 공식 우편물을 안전하게 받는 기준지가 됩니다. 주소가 제대로 등록되어 있어야 정상적인 영업과 계산서 발행이 가능합니다.
+            </td>
+            <td>
+              <strong>체크리스트 운영:</strong><br>
+              <span class="text-highlight">입주할 때:</span> 패파와 계약 완료 ▶ 사업자 주소 신규 등록 혹은 주소 변경<br><br>
+              <span class="text-highlight">퇴주할 때:</span> 멤버십 종료 후 14일 이내 반드시 다른 곳으로 주소지 변경 또는 폐업 신고 후 증빙 제출
+            </td>
+            <td>
+              <strong>변경 형태별 상이:</strong><br>
+              - 개인사업자 주소 변경: 전국 세무서 무료 처리<br><br>
+              - 법인 주소 이전: 법원 등기 절차가 동반되어 등록면허세 및 등기 수시료가 최소 수만 원에서 수십만 원까지 발생합니다
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warning">
+      <div class="warning-label"><i class="fa-solid fa-triangle-exclamation"></i> 매니저 필수 리스크 관리: 퇴주 후 주소 미변경 문제</div>
+      <p>계약이 끝나서 나간 멤버사가 주소를 패파 지점으로 그대로 놔두면, 전 회사의 세금 독촉장 같은 무거운 행정 우편물이 계속 지점으로 배달되어 지점 운영에 큰 방해가 됩니다. 더 큰 문제는 그 방에 새로 들어온 신규 입주사가 '기존 유령 회사 주소 중복' 문제로 인해 자기 사업자등록증을 발급받지 못하는 상황이 생깁니다. 퇴주 정산 처리를 할 때 반드시 주소를 옮겼다는 확인서(신청 화면 캡처 등)를 받아주세요!</p>
+    </div>
+  </section>
+
+  <!-- 06 패파에서의 계약 프로세스 -->
+  <section class="section" id="s6">
+    <div class="section-num">Section 06</div>
+    <h2 class="section-title">패스트파이브 실전 계약 프로세스</h2>
+    <p class="section-sub">앞서 배운 개념을 실제 계약 처리 실무에 어떻게 적용하는지 확인해보아요.</p>
+
+    <h3><i class="fa-solid fa-folder-tree"></i> 1. 계약 주체별 필수 서류 및 날인(도장) 방법</h3>
+
+    <div style="display: flex; align-items: center; gap: 12px; background-color: var(--black-dim); border-left: 4px solid var(--black); padding: 12px 16px; margin: 20px 0; border-radius: 0 8px 8px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+      <span style="font-size: 1.25rem; line-height: 1;">💡</span>
+      <span style="font-size: 0.95rem; color: var(--text-primary); font-weight: 600; line-height: 1.5;">
+        <strong style="color: var(--accent);">Tip!</strong> 보증금 혹은 예치금이 0원인 계약은 통장 사본을 제출하지 않습니다.
+      </span>
+    </div>
+    
+    <div class="table-wrapper">
+      <table class="compare-table grid-3-cols">
+        <thead>
+          <tr>
+            <th>주체 구분</th>
+            <th>필수 구비 서류</th>
+            <th>올바른 날인(도장/서명) 방법</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">개인</td>
+            <td class="list-cell">
+              <ul>
+                <li>계약자 신분증</li>
+                <li>계약자 명의 통장 사본<br>(=보증금 환불 계좌)</li>
+              </ul>
+            </td>
+            <td rowspan="2"style="border-left: 1px solid #ddd; padding-left: 15px;">
+              <div style="margin-bottom: 15px;">
+                <strong style="color: #333; display: block; margin-bottom: 6px;">💻 전자 계약 (휴대폰 본인인증)</strong>
+                <ul style="margin: 0; padding-left: 20px; line-height: 1.6; list-style-type: disc;">
+                  <li><span class="text-highlight">정자 서명</span></li>
+                  <li><span class="text-highlight">개인 인감 날인:</span> 개인인감증명서 제출</li>
+                </ul>
+              </div>
+              <div>
+                <strong style="color: #333; display: block; margin-bottom: 6px;">🤝 대면 계약</strong>
+                <ul style="margin: 0; padding-left: 20px; line-height: 1.6; list-style-type: disc;">
+                  <li><span class="text-highlight">정자 서명:</span> 본인서명사실확인서 제출</li>
+                  <li><span class="text-highlight">개인 인감 날인:</span> 개인인감증명서 제출</li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label">개인사업자</td>
+            <td class="list-cell">
+              <ul>
+                <li>사업자등록증</li>
+                <li>대표자 신분증</li>
+                <li>대표자 또는 사업자 통장 사본<br>(=보증금 환불 계좌)</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label">법인사업자 <span class="text-highlight"><br>- 사업자등록증 有</span></td>
+            <td class="list-cell">
+              <ul>
+                <li>사업자등록증</li>
+                <li>법인 명의 통장 사본<br>(=보증금 환불 계좌)</li>
+                <li>법인 인감증명서 (3개월 내 발급본)</li>
+              </ul>
+            </td>
+            <td rowspan="2"style="border-left: 1px solid #ddd; padding-left: 15px;">              <strong style="color: #333; display: block; margin-bottom: 6px;">✔️ 전자 계약/대면 계약 동일</strong>
+              <ul style="margin: 0; padding-left: 20px; line-height: 1.6; list-style-type: disc;">
+                <li style="margin-bottom: 8px;"><span class="text-highlight">법인인감 날인:</span><br> 법인인감증명서 제출</li>
+                <li><span class="text-highlight">사용인감 날인:</span><br> 법인인감증명서+사용인감계 제출</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label">법인사업자 <span class="text-highlight"><br>- 사업자 발급 필요한 신규 법인</span></td>
+            <td class="list-cell">
+              <ul style="margin: 0; padding-left: 20px; line-height: 1.6; list-style-type: disc;">
+                <span style="font-weight: bold; display: block; margin-top: 5px; margin-bottom: 2px;">[최초 계약 시]</span>
+                <li>법인 등기부등본</li>
+                <li>대표자 신분증</li>
+                <li>법인 인감증명서 (3개월 내 발급본)</li>
+                <span style="font-weight: bold; display: block; margin-top: 10px; margin-bottom: 2px;">[사업자 등록 후 제출]</span>
+                <li>사업자등록증</li>
+                <li>법인 명의 통장 사본</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 이미지 3번 시각화 도식 차트 반영 -->
+    <h3><i class="fa-solid fa-diagram-project"></i> 2. 신규법인 계약 프로세스 가이드</h3>
+    <div class="flow-chart-container">
+      <div class="flow-subtitle">경로 ① : 개인 계약 체결 후 법인으로 전환하는 경우 (개인, 법인 계약서 총 2번 날인 필요)</div>
+      <div class="flow-track">
+        <div class="flow-step dark-step">
+          <div class="flow-step-title">개인 계약</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step">
+          <div class="flow-step-title">개인명의 멤버십등록계약 체결</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step">
+          <div class="flow-step-title">개인 멤버십 계약서로 법인등기부등본 발급</div>
+          <div class="flow-step-desc">등기소에서 법인 설립</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step accent-step">
+          <div class="flow-step-title">기존계약 시작일 이어할지 새로운 시작일로 진행할지 확인 필요</div>
+          <div class="flow-step-desc">★ 날짜 판정 로직으로 결정</div>
+        </div>
+      </div>
+
+      <div class="flow-break-arrow"><i class="fa-solid fa-circle-chevron-down"></i></div>
+
+      <div class="flow-subtitle">경로 ② : 법인등기부등본 발급 후 신규법인 계약 시 (법인 계약서 1번 날인)</div>
+      <div class="flow-track">
+        <div class="flow-step dark-step">
+          <div class="flow-step-title">법인 계약</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step">
+          <div class="flow-step-title">법인명의 멤버십등록계약 체결</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step">
+          <div class="flow-step-title">법인 사업자등록증 발급 후 패파에 제출</div>
+          <div class="flow-step-desc">세무서에서 사업자등록</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step accent-step">
+          <div class="flow-step-title">법인 계약 완료 <br>▼<br> 증빙발행, 납부등록 가능</div>
+        </div>
+        <div class="flow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flow-step">
+          <div class="flow-step-title">법인 통장 사본 제출</div>
+          <div class="flow-step-desc">보증금 환불 계좌 등록</div>
+        </div>
+      </div>
+    </div>
+
+    <h3><i class="fa-solid fa-scale-unbalanced"></i> 3. 기존 계약 '파기(무효)' vs '중도해지' 판정 핵심 기준</h3>
+    <div class="logic-container">
+      <div class="logic-switch-grid">
+        <div class="logic-case-box orange-case">
+          <div class="logic-case-title"><span class="logic-badge">CASE A</span> 개인 계약 파기(무효)</div>
+          <div class="logic-case-desc">
+            - <strong>판정 조건:</strong> <span class="text-highlight">개인 계약시작일 ≥ 법인의 회사성립연월일</span><br>
+            - <strong>풀이:</strong> 개인 이름으로 계약이 시작된 날짜를 보니, 이미 그날 법인이 서류상 만들어져 있었습니다. 즉, 처음부터 법인으로 계약을 맺었어야 하는 상태이므로 기존 개인 계약을 전면 <strong>파기(무효화)</strong>하고 시작일을 소급해 법인 계약서로 다시 작성합니다.<br>
+            <br> - <strong>법인 계약 생성:</strong> 세일즈팀 기획지원파트
+          </div>
+        </div>
+        <div class="logic-case-box blue-case">
+          <div class="logic-case-title"><span class="logic-badge">CASE B</span> 개인 계약 중도해지</div>
+          <div class="logic-case-desc">
+            - <strong>판정 조건:</strong> <span class="text-black">개인 계약시작일 &lt; 법인의 회사성립연월일</span><br>
+            - <strong>풀이:</strong> 1월 1일에 입주해서 개인 명의로 잘 쓰다가, 1월 5일에 법인이 등기되었습니다. 이런 경우, 기존 개인 계약은 <strong>1월 4일자로 중도해지</strong> 처리하고 법인이 설립된 1월 5일부터 새롭게 법인 계약서를 작성합니다.<br>
+            <br>- <strong>법인 계약 생성:</strong> 각 지점 담당 매니저
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning">
+      <div class="warning-label"><i class="fa-solid fa-triangle-exclamation"></i> 신규 법인 계약 시 유의 사항</div>
+      <p>1. 신규 법인은 사업자등록증을 최종 제출하기 전까지는 패파 시스템상 <strong>'불완전 계약 상태'</strong>입니다. 사업자 정보가 업로드되기 전까지는 세금계산서 증빙 발행이 불가하며, 패스트파이브 APP 예약 및 모바일 출입 카드도 이용할 수 없습니다. 계약 시작일 전까지 사업자 등록증을 제출할 수 있도록 안내해 주세요.</p>
+      <p style="margin-top: 0.5rem;">2. 법인 명의로 변경할 때, 해당 법인의 신용도가 패파 내부 기준에 미달하는 불량 상태인 경우 법인 계약이 불가할 수 있습니다. 신용 문제가 걸려있을 때는 빌링팀의 승인을 얻어야만 진행이 가능합니다.</p>
+    </div>
+  </section>
+
+  <!-- 07 대리인 계약 / 대표권 유형 / 그 외 유의사항 -->
+  <section class="section" id="s7">
+    <div class="section-num">Section 07</div>
+    <h2 class="section-title">그 외 Case 및 실무 유의사항</h2>
+
+    <h3><i class="fa-solid fa-user-tie"></i> 1. 대리인(직원 등)이 방문하여 계약하는 경우</h3>
+    <p class="body-text">계약의 실제 주체가 되는 법인의 대표자(대표이사)나 개인 본인이 아니라, 제3자가 대신 계약서를 작성하는 상황을 '대리인 계약'이라고 합니다. 이때는 <span class="text-highlight">대리권을 증명하는 서류(위임장)를 필수로 확보</span>해야 하며(절대 생략 불가), 계약서상에 대리인의 정보도 함께 명시해야 합니다.</p>
+
+    <div class="point-box">
+      <div class="point-box-title"><i class="fa-solid fa-circle-question"></i> 대리인 접수 Case</div>
+      <ul class="point-list">
+        <li>
+          <strong>예시 1. 개인 홍길동 명의로 계약하는데, 홍길동 본인이 아닌 친구 박철수님이 방문한 경우?</strong><br>
+          👉 <strong>'멤버그룹':</strong> <u> [홍길동]</u> / <strong>'대표자':</strong> <u> [홍길동]</u> / <strong>'대리인'</strong>: <u>[박철수]</u>
+        </li>
+        <li>
+          <strong>예시 2. 대기업(예: 삼성전자)이 계약하는데, 담당자가 패파 지점에 안 오고 본사 사무실에서 인감 날인하여 퀵이나 우편으로 보내온 경우?</strong><br>
+          👉 이 상황은 직원이 대신 서명하는 '대리인 날인'이 아니라, <strong>회사의 대표 도장이 정상적으로 찍혀서 온 것</strong>입니다. 따라서 계약서 대리인 정보 란에 직원의 이름을 적을 필요가 없습니다.
+        </li>
+      </ul>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="compare-table grid-3-cols">
+        <thead>
+          <tr>
+            <th>대리인 계약 유형</th>
+            <th>필수 구비 서류</th>
+            <th>대리인의 표기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">1) 법인 대리인 계약<br>(직원이 도장 들고 온 경우)</td>
+            <td class="list-cell">
+              대리인의 임직원 여부 상관없이 아래 서류 필수 수집:<br>
+              ① <strong>위임장 정본 1부</strong><br>
+              ② [<strong>법인인감도장</strong> + 3개월 내 법인인감증명서]<br>
+              또는 [<strong>사용인감도장</strong> + 법인인감이 찍힌 사용인감계 + 법인인감증명서]<br>
+              ③ <strong>방문한 대리인의 신분증 사본</strong>
+            </td>
+            <td>
+              - 방문한 대리인이 해당 법인의 정식 직원인 경우(명함 등으로 확인 가능하며 별도 증빙 서류 보관은 불필요), 편의에 따라 시스템에 대리인 정보를 따로 기재하지 않습니다. 직원이 아닌 제3자 대리인일 때는 대리인 정보를 기재합니다.
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label">2) 개인 대리인 계약<br>(가족/지인이 대신 온 경우)</td>
+            <td class="list-cell">
+              본인이 아닌 타인을 위한 계약은 모두 대리인 계약에 해당하므로 아래 서류가 무조건 필요합니다:<br>
+              ① <strong>위임장 정본 1부</strong><br>
+              ② <strong>위임장에 날인된 인감증명서</strong><br>
+              ③ <strong>대리인의 신분증 사본<br></strong>
+              ④ <strong>위임인(원래 계약 본인)의 신분증 사본</strong>
+            </td>
+            <td>
+              <div style="margin-bottom: 10px;">- 원래 계약 본인 정보와 대리인 정보를 계약서 양식에 각각 모두 명확히 기재합니다.</div>
+              <div style="display: flex; justify-content: flex-start;">
+                <a href="https://sites.google.com/fastfive.co.kr/fastfive/%EC%97%85%EB%AC%B4-%EA%B0%80%EC%9D%B4%EB%93%9C/%EB%B2%95%EB%AC%B4/%EB%8C%80%EB%A6%AC%EC%9D%B8%EA%B3%BC%EC%9D%98-%EA%B3%84%EC%95%BD" target="_blank" style="display: inline-flex; align-items: center; gap: 0.35rem; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(232,66,26,0.25); font-size: 0.78rem; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-decoration: none; transition: background 0.15s; cursor: pointer;">
+                  <i class="fa-solid fa-file-arrow-down"></i> 위임장 양식
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><i class="fa-solid fa-users-gear"></i> 2. 대표가 여러 명인 경우: 공동대표와 각자대표 구별법</h3>
+    <p class="body-text">법인 등기부등본을 봤을 때 대표이사가 한 명이 아니라 두 명 이상인 경우가 있습니다. 이때 사업자등록증의 표기 방식을 보고 날인 규칙을 정확히 다르게 적용해야 법적 하자가 없습니다.</p>
+    
+    <div class="table-wrapper">
+      <table class="compare-table grid-3-cols">
+        <thead>
+          <tr>
+            <th>대표 형태 구분</th>
+            <th>사업자등록증 상 표기 형태</th>
+            <th>패파 실무 도장 날인 및 증빙 규칙</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">각자 대표</td>
+            <td style="text-align: center; vertical-align: top; padding: 1rem;">
+              <div style="font-weight: 600; margin-bottom: 0.6rem;">홍길동, 김철수</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.8rem;">(이름이 나란히 쉼표로 연결되어 표기됨)</div>
+              <div style="border: 1px solid var(--border2); border-radius: 4px; padding: 4px; background: #fff; display: inline-block; max-width: 100%;">
+                <img src="1.png" alt="각자대표 사업자등록증 예시" style="display: block; max-width: 130px; height: auto; cursor: pointer; border-radius: 2px;" onclick="window.open(this.src)">
+              </div>
+            </td>
+            <td style="padding: 1rem; vertical-align: top;">
+              대표들이 독립적인 권한을 갖습니다. 따라서 대표자 중 <strong>어느 누구든 한 명의 법인인감(또는 사용인감)만 날인</strong>되어도 완벽히 유효합니다.<br>
+              증빙 서류도 날인한 대표자 1명의 인감증명서 세트만 받으면 끝납니다.
+            </td>
+          </tr>
+          <tr>
+            <td class="row-label">공동 대표</td>
+            <td style="text-align: center; vertical-align: top; padding: 1rem;">
+              <div style="font-weight: 600; margin-bottom: 0.6rem;">홍길동, 김철수 (공동대표)</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.8rem;">(이름 뒤에 공동대표라고 명시됨)</div>
+              <div style="border: 1px solid var(--border2); border-radius: 4px; padding: 4px; background: #fff; display: inline-block; max-width: 100%;">
+                <img src="2.png" alt="공동대표 사업자등록증 예시" style="display: block; max-width: 130px; height: auto; cursor: pointer; border-radius: 2px;" onclick="window.open(this.src)">
+              </div>
+            </td>
+            <td style="padding: 1rem; vertical-align: top;">
+              모든 공동대표가 함께 동의해야만 회사의 행위로 인정됩니다. 따라서 <span class="text-highlight">계약서에 모든 공동대표의 법인인감(또는 사용인감) 도장이 각각 전부 날인</span>되어야 합니다.<br>
+              증빙 서류 역시 모든 공동대표 개별 인감증명서 세트를 전부 받아야 합니다.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3><i class="fa-solid fa-passport"></i> 3. 외국인 고객과 계약할 때 주의사항</h3>
+    <p class="body-text">한국 체류 자격 식별번호인 '외국인 등록번호'가 아직 발급되지 않은 외국인 개인과 계약을 체결해야 할 때가 있습니다.<br>
+    외국인 등록번호가 없는 개인과는 계약하지 않는 것이 리스크 관리상 최선이나, 부득이하게 계약을 진행해야 할 경우에는 <span class="text-highlight">주민번호 란에 '여권번호'를 정확히 기재</span>하여 1차 계약을 맺습니다.<br>
+    그 이후 추후 고객이 외국인 등록번호를 정식 발급받으면, 이를 기초로 계약서를 다시 작성하거나 기존 계약서 등에 추가 항목을 작성하여 첨부하는 절차를 반드시 완료해 주셔야 합니다.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 마무리 체크 -->
+  <section class="section" style="margin-bottom: 2rem;">
+    <div class="section-num">최종 점검</div>
+    <h2 class="section-title">매니저 자가 평가 체크리스트</h2>
+    <p class="body-text">문항을 클릭하면 체크 표시가 활성화됩니다. 위에서 배운 내용을 마스터했는지 점검해 보세요.</p>
+    <ul class="checklist" id="final-checklist">
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>외국법인 본사와 직접 계약 시 이메일 PDF는 임시이며, 사후 DHL 실물 수령이 필수임을 안다.</li>
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>연락사무소는 고유번호증을 받으며, 매입 세금계산서 수령 처리가 가능함을 이해했다.</li>
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>직원이 위임장과 법인서류를 다 들고 와서 날인하면 계약서 대리인 명시를 생략해도 됨을 안다.</li>
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>개인 대리인 계약 시 위임장과 위임인의 개인인감증명서가 세트로 와야 함을 숙지했다.</li>
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>사업자등록증 상에 '공동대표' 명시가 있으면 모든 대표의 도장을 각각 다 받아야 함을 깨달았다.</li>
+      <li><div class="check-box"><i class="fa-solid fa-check"></i></div>외국인 등록번호가 없는 외국인은 여권번호로 선계약 후 번호 발급 시 사후 보완해야 함을 안다.</li>
+    </ul>
+  </section>
+
+  <!-- 푸터 -->
+  <div class="doc-footer">
+    <div class="doc-footer-logo">FASTFIVE <em>Academy</em> · 2026</div>
+    <div class="doc-footer-note">본 자료는 패스트파이브 내부 교육용 실무 교재입니다. 외부 무단 유출을 금지합니다.</div>
+  </div>
+
+</div>
+
+<script>
+  // 체크리스트 활성화
+  document.querySelectorAll('#final-checklist li').forEach(item => {
+    item.addEventListener('click', function() {
+      this.classList.toggle('checked');
+    });
+  });
+
+  // TOC 스무스 스크롤
+  const sections = ['s1','s2','s3','s4','s5','s6','s7'];
+
+  document.querySelectorAll('.toc-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').replace('#','');
+      const el = document.getElementById(id);
+      if (!el) return;
+      const barH = document.getElementById('toc-bar').offsetHeight;
+      const top = el.getBoundingClientRect().top + window.pageYOffset - barH - 16;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+  });
+
+  function onScroll() {
+    const barH = document.getElementById('toc-bar').offsetHeight + 24;
+    let current = '';
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.getBoundingClientRect().top <= barH) current = id;
+    });
+    sections.forEach(id => {
+      const btn = document.getElementById('btn-' + id);
+      if (!btn) return;
+      btn.classList.toggle('active', id === current);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>
