@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy — AI 빌더스</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --teal-main: #0d9488;
+    --teal-dark: #115e59;
+    --teal-light: #f0fdfa;
+    --teal-border: #99f6e4;
+    --teal-glow: rgba(13, 148, 136, 0.12);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 4rem;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem;
+  }
+
+  /* ── Header Section (Simple & Clean) ── */
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem 2rem;
+    color: var(--text-primary);
+    margin-bottom: 1.75rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--teal-dark);
+    background: var(--teal-light);
+    border: 1px solid var(--teal-border);
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1.95rem;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+    margin-bottom: 0.85rem;
+    word-break: keep-all;
+  }
+
+  .hero-title span {
+    color: var(--teal-main);
+  }
+
+  .hero-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    word-break: keep-all;
+  }
+
+  /* ── Meta Grid (Fixed Text Overflow) ── */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 520px) {
+    .meta-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.1rem 1.25rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+  }
+
+  .meta-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: var(--teal-light);
+    color: var(--teal-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .meta-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+  }
+
+  .meta-val {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 700;
+    line-height: 1.4;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+
+  /* ── Common Section Styles ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: var(--teal-main);
+    border-radius: 2px;
+  }
+
+  .section-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--teal-main);
+    background: var(--teal-light);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ── Callout Banner ── */
+  .notice-banner {
+    background: linear-gradient(to right, #f0fdfa, #f8fafc);
+    border: 1px solid var(--teal-border);
+    border-left: 4px solid var(--teal-main);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .notice-icon {
+    color: var(--teal-main);
+    font-size: 1.2rem;
+    margin-top: 2px;
+  }
+
+  .notice-text {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    word-break: keep-all;
+  }
+
+  .notice-text strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+
+  /* ── Target Audience Grid ── */
+  .recommend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .recommend-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 0.95rem 1.1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .recommend-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--teal-main);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .recommend-text {
+    font-size: 0.86rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    line-height: 1.5;
+    word-break: keep-all;
+  }
+
+  .recommend-text small {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-top: 0.2rem;
+  }
+
+  /* ── Goals List ── */
+  .goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .goal-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem 1.15rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+
+  .goal-num-badge {
+    background: var(--teal-main);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .goal-content h4 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+    word-break: keep-all;
+  }
+
+  .goal-content p {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    word-break: keep-all;
+  }
+
+  /* ── Curriculum Timeline ── */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .session-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .session-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .session-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .session-round-pill {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: var(--teal-main);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .session-title-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .session-date-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+    background: var(--teal-light);
+    border: 1px solid var(--teal-border);
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .session-body-content {
+    padding: 1.1rem 1.25rem;
+  }
+
+  .session-speaker {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--teal-main);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .session-bullet-list {
+    list-style: none;
+    margin-bottom: 0.85rem;
+  }
+
+  .session-bullet-list li {
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    padding-left: 1.1rem;
+    position: relative;
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  .session-bullet-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0.2rem;
+    color: var(--teal-main);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .deliverable-box {
+    background: var(--teal-light);
+    border: 1px solid var(--teal-border);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .deliverable-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+  }
+
+  .deliverable-val {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    word-break: keep-all;
+  }
+
+  /* ── Interactive Project Showcase ── */
+  .sample-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sample-tab-btn {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sample-tab-btn.active {
+    background: var(--teal-main);
+    color: #ffffff;
+  }
+
+  .sample-tab-content {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.1rem 1.2rem;
+    display: none;
+  }
+
+  .sample-tab-content.active {
+    display: block;
+  }
+
+  .sample-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+    word-break: keep-all;
+  }
+
+  .sample-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+
+  /* ── Info Table ── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .info-table tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .info-table td {
+    padding: 0.85rem 0;
+    font-size: 0.88rem;
+    vertical-align: top;
+  }
+
+  .info-table td:first-child {
+    width: 95px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding-top: 0.9rem;
+  }
+
+  .info-table td:last-child {
+    color: var(--text-primary);
+    font-weight: 500;
+    word-break: keep-all;
+  }
+
+  .info-table small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 0.15rem;
+  }
+
+  /* ── CTA Card (Direct Google Form Link) ── */
+  .cta-card {
+    background: linear-gradient(135deg, #115e59 0%, #0f172a 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cta-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+    word-break: keep-all;
+  }
+
+  .cta-sub {
+    font-size: 0.84rem;
+    color: #94a3b8;
+    word-break: keep-all;
+  }
+
+  .cta-btn {
+    background: #2dd4bf;
+    color: #042f2e;
+    border: none;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 800;
+    padding: 0.85rem 1.6rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cta-btn:hover {
+    background: #5eead4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(45, 212, 191, 0.4);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  .footer-brand {
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .footer-brand span {
+    color: var(--teal-main);
+  }
+
+  @media (max-width: 580px) {
+    .hero-title { font-size: 1.65rem; }
+    .recommend-grid { grid-template-columns: 1fr; }
+    .cta-card { flex-direction: column; text-align: center; }
+    .cta-btn { width: 100%; justify-content: center; }
+    .session-header-bar { flex-direction: row; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO HEADER -->
+  <div class="hero-card">
+    <div class="hero-badge">
+      FF ACADEMY · 실무 과정
+    </div>
+    <h1 class="hero-title">AI 빌더스 : <span>내가 만드는 웹/앱</span></h1>
+    <p class="hero-desc">
+      <strong>모집 기간: 7/28(화) ~ 8/3(월)</strong><br>
+      Claude, Gemini 같은 AI를 도우미 삼아, 내 업무에 필요했던 도구나 서비스를 직접 만들어봅니다.<br>
+      개발 지식이 전혀 없어도 괜찮아요. AI와 대화하며 나만의 결과물을 완성합니다.
+    </p>
+  </div>
+
+  <!-- META CHIPS (Fixed text wrapping) -->
+  <div class="meta-grid">
+    <div class="meta-card">
+      <div class="meta-icon">📅</div>
+      <div>
+        <div class="meta-label">교육 일정</div>
+        <div class="meta-val">8/6 ~ 9/1 (총 5회)</div>
+      </div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-icon">👥</div>
+      <div>
+        <div class="meta-label">모집 정원</div>
+        <div class="meta-val">15명 내외</div>
+      </div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-icon">⏱️</div>
+      <div>
+        <div class="meta-label">수업 시간</div>
+        <div class="meta-val">총 5주 (주 1회 대면 모임)</div>
+      </div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-icon">⚡</div>
+      <div>
+        <div class="meta-label">핵심 도구</div>
+        <div class="meta-val">Claude · Gemini 등 자유</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOALS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">프로젝트 3대 목표</div>
+      <span class="section-tag">Goal</span>
+    </div>
+    <div class="goals-list">
+      <div class="goal-item">
+        <span class="goal-num-badge">01</span>
+        <div class="goal-content">
+          <h4>머릿속 아이디어를 AI와 함께 직접 완성하기</h4>
+          <p>만들고 싶었던 서비스나 유용한 툴의 아이디어를 정하고, AI와 대화하며 실체 있는 웹/앱으로 만듭니다.</p>
+        </div>
+      </div>
+      <div class="goal-item">
+        <span class="goal-num-badge">02</span>
+        <div class="goal-content">
+          <h4>실제 부서원·멤버들과 써보고 완성도 높이기</h4>
+          <p>만드는 것에서 끝내지 않고, 동료들에게 공유해 실제로 써본 뒤 피드백을 받아 더 편리하게 고칩니다.</p>
+        </div>
+      </div>
+      <div class="goal-item">
+        <span class="goal-num-badge">03</span>
+        <div class="goal-content">
+          <h4>만들며 겪은 경험과 요령을 공유하기</h4>
+          <p>제작 과정에서 느낀 점과 노하우를 정리하여, 다음번 서비스/툴 개선에도 언제든 활용합니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRICULUM TIMELINE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">5주 상세 일정</div>
+      <span class="section-tag">Curriculum</span>
+    </div>
+
+    <div class="timeline">
+
+      <!-- 1회차 -->
+      <div class="session-card">
+        <div class="session-header-bar">
+          <div class="session-left">
+            <span class="session-round-pill">1회차</span>
+            <span class="session-title-text">Kick off & 바이브 코딩 기본 개념 교육</span>
+          </div>
+          <span class="session-date-tag">8/6 (목)</span>
+        </div>
+        <div class="session-body-content">
+          <div class="session-speaker">🎙️ 교육 담당자: 강승효 팀장님</div>
+          <ul class="session-bullet-list">
+            <li>바이브 코딩의 개념과 작동 원리 이해</li>
+            <li>조 편성 및 우리 팀 프로젝트 주제 선정</li>
+          </ul>  
+        </div>
+      </div>
+
+      <!-- 2회차 -->
+      <div class="session-card">
+        <div class="session-header-bar">
+          <div class="session-left">
+            <span class="session-round-pill">2회차</span>
+            <span class="session-title-text">함께하는 실습</span>
+          </div>
+          <span class="session-date-tag">8/11 (화)</span>
+        </div>
+        <div class="session-body-content">
+          <div class="session-speaker">🎙️ 교육 담당자: 강승효 팀장님</div>
+          <ul class="session-bullet-list">
+            <li>AI 도구(Claude 등)를 활용해 직접 따라 해보기</li>
+            <li>기초적인 화면 구성 및 배포 실습</li>
+          </ul>
+          <div class="deliverable-box">
+            <span class="deliverable-label">📌 주차별 과제</span>
+            <span class="deliverable-val">조별 서비스 아이디어 및 간단 기획안 제출</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3회차 -->
+      <div class="session-card">
+        <div class="session-header-bar">
+          <div class="session-left">
+            <span class="session-round-pill">3회차</span>
+            <span class="session-title-text">조별 모임</span>
+          </div>
+          <span class="session-date-tag">8/18 (화)</span>
+        </div>
+        <div class="session-body-content">
+          <ul class="session-bullet-list">
+            <li>본격 프로젝트 개발 착수</li>
+            <li>핵심 기능 우선 구현 및 1차 내부 테스트</li>
+          </ul>
+          <div class="deliverable-box">
+            <span class="deliverable-label">📌 주차별 과제</span>
+            <span class="deliverable-val">1차 작동 웹/앱 링크 또는 짧은 시연 영상</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4회차 -->
+      <div class="session-card">
+        <div class="session-header-bar">
+          <div class="session-left">
+            <span class="session-round-pill">4회차</span>
+            <span class="session-title-text">조별 모임</span>
+          </div>
+          <span class="session-date-tag">8/25 (화)</span>
+        </div>
+        <div class="session-body-content">
+          <ul class="session-bullet-list">
+            <li>팀원 대상 배포 후 실사용 피드백 수집</li>
+            <li>피드백 바탕으로 기능 보완 및 세부 고도화</li>
+            <li>조별 막힌 지점 공유 및 중간 회고 진행</li>
+          </ul>
+          <div class="deliverable-box">
+            <span class="deliverable-label">📌 주차별 과제</span>
+            <span class="deliverable-val">사용자 피드백 수집 정리 및 최종 발표 자료 초안</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5회차 -->
+      <div class="session-card">
+        <div class="session-header-bar">
+          <div class="session-left">
+            <span class="session-round-pill">5회차</span>
+            <span class="session-title-text">데모데이</span>
+          </div>
+          <span class="session-date-tag">9/1 (화)</span>
+        </div>
+        <div class="session-body-content">
+          <ul class="session-bullet-list">
+            <li>조별 완성 결과물 시연 및 현업 적용 계획 발표</li>
+            <li>업무 효율 개선 기대 효과 및 시행착오 레슨런 공유</li>
+            <li>동료 평가를 통한 우수 조 선정</li>
+          </ul>
+          <div class="deliverable-box">
+            <span class="deliverable-label">🏆 최종 제출</span>
+            <span class="deliverable-val">완성된 웹/앱 URL + 발표 자료</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- GENERAL OVERVIEW TABLE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">상세 개요 및 안내사항</div>
+      <span class="section-tag">Information</span>
+    </div>
+    <table class="info-table">
+      <tr>
+        <td>참가 대상</td>
+        <td>패스트파이브 전 직원 <small>(기초반을 안 들으셨어도 신청 가능합니다)</small></td>
+      </tr>
+      <tr>
+        <td>모집 인원</td>
+        <td>15명 내외</td>
+      </tr>
+      <tr>
+        <td>교육 일정</td>
+        <td>8월 6일(목) ~ 9월 1일(화), 총 5주 (5회차)</td>
+      </tr>
+      <tr>
+        <td>교육 시간</td>
+        <td>오후 7시</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- CTA CARD (Direct Link to Google Form) -->
+  <div class="cta-card">
+    <div>
+      <div class="cta-title">모집 마감: 8/3(월)</div>
+      <div class="cta-sub">AI 빌더스에 도전해보세요</div>
+    </div>
+    <!-- 💡 아래 href=" " 부분에 만드신 구글 폼 URL을 넣어주세요! -->
+    <a href="https://forms.gle/X1zGsCUXVPfhgHnY6" target="_blank" class="cta-btn">
+      교육 신청하기
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">FF <span>Academy</span></div>
+    <div>문의사항 · 슬랙 @구연정</div>
+  </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+  function switchTab(index) {
+    const tabs = document.querySelectorAll('.sample-tab-btn');
+    const contents = document.querySelectorAll('.sample-tab-content');
+    
+    tabs.forEach((tab, i) => {
+      if(i === index) {
+        tab.classList.add('active');
+        contents[i].classList.add('active');
+      } else {
+        tab.classList.remove('active');
+        contents[i].classList.remove('active');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

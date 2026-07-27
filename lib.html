@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FASTFIVE ACADEMY | 사내 교육 포트폴리오 & 아카이브</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* 🔥 비비드 포인트 컬러 (#dc2f02, #c1121f) */
+            --primary-vivid: #dc2f02;
+            --primary-dark: #c1121f;
+            --primary-soft-bg: #fff0ed;
+            
+            /* 🌿 완료 뱃지 */
+            --badge-completed-bg: #eaf3ec;
+            --badge-completed-text: #225c2d;
+            --badge-completed-border: #c8e2ce;
+
+            /* 🟡 모집중 뱃지 */
+            --badge-recruiting-bg: #fff9e6;
+            --badge-recruiting-text: #b7791f;
+            --badge-recruiting-border: #ffe599;
+
+            /* 🔴 준비중 뱃지 */
+            --badge-preparing-bg: #ffeef0;
+            --badge-preparing-text: #d92d20;
+            --badge-preparing-border: #fecdca;
+            
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-sub: #4b5563;
+            --tag-bg: #f3f4f6;
+            --tag-text: #374151;
+            --border-color: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 100px; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+        /* 📌 Minimal Trendy Header Navigation */
+        header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border-color); padding: 14px 0; position: sticky; top: 0; z-index: 100; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 18px; font-weight: 900; color: var(--primary-vivid); display: flex; align-items: center; gap: 8px; cursor: pointer; letter-spacing: -0.5px; }
+
+        .nav-links { display: flex; gap: 6px; }
+        .nav-btn { background: transparent; border: 1px solid transparent; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; color: #4b5563; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .nav-btn:hover { background: #f3f4f6; color: var(--text-main); }
+        .nav-btn.active { background: #111827; color: #fff; border-color: #111827; }
+
+        /* 🏆 Trendy Minimal Hero Section (Light & Crisp) */
+        .portfolio-hero {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 28px 0 36px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+        .hero-tag { font-size: 12px; font-weight: 800; color: var(--primary-vivid); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: inline-block; background: var(--primary-soft-bg); padding: 4px 10px; border-radius: 6px; }
+        .hero-title { font-size: 28px; font-weight: 900; line-height: 1.35; margin-bottom: 12px; letter-spacing: -0.8px; color: var(--text-main); }
+        .hero-title span { color: var(--primary-vivid); }
+        .hero-desc { color: var(--text-sub); font-size: 14px; line-height: 1.65; max-width: 680px; margin-bottom: 32px; font-weight: 400; }
+
+        /* KPI Cards in Hero */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; border-top: 1px solid var(--border-color); padding-top: 24px; }
+        .kpi-card { background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 14px; padding: 18px; }
+        .kpi-num { font-size: 24px; font-weight: 900; color: var(--text-main); margin-bottom: 2px; }
+        .kpi-num span { color: var(--primary-vivid); }
+        .kpi-label { font-size: 12px; color: #6b7280; font-weight: 600; }
+
+        /* 🎛️ 필터 영역 */
+        .filter-section { margin-bottom: 36px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+        .search-bar { width: 100%; max-width: 500px; display: flex; gap: 10px; background: #fff; padding: 11px 20px; border-radius: 28px; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .search-bar input { border: none; outline: none; width: 100%; font-size: 13px; }
+        .filter-toolbar { width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 4px 0; }
+        .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-btn { padding: 7px 15px; border-radius: 20px; border: 1px solid var(--border-color); background: #fff; cursor: pointer; font-size: 12px; font-weight: 600; color: #4b5563; transition: 0.15s; }
+        .filter-btn.active, .filter-btn:hover { background: #111827; color: #fff; border-color: #111827; }
+        
+        .status-btn-group { display: flex; gap: 3px; background: #f3f4f7; padding: 3px; border-radius: 14px; }
+        .status-btn { padding: 5px 12px; border-radius: 11px; border: none; background: transparent; cursor: pointer; font-size: 12px; font-weight: 600; color: #6b7280; transition: 0.15s; }
+        .status-btn.active { background: #fff; color: var(--primary-vivid); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+        /* TRACK 헤더 */
+        .track-header { margin: 44px 0 20px 0; }
+        .track-sub { font-size: 12px; font-weight: 800; color: var(--primary-vivid); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+        .track-title-wrap { display: flex; align-items: center; gap: 10px; }
+        .track-main-title { font-size: 22px; font-weight: 900; color: #111827; letter-spacing: -0.5px; }
+        .track-count-badge { font-size: 13px; font-weight: 800; color: var(--primary-vivid); background: var(--primary-soft-bg); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        /* Grid Layout & Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+        .card { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--border-color); padding: 22px 20px 18px 20px; transition: all 0.2s ease; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); border-color: #d1d5db; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .quarter-text { font-size: 12px; font-weight: 700; color: #9ca3af; letter-spacing: 0.2px; }
+        
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+        .badge.completed { background: var(--badge-completed-bg); color: var(--badge-completed-text); border: 1px solid var(--badge-completed-border); }
+        .badge.recruiting { background: var(--badge-recruiting-bg); color: var(--badge-recruiting-text); border: 1px solid var(--badge-recruiting-border); }
+        .badge.preparing { background: var(--badge-preparing-bg); color: var(--badge-preparing-text); border: 1px solid var(--badge-preparing-border); }
+
+        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 16px; line-height: 1.4; letter-spacing: -0.3px; }
+        .card-tags { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+        .tag { background: var(--tag-bg); color: var(--tag-text); padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+        .card-date { font-size: 12px; color: #6b7280; margin-bottom: 16px; font-weight: 400; }
+        .card-divider { border: none; border-top: 1px solid #f3f4f6; margin-bottom: 14px; }
+        
+        .card-footer { display: flex; justify-content: flex-end; align-items: center; font-size: 12px; font-weight: 700; color: var(--primary-vivid); }
+        .card-footer i { margin-left: 4px; font-size: 10px; transition: transform 0.2s; }
+        .card:hover .card-footer i { transform: translateX(3px); }
+
+        /* 🎓 [독립 페이지] 전체 수료자 명단 화면 */
+        #completerPage { display: none; padding-top: 12px; }
+        .completer-card-box { background: #fff; border: 1px solid var(--border-color); border-radius: 20px; padding: 32px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .completer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .completer-title { font-size: 20px; font-weight: 900; color: #111827; display: flex; align-items: center; gap: 10px; }
+        .completer-search { display: flex; gap: 8px; background: #f9fafb; border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; font-size: 13px; width: 260px; }
+        .completer-search input { border: none; background: transparent; outline: none; width: 100%; font-size: 13px; }
+
+        .table-wrap { overflow-x: auto; }
+        .completer-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        .completer-table th { background: #f9fafb; padding: 14px 16px; border-bottom: 2px solid var(--border-color); font-weight: 700; color: #374151; }
+        .completer-table td { padding: 16px; border-bottom: 1px solid var(--border-color); color: #111827; vertical-align: middle; }
+        .completer-table tr:hover { background: #fafafa; }
+
+        .status-pill { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .status-pill.best { background: #fef3c7; color: #d97706; }
+        .status-pill.pass { background: #eaf3ec; color: #225c2d; }
+        .status-pill.fail { background: #f3f4f6; color: #9ca3af; }
+
+        .course-tag-list { display: flex; gap: 4px; flex-wrap: wrap; }
+        .course-chip { background: #f3f4f6; padding: 3px 9px; border-radius: 6px; font-size: 11px; color: #4b5563; font-weight: 500; }
+
+        /* 📄 개별 교육 상세 전용 페이지 스타일 */
+        #detailPage { display: none; padding-top: 12px; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #374151; background: #fff; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 24px; transition: 0.15s; }
+        .back-btn:hover { background: #111827; color: #fff; border-color: #111827; }
+
+        .detail-hero { background: #fff; border: 1px solid var(--border-color); border-radius: 20px; padding: 32px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .detail-track { font-size: 12px; font-weight: 800; color: var(--primary-vivid); letter-spacing: 1px; margin-bottom: 8px; }
+        .detail-title { font-size: 26px; font-weight: 900; color: #111827; margin-bottom: 16px; letter-spacing: -0.5px; }
+        .detail-meta-list { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: #4b5563; margin-bottom: 24px; }
+        .detail-meta-item { display: flex; align-items: center; gap: 6px; }
+
+        .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+
+        .section-card { background: #fff; border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        .section-card-title { font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .section-card-title i { color: var(--primary-vivid); }
+
+        .overview-text { font-size: 14px; color: #374151; line-height: 1.7; white-space: pre-line; }
+
+        .curriculum-list { display: flex; flex-direction: column; gap: 10px; }
+        .curriculum-item { background: #f9fafb; border: 1px solid #e5e7eb; padding: 14px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .curriculum-left { display: flex; gap: 12px; align-items: center; }
+        .curriculum-num { font-weight: 800; color: var(--primary-vivid); font-size: 13px; min-width: 48px; }
+        .curriculum-content { font-size: 13px; color: #111827; font-weight: 500; }
+        
+        .curriculum-right { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+        .type-pill { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+        .type-pill.offline { background: #f3f4f6; color: #111827; }
+        .type-pill.online { background: #eaf3ec; color: #225c2d; }
+        .instructor-tag { color: #6b7280; font-size: 12px; font-weight: 500; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; text-align: center; }
+        .stat-box { background: #f9fafb; border-radius: 10px; padding: 14px; border: 1px solid #f3f4f6; }
+        .stat-num { font-size: 20px; font-weight: 800; color: #111827; }
+        .stat-label { font-size: 11px; color: #6b7280; margin-top: 2px; }
+
+        .resource-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 16px; background: #fff; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 8px; transition: 0.15s; }
+        .resource-btn:hover { border-color: var(--primary-vivid); color: var(--primary-vivid); background: #fffaf8; }
+    </style>
+</head>
+<body>
+
+    <!-- 📌 Minimal Header with Page Switching Buttons -->
+    <header>
+        <div class="container header-content">
+            <div class="logo" onclick="switchView('main')">
+                <i class="fa-solid fa-graduation-cap"></i> FASTFIVE ACADEMY
+            </div>
+            <nav class="nav-links">
+                <button class="nav-btn active" id="btnNavMain" onclick="switchView('main')">
+                    <i class="fa-solid fa-book-open"></i> 교육 프로그램
+                </button>
+                <button class="nav-btn" id="btnNavCompleter" onclick="switchView('completer')">
+                    <i class="fa-solid fa-award"></i> 수료자 명단
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- 🏠 1. 메인 포트폴리오 & 아카이브 페이지 -->
+        <div id="mainPage">
+            <!-- 🏆 Minimal & Crisp Hero Section -->
+            <section class="portfolio-hero">
+                <div class="hero-tag">FASTFIVE L&D PORTFOLIO</div>
+                <h1 class="hero-title">임직원의 성장을 설계하고<br>조직의 <span>업무 역량</span>을 혁신합니다.</h1>
+                <p class="hero-desc">
+                    패파아카데미는 부동산 실무부터 생성형 AI, 데이터 분석까지 패스트파이브의 지속 가능한 경쟁력을 강화하기 위한 체계적인 사내 교육을 기획·운영합니다.
+                </p>
+                
+                <!-- KPI 대시보드 -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-num">9<span>개</span></div>
+                        <div class="kpi-label">개설 교육 커리큘럼</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-num">160<span>명+</span></div>
+                        <div class="kpi-label">누적 교육 수료자</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-num">3<span>개</span></div>
+                        <div class="kpi-label">핵심 직무 전문 트랙</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 🎛️ 필터 영역 -->
+            <div class="filter-section">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af; margin-top: 2px;"></i>
+                    <input type="text" id="searchInput" placeholder="교육 프로그램명 또는 수강 대상 검색..." onkeyup="applyFilters()">
+                </div>
+
+                <div class="filter-toolbar">
+                    <div class="filter-group" id="categoryFilterGroup">
+                        <button class="filter-btn active" onclick="setCategory('전체', this)">전체 트랙</button>
+                        <button class="filter-btn" onclick="setCategory('패파 이해', this)">TRACK 01 · 패파 이해</button>
+                        <button class="filter-btn" onclick="setCategory('직무 전문성 강화', this)">TRACK 02 · 직무 전문성</button>
+                        <button class="filter-btn" onclick="setCategory('전문 기술', this)">TRACK 03 · 전문 기술</button>
+                    </div>
+
+                    <div class="status-btn-group">
+                        <button class="status-btn active" onclick="setStatus('전체', this)">전체</button>
+                        <button class="status-btn" onclick="setStatus('모집중', this)">🟡 모집중</button>
+                        <button class="status-btn" onclick="setStatus('준비중', this)">🔴 준비중</button>
+                        <button class="status-btn" onclick="setStatus('완료', this)">🌿 완료</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 트랙별 카드 섹션 -->
+            <div id="sectionsContainer"></div>
+        </div>
+
+
+        <!-- 🎓 2. 전체 수료자 명단 전용 독립 페이지 (헤더 버튼으로 이동) -->
+        <div id="completerPage">
+            <div class="completer-card-box">
+                <div class="completer-header">
+                    <div class="completer-title">
+                        <i class="fa-solid fa-award" style="color:var(--primary-vivid);"></i> 패파아카데미 통합 수료자 명단
+                    </div>
+                    <div class="completer-search">
+                        <i class="fa-solid fa-magnifying-glass" style="color: #aaa; margin-top: 2px;"></i>
+                        <input type="text" id="completerSearchInput" placeholder="이름(김*파) 또는 부서/과정명 검색..." onkeyup="filterCompleterTable()">
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="completer-table">
+                        <thead>
+                            <tr>
+                                <th>이름</th>
+                                <th>소속 부서</th>
+                                <th>참여 교육 수</th>
+                                <th>수료 교육 갯수</th>
+                                <th>우수 수료</th>
+                                <th>수료 교육명 목록</th>
+                            </tr>
+                        </thead>
+                        <tbody id="completerTableBody">
+                            <!-- JS로 자동 생성 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 📄 3. 개별 교육 상세 페이지 -->
+        <div id="detailPage">
+            <button class="back-btn" onclick="switchView('main')"><i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기</button>
+
+            <div class="detail-hero">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="detail-track" id="detTrack">TRACK 01</div>
+                    <span id="detBadge" class="badge">완료</span>
+                </div>
+                <h1 class="detail-title" id="detTitle">교육명</h1>
+                
+                <div class="detail-meta-list">
+                    <div class="detail-meta-item"><i class="fa-regular fa-calendar" style="color: var(--primary-vivid);"></i> <span id="detPeriod">-</span></div>
+                    <div class="detail-meta-item"><i class="fa-regular fa-clock" style="color: var(--primary-vivid);"></i> <span id="detSessions">-</span></div>
+                    <div class="detail-meta-item"><i class="fa-regular fa-user" style="color: var(--primary-vivid);"></i> <span id="detTarget">-</span></div>
+                    <div class="detail-meta-item"><i class="fa-solid fa-chalkboard-user" style="color: var(--primary-vivid);"></i> <span id="detType">-</span></div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div>
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fa-solid fa-bullseye"></i> 교육 개요 및 핵심 목표</div>
+                        <p class="overview-text" id="detOverview">내용</p>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fa-solid fa-list-check"></i> 상세 커리큘럼</div>
+                        <div class="curriculum-list" id="detCurriculum"></div>
+                    </div>
+
+                    <!-- 해당 교육 수료자 리스트 -->
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fa-solid fa-user-graduate"></i> 이 교육의 수료자 명단</div>
+                        <div class="table-wrap">
+                            <table class="completer-table">
+                                <thead>
+                                    <tr>
+                                        <th>이름</th>
+                                        <th>소속 부서</th>
+                                        <th>비고 (수료 상태)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detStudentTableBody">
+                                    <!-- JS 렌더링 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fa-solid fa-users"></i> 교육 수강 현황</div>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-num" id="detSelected">-</div>
+                                <div class="stat-label">선정자</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-num" id="detCompleted">-</div>
+                                <div class="stat-label">수료자</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <div class="section-card-title"><i class="fa-solid fa-folder-open"></i> 학습 자료 & 리소스</div>
+                        <div id="detResourceLinks"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const eduData = [
+            { 
+                id: 1, 
+                name: "Part1. 벽을깨다_1기", 
+                category: "패파 이해", 
+                quarter: "2026 Q1", 
+                type: "오프라인", 
+                status: "완료", 
+                target: "전직원", 
+                period: "26-03-12(목) ~ 26-03-26(목)", 
+                sessions: 3, 
+                selected: 15, completed: 15,
+                overview: "패스트파이브의 성장 역사와 브랜드 비전을 깊이 있게 이해하고, 사내 핵심 리더십 가치를 체득하기 위한 온보딩 연계 특강 프로그램입니다.",
+                curriculum: [
+                    { num: "1회차", text: "패스트파이브의 비전과 공간의 가치 이해", mode: "대면", instructor: "김패파 대표" },
+                    { num: "2회차", text: "팀워크 및 조직 내 벽을 허무는 커뮤니케이션", mode: "대면", instructor: "박인재 리드" },
+                    { num: "3회차", text: "성장을 위한 패파인의 일하는 방식 워크숍", mode: "대면", instructor: "사내 교육 전문가" }
+                ],
+                students: [
+                    { name: "김*파", dept: "전사", status: "우수수료" },
+                    { name: "이*재", dept: "전사", status: "수료" },
+                    { name: "박*원", dept: "COG", status: "수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 2, 
+                name: "부동산 지식 교육", 
+                category: "패파 이해", 
+                quarter: "2026 Q2", 
+                type: "혼합", 
+                status: "완료", 
+                target: "전직원", 
+                period: "26-04-02(목) ~ 26-06-04(목)", 
+                sessions: 10, 
+                selected: 20, completed: 11,
+                overview: "공유오피스 비즈니스의 근간이 되는 상업용 부동산 시장 전반의 기초 지식부터 계약, 임대차 구조까지 실무 중심으로 다루는 기초 체력 강좌입니다.",
+                curriculum: [
+                    { num: "1~3회차", text: "상업용 부동산 시장 구조와 기초 용어 Master", mode: "비대면", instructor: "" },
+                    { num: "4~7회차", text: "임대차 계약서 분석 및 권리관계 확인실무", mode: "대면", instructor: "최부동산 수석" },
+                    { num: "8~10회차", text: "오피스 자산 가치 평가와 수지분석 이해", mode: "대면", instructor: "이마스터 수석" }
+                ],
+                students: [
+                    { name: "박*호", dept: "COG", status: "우수수료" },
+                    { name: "최*성", dept: "OSG", status: "수료" },
+                    { name: "김*파", dept: "전사", status: "수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 9, 
+                name: "패파 마케팅의 이해", 
+                category: "패파 이해", 
+                quarter: "2026 Q3", 
+                type: "혼합", 
+                status: "모집중", 
+                target: "전직원", 
+                period: "26-08-27(목) ~ 26-09-03(목)", 
+                sessions: 3, 
+                selected: "-", completed: "-",
+                overview: "패스트파이브가 브랜드 인지도를 형성하고 신규 입주사를 획득(Acquisition)하는 마케팅 전략 체계와 브랜드 가이드를 배우는 클래스입니다.",
+                curriculum: [
+                    { num: "1회차", text: "패파의 세일즈&마케팅 퍼널 구조 해부", mode: "비대면", instructor: "" },
+                    { num: "2회차", text: "디지털 퍼포먼스 마케팅과 리드 획득", mode: "대면", instructor: "정마케팅 리드" },
+                    { num: "3회차", text: "브랜드 아이덴티티 및 브랜딩 가이드 활용", mode: "대면", instructor: "강브랜드 수석" }
+                ],
+                students: [],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 3, 
+                name: "CM - Operation 역량 강화", 
+                category: "직무 전문성 강화", 
+                quarter: "2026 Q2", 
+                type: "오프라인", 
+                status: "완료", 
+                target: "COG", 
+                period: "26-05-14(목) ~ 26-05-28(목)", 
+                sessions: 3, 
+                selected: 44, completed: 35,
+                overview: "지점 운영을 담당하는 커뮤니티 매니저(CM)분들의 지점 관리 효율성을 높이고, 오퍼레이션 문제 해결 역량을 극대화하는 맞춤형 실무 특강입니다.",
+                curriculum: [
+                    { num: "1회차", text: "지점 시설 및 운영 클레임 프로세스 표준화", mode: "대면", instructor: "한운영 팀장" },
+                    { num: "2회차", text: "입주사 커뮤니티 케어 및 경험 디자이닝", mode: "대면", instructor: "윤케어 수석" },
+                    { num: "3회차", text: "운영 비용(OPEX) 절감 및 오퍼레이션 효율화", mode: "대면", instructor: "한운영 팀장" }
+                ],
+                students: [
+                    { name: "정*우", dept: "COG", status: "우수수료" },
+                    { name: "강*아", dept: "COG", status: "수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 4, 
+                name: "LinkedIn 활용 교육", 
+                category: "직무 전문성 강화", 
+                quarter: "2026 Q2", 
+                type: "혼합", 
+                status: "완료", 
+                target: "전직원", 
+                period: "26-05-20(수) ~ 26-06-11(목)", 
+                sessions: 7, 
+                selected: 22, completed: 12,
+                overview: "글로벌 비즈니스 네트워크인 링크드인을 활용해 사내 개인 브랜딩을 강화하고 B2B 인바운드 마케팅 및 네트워킹 기회를 창출하는 가이드입니다.",
+                curriculum: [
+                    { num: "1~2회차", text: "매력적인 프로필 최적화 및 셋팅 방법", mode: "비대면", instructor: "" },
+                    { num: "3~5회차", text: "B2B 도메인 지식 콘텐츠 작성 및 도달률 증대", mode: "대면", instructor: "송비즈 앰버서더" },
+                    { num: "6~7회차", text: "인맥 네트워킹 전략 및 B2B 인바운드 연결", mode: "대면", instructor: "송비즈 앰버서더" }
+                ],
+                students: [
+                    { name: "윤*훈", dept: "마케팅", status: "우수수료" },
+                    { name: "김*파", dept: "전사", status: "수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 7, 
+                name: "공유오피스 법무 실무 교육", 
+                category: "직무 전문성 강화", 
+                quarter: "2026 Q3", 
+                type: "오프라인", 
+                status: "완료", 
+                target: "COG+OSG", 
+                period: "26-07-16(목)", 
+                sessions: 1, 
+                selected: 61, completed: 61,
+                overview: "지점 운영 및 계약 체결 시 빈번하게 발생하는 주요 법적 분쟁 리스크를 예방하고 대응하기 위한 사내 법무팀 가이드 원데이 특강입니다.",
+                curriculum: [
+                    { num: "1회차", text: "멤버십 이용약관 주요 조항 및 법적 위반 리스크 체크", mode: "대면", instructor: "패파 법무팀 변호사" }
+                ],
+                students: [
+                    { name: "한*민", dept: "COG", status: "수료" },
+                    { name: "임*서", dept: "OSG", status: "수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 5, 
+                name: "AI 활용 입문-Gemini", 
+                category: "전문 기술", 
+                quarter: "2026 Q2", 
+                type: "혼합", 
+                status: "완료", 
+                target: "전직원", 
+                period: "26-06-09(화) ~ 26-07-14(화)", 
+                sessions: 6, 
+                selected: 15, completed: "-",
+                overview: "생성형 AI 툴인 Gemini를 실무에 도입하여 이메일 작성, 문서 요약, 리서치 작업 등 일상 업무 생산성을 200% 높이는 실습 중심 강좌입니다.",
+                curriculum: [
+                    { num: "1~2회차", text: "Gemini 기초 사용법 및 프롬프트 엔지니어링", mode: "비대면", instructor: "" },
+                    { num: "3~4회차", text: "문서 작성, 요약, 데이터 프롬프팅 실습", mode: "대면", instructor: "사내 AI 전문가" },
+                    { num: "5~6회차", text: "업무 자동화 워크플로우 설계 실습", mode: "대면", instructor: "사내 AI 전문가" }
+                ],
+                students: [
+                    { name: "김*파", dept: "전사", status: "우수수료" }
+                ],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 6, 
+                name: "Data 분석 & SQL 특강", 
+                category: "전문 기술", 
+                quarter: "2026 Q2", 
+                type: "오프라인", 
+                status: "완료", 
+                target: "전직원", 
+                period: "26-06-18(목) ~ 26-06-25(목)", 
+                sessions: 2, 
+                selected: 21, completed: "-",
+                overview: "데이터 기반 의사결정을 위해 사내 DB에 직접 접근하여 원하는 데이터를 추출(Query)하고 가공하는 핵심 SQL 문법 입문 과정입니다.",
+                curriculum: [
+                    { num: "1회차", text: "데이터베이스 개념 및 SELECT, WHERE 기초 추출", mode: "대면", instructor: "데이터실 테크 리드" },
+                    { num: "2회차", text: "GROUP BY 집계, JOIN 테이블 결합 및 데이터 분석 실습", mode: "대면", instructor: "데이터실 테크 리드" }
+                ],
+                students: [],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            },
+            { 
+                id: 8, 
+                name: "AI 활용 심화", 
+                category: "전문 기술", 
+                quarter: "2026 Q3", 
+                type: "오프라인", 
+                status: "준비중", 
+                target: "전직원", 
+                period: "7~8월 중 예정", 
+                sessions: 4, 
+                selected: "-", completed: "-",
+                overview: "기초 프롬프팅을 넘어 나만의 사내 GPTs/에이전트를 만들고 API 연결과 고도화된 업무 자동화를 구축하는 딥다이브 과정입니다.",
+                curriculum: [
+                    { num: "1~2회차", text: "커스텀 GPTs 및 프롬프트 체이닝 기법", mode: "대면", instructor: "외부 초빙 AI 전문가" },
+                    { num: "3~4회차", text: "업무 자동화 툴 연동 및 나만의 AI 에이전트 완성", mode: "대면", instructor: "외부 초빙 AI 전문가" }
+                ],
+                students: [],
+                masterLink: "#", driveLink: "#", reviewLink: "#" 
+            }
+        ];
+
+        const totalCompleterData = [
+            { name: "김*파", dept: "전사", joinedCount: 4, completedCount: 4, bestAward: "🥇 2회 우수", courses: ["Part1. 벽을깨다_1기", "부동산 지식 교육", "LinkedIn 활용 교육", "AI 활용 입문-Gemini"] },
+            { name: "이*재", dept: "전사", joinedCount: 2, completedCount: 2, bestAward: "-", courses: ["Part1. 벽을깨다_1기", "공유오피스 법무 실무"] },
+            { name: "박*호", dept: "COG", joinedCount: 3, completedCount: 2, bestAward: "🥇 1회 우수", courses: ["부동산 지식 교육", "CM - Operation 역량 강화"] },
+            { name: "최*성", dept: "OSG", joinedCount: 1, completedCount: 1, bestAward: "-", courses: ["부동산 지식 교육"] },
+            { name: "정*우", dept: "COG", joinedCount: 2, completedCount: 2, bestAward: "🥇 1회 우수", courses: ["CM - Operation 역량 강화", "공유오피스 법무 실무"] },
+            { name: "윤*훈", dept: "마케팅", joinedCount: 1, completedCount: 1, bestAward: "🥇 1회 우수", courses: ["LinkedIn 활용 교육"] },
+            { name: "한*민", dept: "COG", joinedCount: 1, completedCount: 1, bestAward: "-", courses: ["공유오피스 법무 실무 교육"] }
+        ];
+
+        const trackMeta = {
+            "패파 이해": { sub: "TRACK 01 · BUSINESS", main: "패파 이해" },
+            "직무 전문성 강화": { sub: "TRACK 02 · PROFESSIONAL", main: "직무 전문성 강화" },
+            "전문 기술": { sub: "TRACK 03 · TECH", main: "전문 기술" }
+        };
+
+        let selectedCategory = '전체';
+        let selectedStatus = '전체';
+
+        /* 🔄 Navigation View Switching Controller */
+        function switchView(viewName) {
+            const mainPage = document.getElementById('mainPage');
+            const completerPage = document.getElementById('completerPage');
+            const detailPage = document.getElementById('detailPage');
+            
+            const btnNavMain = document.getElementById('btnNavMain');
+            const btnNavCompleter = document.getElementById('btnNavCompleter');
+
+            // Hide all pages initially
+            mainPage.style.display = 'none';
+            completerPage.style.display = 'none';
+            detailPage.style.display = 'none';
+
+            // Reset active nav buttons
+            btnNavMain.classList.remove('active');
+            btnNavCompleter.classList.remove('active');
+
+            if (viewName === 'main') {
+                mainPage.style.display = 'block';
+                btnNavMain.classList.add('active');
+            } else if (viewName === 'completer') {
+                completerPage.style.display = 'block';
+                btnNavCompleter.classList.add('active');
+                renderCompleterTable(totalCompleterData);
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function showDetailPage(id) {
+            const item = eduData.find(d => d.id === id);
+            if (!item) return;
+
+            const meta = trackMeta[item.category];
+            document.getElementById('detTrack').innerText = meta ? meta.sub : "TRACK";
+            document.getElementById('detTitle').innerText = item.name;
+            document.getElementById('detPeriod').innerText = item.period;
+            document.getElementById('detSessions').innerText = `총 ${item.sessions}회차`;
+            document.getElementById('detTarget').innerText = `대상: ${item.target}`;
+            document.getElementById('detType').innerText = item.type;
+            document.getElementById('detOverview').innerText = item.overview;
+
+            const badge = document.getElementById('detBadge');
+            if(item.status === '완료') {
+                badge.innerText = '🌿 완료';
+                badge.className = 'badge completed';
+            } else if(item.status === '모집중') {
+                badge.innerText = '🟡 모집중';
+                badge.className = 'badge recruiting';
+            } else {
+                badge.innerText = '🔴 준비중';
+                badge.className = 'badge preparing';
+            }
+
+            // 커리큘럼 렌더링
+            const currContainer = document.getElementById('detCurriculum');
+            currContainer.innerHTML = '';
+            item.curriculum.forEach(c => {
+                const isOffline = c.mode === '대면';
+                const pillClass = isOffline ? 'offline' : 'online';
+                const instructorText = (isOffline && c.instructor) ? `<span class="instructor-tag">• 강사: ${c.instructor}</span>` : '';
+
+                currContainer.innerHTML += `
+                    <div class="curriculum-item">
+                        <div class="curriculum-left">
+                            <div class="curriculum-num">${c.num}</div>
+                            <div class="curriculum-content">${c.text}</div>
+                        </div>
+                        <div class="curriculum-right">
+                            <span class="type-pill ${pillClass}">${c.mode}</span>
+                            ${instructorText}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 개별 교육 수료자 테이블 렌더링
+            const detStudentBody = document.getElementById('detStudentTableBody');
+            detStudentBody.innerHTML = '';
+            if(item.students && item.students.length > 0) {
+                item.students.forEach(s => {
+                    let pillStyle = 'pass';
+                    let pillText = '✅ 수료';
+                    if(s.status === '우수수료') { pillStyle = 'best'; pillText = '🥇 우수 수료'; }
+                    else if(s.status === '미수료') { pillStyle = 'fail'; pillText = '❌ 미수료'; }
+
+                    detStudentBody.innerHTML += `
+                        <tr>
+                            <td style="font-weight:700;">${s.name}</td>
+                            <td>${s.dept}</td>
+                            <td><span class="status-pill ${pillStyle}">${pillText}</span></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                detStudentBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 모집 중인 교육입니다.</td></tr>`;
+            }
+
+            document.getElementById('detSelected').innerText = item.selected !== "-" ? `${item.selected}명` : "-";
+            document.getElementById('detCompleted').innerText = item.completed !== "-" ? `${item.completed}명` : "-";
+
+            const linksContainer = document.getElementById('detResourceLinks');
+            linksContainer.innerHTML = `
+                <a href="${item.driveLink}" target="_blank" class="resource-btn">
+                    <span><i class="fa-regular fa-folder-open" style="margin-right:8px; color:var(--primary-vivid);"></i> 구글 드라이브 자료실</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
+                </a>
+                <a href="${item.masterLink}" target="_blank" class="resource-btn">
+                    <span><i class="fa-regular fa-file-lines" style="margin-right:8px; color:var(--primary-vivid);"></i> 강의 마스터 파일</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
+                </a>
+                <a href="${item.reviewLink}" target="_blank" class="resource-btn">
+                    <span><i class="fa-regular fa-comment-dots" style="margin-right:8px; color:var(--primary-vivid);"></i> 수강생 리뷰 & 사전조사</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
+                </a>
+            `;
+
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('completerPage').style.display = 'none';
+            document.getElementById('detailPage').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function setCategory(cat, el) {
+            selectedCategory = cat;
+            document.querySelectorAll('#categoryFilterGroup .filter-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            applyFilters();
+        }
+
+        function setStatus(st, el) {
+            selectedStatus = st;
+            document.querySelectorAll('.status-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = eduData.filter(item => {
+                const matchCat = (selectedCategory === '전체') || (item.category === selectedCategory);
+                const matchStatus = (selectedStatus === '전체') || (item.status === selectedStatus);
+                const matchSearch = item.name.toLowerCase().includes(searchText) || item.target.toLowerCase().includes(searchText);
+                return matchCat && matchStatus && matchSearch;
+            });
+            renderSections(filtered);
+        }
+
+        function renderSections(data) {
+            const container = document.getElementById('sectionsContainer');
+            container.innerHTML = '';
+            const categories = ["패파 이해", "직무 전문성 강화", "전문 기술"];
+
+            categories.forEach(catKey => {
+                const items = data.filter(item => item.category === catKey);
+
+                if (items.length > 0) {
+                    const meta = trackMeta[catKey];
+                    let sectionHtml = `
+                        <section style="margin-bottom: 48px;">
+                            <div class="track-header">
+                                <div class="track-sub">${meta.sub}</div>
+                                <div class="track-title-wrap">
+                                    <h2 class="track-main-title">${meta.main}</h2>
+                                    <span class="track-count-badge">${items.length}</span>
+                                </div>
+                            </div>
+                            <div class="grid">
+                    `;
+
+                    items.forEach(item => {
+                        let badgeClass = '';
+                        let badgeText = '';
+
+                        if(item.status === '완료') {
+                            badgeClass = 'completed';
+                            badgeText = '🌿 완료';
+                        } else if(item.status === '모집중') {
+                            badgeClass = 'recruiting';
+                            badgeText = '🟡 모집중';
+                        } else {
+                            badgeClass = 'preparing';
+                            badgeText = '🔴 준비중';
+                        }
+
+                        sectionHtml += `
+                            <div class="card" onclick="showDetailPage(${item.id})">
+                                <div>
+                                    <div class="card-top">
+                                        <span class="quarter-text">${item.quarter}</span>
+                                        <span class="badge ${badgeClass}">${badgeText}</span>
+                                    </div>
+                                    <div class="card-title">${item.name}</div>
+                                    <div class="card-tags">
+                                        <span class="tag">${item.target}</span>
+                                        <span class="tag">총 ${item.sessions}회차</span>
+                                    </div>
+                                    <div class="card-date">${item.period}</div>
+                                </div>
+                                <div>
+                                    <hr class="card-divider">
+                                    <div class="card-footer">
+                                        자세히 보기 <i class="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    sectionHtml += `</div></section>`;
+                    container.innerHTML += sectionHtml;
+                }
+            });
+
+            if (container.innerHTML === '') {
+                container.innerHTML = `<div style="text-align:center; padding: 60px 0; color: #888; font-size: 13px;">조건에 맞는 교육 프로그램이 없습니다.</div>`;
+            }
+        }
+
+        // 전체 수료자 명단 테이블 렌더링 & 검색
+        function renderCompleterTable(list) {
+            const tbody = document.getElementById('completerTableBody');
+            tbody.innerHTML = '';
+            
+            list.forEach(c => {
+                const courseChipsHtml = c.courses.map(courseName => `<span class="course-chip">${courseName}</span>`).join('');
+                const bestBadgeHtml = c.bestAward !== '-' ? `<span class="status-pill best">${c.bestAward}</span>` : `<span style="color:#aaa;">-</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700;">${c.name}</td>
+                        <td style="color:#555;">${c.dept}</td>
+                        <td style="text-align:center; font-weight:600;">${c.joinedCount}개</td>
+                        <td style="text-align:center; font-weight:700; color:var(--primary-vivid);">${c.completedCount}개</td>
+                        <td>${bestBadgeHtml}</td>
+                        <td><div class="course-tag-list">${courseChipsHtml}</div></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function filterCompleterTable() {
+            const query = document.getElementById('completerSearchInput').value.toLowerCase();
+            const filtered = totalCompleterData.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.dept.toLowerCase().includes(query) ||
+                c.courses.some(crs => crs.toLowerCase().includes(query))
+            );
+            renderCompleterTable(filtered);
+        }
+
+        // 초기 실행
+        applyFilters();
+    </script>
+</body>
+</html>
