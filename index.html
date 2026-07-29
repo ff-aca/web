@@ -113,7 +113,7 @@
         .card-footer i { margin-left: 4px; font-size: 10px; transition: transform 0.2s; }
         .card:hover .card-footer i { transform: translateX(3px); }
 
-        /* 🎓 전체 수료자 명단 화면 */
+        /* 🎓 전체 교육 참여자 LIST 화면 */
         #completerPage { display: none; padding-top: 12px; }
         .completer-card-box { background: #fff; border: 1px solid var(--border-color); border-radius: 20px; padding: 32px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .completer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
@@ -123,19 +123,14 @@
 
         .table-wrap { overflow-x: auto; }
         .completer-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .completer-table th { background: #f9fafb; padding: 14px 16px; border-bottom: 2px solid var(--border-color); font-weight: 700; color: #374151; white-space: nowrap; }
+        .completer-table th { background: #f9fafb; padding: 14px 16px; border-bottom: 2px solid var(--border-color); font-weight: 700; color: #374151; white-space: nowrap; text-align: center; }
         .completer-table td { padding: 16px; border-bottom: 1px solid var(--border-color); color: #111827; vertical-align: middle; }
         
         .completer-table th:first-child, 
         .completer-table td:first-child { 
             white-space: nowrap; 
-            min-width: 90px; 
+            min-width: 60px; 
             font-weight: 700;
-        }
-        .completer-table th:nth-child(2), 
-        .completer-table td:nth-child(2) { 
-            white-space: nowrap; 
-            min-width: 130px; 
         }
 
         .completer-table tr:hover { background: #fafafa; }
@@ -211,27 +206,34 @@
         .resource-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 16px; background: #fff; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.15s; }
         .resource-btn:hover { border-color: var(--primary-vivid); color: var(--primary-vivid); background: #fffaf8; }
 
-        /* 커리큘럼 테이블 전용 자료 다운로드 버튼 */
+        /* 커리큘럼 테이블 전용 자료 다운로드 버튼 */   
         .curr-link-btn {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             font-size: 11px;
             font-weight: 700;
-            color: var(--primary-vivid);
-            background: #fff0ed;
-            border: 1px solid #fecdd3;
-            padding: 4px 8px;
-            border-radius: 6px;
+            color: #4b5563;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            padding: 4px 9px;
+            border-radius: 8px;
             text-decoration: none;
             white-space: nowrap;
-            transition: 0.15s;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
 
         .curr-link-btn:hover {
             background: var(--primary-vivid);
-            color: #fff;
+            color: #ffffff;
             border-color: var(--primary-vivid);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(220, 47, 2, 0.2);
+        }
+
+        .curr-link-btn:hover i {
+            color: #ffffff !important;
         }
 
         /* 📸 현장 스케치 갤러리 그리드 */
@@ -256,6 +258,39 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
 
+        /* 🌐 히어로 전용 랜딩페이지 버튼 */
+        .landing-hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #111827;
+            color: #ffffff;
+            padding: 9px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .landing-hero-btn:hover {
+            background: var(--primary-vivid);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 47, 2, 0.25);
+        }
+
+        /* 🌐 리소스 카드 하이라이트 스타일 */
+        .resource-btn.highlight-card {
+            border-color: #fecdd3;
+            background: #fff0ed;
+        }
+
+        .resource-btn.highlight-card:hover {
+            border-color: var(--primary-vivid);
+            background: #ffe4e1;
+        }
 
     </style>
 </head>
@@ -272,7 +307,7 @@
                     <i class="fa-solid fa-book-open"></i> 교육 프로그램
                 </button>
                 <button class="nav-btn" id="btnNavCompleter" onclick="switchView('completer')">
-                    <i class="fa-solid fa-award"></i> 수료자 명단
+                    <i class="fa-solid fa-award"></i> 교육 참여자 LIST
                 </button>
             </nav>
         </div>
@@ -291,16 +326,20 @@
                 
                 <div class="kpi-grid">
                     <div class="kpi-card">
-                        <div class="kpi-num" id="kpiTotalEdu">-<span>개</span></div>
-                        <div class="kpi-label">개설 교육 커리큘럼</div>
+                        <div class="kpi-num" id="kpiCompletedEdu">-<span>개</span></div>
+                        <div class="kpi-label">완료된 교육</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-num" id="kpiRecruitingEdu">-<span>개</span></div>
+                        <div class="kpi-label">모집·진행 중</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-num" id="kpiPreparingEdu">-<span>개</span></div>
+                        <div class="kpi-label">오픈 예정</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-num" id="kpiTotalCompleter">-<span>명+</span></div>
                         <div class="kpi-label">누적 교육 수료자</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-num">3<span>개</span></div>
-                        <div class="kpi-label">핵심 직무 전문 트랙</div>
                     </div>
                 </div>
             </section>
@@ -338,12 +377,12 @@
         </div>
 
 
-       <!-- 🎓 2. 전체 수료자 명단 페이지 -->
+       <!-- 🎓 2. 전체 교육 참여자 LIST 페이지 -->
         <div id="completerPage">
             <div class="completer-card-box">
                 <div class="completer-header">
                     <div class="completer-title">
-                        <i class="fa-solid fa-award" style="color:var(--primary-vivid);"></i> 패파아카데미 통합 수료자 명단
+                        <i class="fa-solid fa-award" style="color:var(--primary-vivid);"></i> 패파아카데미 교육 교육 참여자 LIST
                     </div>
                     
                     <!-- 🔍 검색 필터 드롭다운 + 검색창 그룹 -->
@@ -399,6 +438,9 @@
                     <div class="detail-meta-item"><i class="fa-regular fa-user" style="color: var(--primary-vivid);"></i> <span id="detTarget">-</span></div>
                     <div class="detail-meta-item"><i class="fa-solid fa-chalkboard-user" style="color: var(--primary-vivid);"></i> <span id="detType">-</span></div>
                 </div>
+
+                <!-- 🌐 히어로 랜딩페이지 링크 버튼 영역 -->
+                <div id="detLandingBtn" style="margin-top: 18px;"></div>
             </div>
 
             <!-- 1. [상단 2단] 교육 개요 & 수강 현황 (높이 균일) -->
@@ -409,11 +451,11 @@
                 </div>
 
                 <div class="section-card" style="margin-bottom:0;">
-                    <div class="section-card-title"><i class="fa-solid fa-users"></i> 교육 수강 현황</div>
+                    <div class="section-card-title"><i class="fa-solid fa-users"></i> 수료 현황</div>
                     <div class="stat-grid">
                         <div class="stat-box">
                             <div class="stat-num" id="detSelected">-</div>
-                            <div class="stat-label">선정자</div>
+                            <div class="stat-label">참여자</div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-num" id="detCompleted">-</div>
@@ -425,7 +467,7 @@
 
             <!-- 2. [Full Width] 학습 자료 & 리소스 -->
             <div class="section-card">
-                <div class="section-card-title"><i class="fa-solid fa-folder-open"></i> 학습 자료 & 리소스</div>
+                <div class="section-card-title"><i class="fa-solid fa-folder-open"></i> 교육 관련 자료</div>
                 <div class="resource-grid" id="detResourceLinks"></div>
             </div>
 
@@ -434,17 +476,21 @@
                 <div class="section-card-title"><i class="fa-solid fa-list-check"></i> 상세 커리큘럼</div>
                 <div id="detCurriculum"></div>
             </div>
-       
-            <!-- 4. [Full Width] 이 교육의 수료자 명단 -->
+
+            <!-- 4. [Full Width] 이 교육의 교육 참여자 LIST -->
             <div class="section-card">
-                <div class="section-card-title"><i class="fa-solid fa-user-graduate"></i> 이 교육의 수료자 명단</div>
+                <div class="section-card-title">
+                    <i class="fa-solid fa-user-graduate"></i> 교육 참여자 LIST 
+                    <span id="detStudentCount" style="font-size:13px; font-weight:800; color:var(--primary-vivid); background:var(--primary-soft-bg); padding:2px 8px; border-radius:12px; margin-left:6px;">0명</span>
+                </div>
                 <div class="table-wrap">
                     <table class="completer-table">
                         <thead>
                             <tr>
-                                <th>이름</th>
-                                <th>소속 그룹</th>
-                                <th>비고 (수료 상태)</th>
+                                <th style="width: 60px; text-align: center;">No.</th>
+                                <th style="text-align: center;">이름</th>
+                                <th style="text-align: center;">소속 그룹</th>
+                                <th style="text-align: center;">수료 여부</th>
                             </tr>
                         </thead>
                         <tbody id="detStudentTableBody"></tbody>
@@ -521,10 +567,20 @@
                         curriculum: parseCurriculum(item)
                     }));
 
-                    document.getElementById('kpiTotalEdu').innerHTML = `${eduData.length}<span>개</span>`;
+                    // 1. 완료된 교육 수
+                    const completedCount = eduData.filter(item => item.status === '완료').length;
+                    document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
+
+                    // 2. 모집·진행 중 교육 수
+                    const recruitingCount = eduData.filter(item => item.status === '모집중').length;
+                    document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
+
+                    // 3. 오픈 예정 교육 수
+                    const preparingCount = eduData.filter(item => item.status === '준비중').length;
+                    document.getElementById('kpiPreparingEdu').innerHTML = `${preparingCount}<span>개</span>`;
                 }
 
-                // 2. 통합 수료자 명단 파싱
+                // 2. 통합 교육 참여자 LIST 파싱
                 if (data.totalCompleterData && data.totalCompleterData.length > 0) {
                     totalCompleterData = data.totalCompleterData.map(item => ({
                         ...item,
@@ -596,13 +652,37 @@
                 badge.className = 'badge preparing';
             }
 
+            // 🌐 히어로 섹션 상단 '전체 교육 안내 페이지' 버튼 바인딩
+            const landingBtnContainer = document.getElementById('detLandingBtn');
+            if (item.landingLink && item.landingLink !== "-") {
+                landingBtnContainer.innerHTML = `
+                    <a href="${item.landingLink}" target="_blank" class="landing-hero-btn">
+                        <i class="fa-solid fa-school" style="color:#ff7a00;"></i> 교육장 바로가기 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; opacity:0.8;"></i>
+                    </a>
+                `;
+            } else {
+                landingBtnContainer.innerHTML = '';
+            }
+
             // 📄 1. 수강 현황 숫자로 바인딩
             document.getElementById('detSelected').innerText = (item.selected && item.selected !== "-") ? `${item.selected}명` : "-";
             document.getElementById('detCompleted').innerText = (item.completed && item.completed !== "-") ? `${item.completed}명` : "-";
 
-            // 📄 2. 학습 자료 리소스 버튼 (3개 한 줄 통합 배치)
+            // 📄 2. 학습 자료 리소스 버튼 (안내 페이지가 있으면 1순위에 추가)
             const linksContainer = document.getElementById('detResourceLinks');
             let resourceHtml = '';
+
+            // 🌐 전체 교육 안내 페이지 (landingLink 존재 시 최우선 배치)
+            if (item.landingLink && item.landingLink !== "-") {
+                resourceHtml += `
+                    <a href="${item.landingLink}" target="_blank" class="resource-btn highlight-card">
+                        <span>
+                            <i class="fa-solid fa-school" style="margin-right:8px; color:var(--primary-vivid);"></i> 교육장 바로가기
+                        </span>
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
+                    </a>
+                `;
+            }
 
             // 모집 공고 (recruitLink)
             if (item.recruitLink && item.recruitLink !== "-") {
@@ -621,12 +701,12 @@
                 `;
             }
 
-            // 구글 드라이브 자료실 (driveLink)
+            // 구글 드라이브 (driveLink)
             if (item.driveLink && item.driveLink !== "-") {
                 resourceHtml += `
                     <a href="${item.driveLink}" target="_blank" class="resource-btn">
                         <span>
-                            <i class="fa-regular fa-folder-open" style="margin-right:8px; color:var(--primary-vivid);"></i> 구글 드라이브 자료실
+                            <i class="fa-regular fa-folder-open" style="margin-right:8px; color:var(--primary-vivid);"></i> 구글 드라이브
                             <span class="admin-badge">🔒 관리자</span>
                         </span>
                         <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
@@ -639,7 +719,7 @@
                 resourceHtml += `
                     <a href="${item.masterLink}" target="_blank" class="resource-btn">
                         <span>
-                            <i class="fa-regular fa-file-lines" style="margin-right:8px; color:var(--primary-vivid);"></i> 강의 마스터 파일
+                            <i class="fa-regular fa-file-lines" style="margin-right:8px; color:var(--primary-vivid);"></i> 마스터 파일
                             <span class="admin-badge">🔒 관리자</span>
                         </span>
                         <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
@@ -649,7 +729,7 @@
 
             linksContainer.innerHTML = resourceHtml;
 
-            // 📄 3. 커리큘럼 테이블 렌더링 ('교육 자료' 다중 링크 지원)
+            // 📄 3. 상세 커리큘럼 테이블 렌더링 (감각적인 컬러 팔레트 적용)
             const currContainer = document.getElementById('detCurriculum');
 
             if (item.detailedCurriculum && item.detailedCurriculum.length > 0) {
@@ -657,13 +737,13 @@
                     <div class="table-wrap">
                         <table class="completer-table" style="text-align:center; table-layout: fixed; width: 100%;">
                             <thead>
-                                <tr style="background:#f9fafb; color:#374151;">
-                                    <th style="width: 65px; text-align:center; color:#374151;">회차</th>
-                                    <th style="width: 85px; text-align:center; color:#374151;">날짜</th>
-                                    <th style="text-align:left; color:#374151;">주제</th>
-                                    <th style="width: 75px; text-align:center; color:#374151;">형태</th>
-                                    <th style="width: 210px; text-align:left; color:#374151;">강의자</th>
-                                    <th style="width: 130px; text-align:center; color:#374151;">교육 자료</th>
+                                <tr style="background:#f9fafb; color:#4b5563;">
+                                    <th style="width: 70px; text-align:center;">회차</th>
+                                    <th style="width: 85px; text-align:center;">날짜</th>
+                                    <th style="text-align:center;">주제</th>
+                                    <th style="width: 75px; text-align:center;">형태</th>
+                                    <th style="width: 200px; text-align:center;">강의자</th>
+                                    <th style="width: 175px; text-align:center;">교육 자료</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -671,36 +751,43 @@
 
                 item.detailedCurriculum.forEach(row => {
                     const isOffline = row.mode === '대면';
+                    
+                    // 🎨 1. 감각적인 대면/비대면 파스텔 뱃지
                     const modeBadge = isOffline 
-                        ? `<span class="type-pill offline" style="font-weight:800; color:var(--primary-vivid); white-space:nowrap; background:#fff0ed; padding:4px 8px;">대면</span>` 
-                        : `<span class="type-pill online" style="white-space:nowrap; padding:4px 8px;">비대면</span>`;
+                        ? `<span style="font-size:11px; font-weight:700; color:#e11d48; background:#fff1f2; border:1px solid #fecdd3; padding:3px 9px; border-radius:12px; white-space:nowrap;">대면</span>` 
+                        : `<span style="font-size:11px; font-weight:700; color:#059669; background:#ecfdf5; border:1px solid #a7f3d0; padding:3px 9px; border-radius:12px; white-space:nowrap;">비대면</span>`;
 
                     const sessionName = row.session || row.week || '-';
                     
-                    // 📄 회차별 교육 자료 다중 링크 분할 처리 (콤마 , 기준)
-                    let materialCell = `<span style="color:#ccc; font-size:12px;">-</span>`;
+                    // 📄 2. 세련된 틴트 컬러 자료 버튼 (수평 1줄 정렬 유지)
+                    let materialCell = `<span style="color:#d1d5db; font-size:12px;">-</span>`;
                     if (row.materialLink && row.materialLink !== "-") {
                         const links = String(row.materialLink).split(/,|\n/).map(l => l.trim()).filter(l => l.length > 0);
                         
                         if (links.length > 0) {
-                            materialCell = links.map((url, idx) => {
+                            const btns = links.map((url, idx) => {
                                 const label = links.length > 1 ? `자료${idx + 1}` : `자료보기`;
                                 return `
-                                    <a href="${url}" target="_blank" class="curr-link-btn" style="margin: 2px;">
-                                        <i class="fa-regular fa-file-pdf"></i> ${label}
+                                    <a href="${url}" target="_blank" class="curr-link-btn">
+                                        <i class="fa-regular fa-file-pdf" style="color:var(--primary-vivid);"></i> ${label}
                                     </a>
                                 `;
                             }).join('');
+
+                            materialCell = `<div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:nowrap;">${btns}</div>`;
                         }
                     }
 
                     tableHtml += `
                         <tr>
-                            <td style="font-weight:800; color:var(--primary-vivid); white-space:nowrap; text-align:center;">${sessionName}</td>
-                            <td style="color:#4b5563; font-weight:600; white-space:nowrap; text-align:center;">${row.date || '-'}</td>
+                            <!-- 🎨 3. 회차: 감성적인 딥 코랄-오렌지 필 약식 뱃지 -->
+                            <td style="text-align:center;">
+                                <span style="font-size:12px; font-weight:800; color:#c2410c; background:#fff7ed; padding:3px 8px; border-radius:6px; white-space:nowrap; border:1px solid #ffedd5;">${sessionName}</span>
+                            </td>
+                            <td style="color:#6b7280; font-weight:600; font-size:12px; white-space:nowrap; text-align:center;">${row.date || '-'}</td>
                             <td style="text-align:left; font-weight:700; color:#111827; line-height:1.4;">${row.topic || '-'}</td>
                             <td style="text-align:center;">${modeBadge}</td>
-                            <td style="text-align:left; font-size:12px; color:#4b5563; font-weight:600; line-height:1.3;">${row.instructor || '-'}</td>
+                            <td style="text-align:left; font-size:12px; color:#374151; font-weight:600; line-height:1.3;">${row.instructor || '-'}</td>
                             <td style="text-align:center;">${materialCell}</td>
                         </tr>
                     `;
@@ -712,34 +799,36 @@
                 currContainer.innerHTML = `<div style="color:#888; font-size:13px; text-align:center; padding:20px;">커리큘럼 준비 중입니다.</div>`;
             }
 
-            // 📄 4. 이 교육의 수료자 명단
+            // 📄 4. 이 교육의 교육 참여자 LIST (소속 그룹 내용만 왼쪽 정렬)
             const detStudentBody = document.getElementById('detStudentTableBody');
+            const detStudentCount = document.getElementById('detStudentCount');
+
             detStudentBody.innerHTML = '';
-            if(item.students && item.students.length > 0) {
-                item.students.forEach(s => {
+
+            if (item.students && item.students.length > 0) {
+                detStudentCount.innerText = `${item.students.length}명`;
+
+                item.students.forEach((s, idx) => {
                     let pillStyle = 'pass';
                     let pillText = '✅ 수료';
-                    if(s.status === '우수수료') { pillStyle = 'best'; pillText = '🥇 우수 수료'; }
-                    else if(s.status === '미수료') { pillStyle = 'fail'; pillText = '❌ 미수료'; }
+                    if (s.status === '우수수료') { pillStyle = 'best'; pillText = '🥇 우수 수료'; }
+                    else if (s.status === '미수료') { pillStyle = 'fail'; pillText = '❌ 미수료'; }
 
                     detStudentBody.innerHTML += `
                         <tr>
-                            <td>${s.name}</td>
-                            <td>${s.dept}</td>
-                            <td><span class="status-pill ${pillStyle}">${pillText}</span></td>
+                            <td style="text-align: center; color: #9ca3af; font-weight: 600;">${idx + 1}</td>
+                            <td style="text-align: center; font-weight: 700;">${s.name}</td>
+                            <td style="text-align: left; color: #4b5563; padding-left: 16px;">${s.dept}</td>
+                            <td style="text-align: center;"><span class="status-pill ${pillStyle}">${pillText}</span></td>
                         </tr>
                     `;
                 });
             } else {
-                detStudentBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 준비 중인 교육입니다.</td></tr>`;
+                detStudentCount.innerText = `0명`;
+                detStudentBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 준비 중인 교육입니다.</td></tr>`;
             }
 
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('completerPage').style.display = 'none';
-            document.getElementById('detailPage').style.display = 'block';
-            window.scrollTo(0, 0);
-
-            // 📄 현장 스케치 & 후기 사진 렌더링
+            // 📄 5. 현장 스케치 & 후기 사진 렌더링
             const photoSection = document.getElementById('detPhotoSection');
             const photoGallery = document.getElementById('detPhotoGallery');
 
@@ -753,13 +842,18 @@
                         </a>
                     `).join('');
                     
-                    photoSection.style.display = 'block'; // 사진이 있을 때만 섹션 노출
+                    photoSection.style.display = 'block';
                 } else {
                     photoSection.style.display = 'none';
                 }
             } else {
                 photoSection.style.display = 'none';
             }
+
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('completerPage').style.display = 'none';
+            document.getElementById('detailPage').style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
         function setCategory(cat, el) {
@@ -858,9 +952,7 @@
             }
         }
 
-        
-
-        // 전체 수료자 명단 테이블 렌더링
+        // 전체 교육 참여자 LIST 테이블 렌더링
         function renderCompleterTable(list) {
             const tbody = document.getElementById('completerTableBody');
             
@@ -891,18 +983,18 @@
 
                 tbody.innerHTML += `
                     <tr>
-                        <td>${c.name}</td>
+                        <td style="text-align:center;">${c.name}</td>
                         <td style="color:#555;">${c.dept}</td>
                         <td style="text-align:center; font-weight:600;">${c.joinedCount}개</td>
                         <td style="text-align:center; font-weight:700; color:var(--primary-vivid);">${c.completedCount}개</td>
-                        <td>${bestBadgeHtml}</td>
+                        <td style="text-align:center;">${bestBadgeHtml}</td>
                         <td><div class="course-tag-list">${courseChipsHtml}</div></td>
                     </tr>
                 `;
             });
         }
 
-        // 🔍 수료자 명단 조건별 검색 필터링
+        // 🔍 교육 참여자 LIST 조건별 검색 필터링
         function filterCompleterTable() {
             const filterType = document.getElementById('completerFilterType').value;
             const query = document.getElementById('completerSearchInput').value.toLowerCase().trim();
