@@ -526,12 +526,12 @@
                     <table class="completer-table">
                         <thead>
                             <tr style="cursor: pointer; user-select: none;">
-                                <th onclick="sortTableBy('name')">이름 <span id="sort-icon-name">↕️</span></th>
-                                <th onclick="sortTableBy('dept')">소속 그룹 <span id="sort-icon-dept">↕️</span></th>
-                                <th onclick="sortTableBy('joinedCount')">참여 교육 수 <span id="sort-icon-joinedCount">↕️</span></th>
-                                <th onclick="sortTableBy('completedCount')">수료 교육 갯수 <span id="sort-icon-completedCount">↕️</span></th>
-                                <th onclick="sortTableBy('bestAward')">우수 수료 <span id="sort-icon-bestAward">↕️</span></th>
-                                <th style="cursor: default;">수료 교육명 목록</th> <!-- 목록은 정렬 제외 -->
+                                <th onclick="sortTableBy('name')">이름 <i id="sort-icon-name" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('dept')">소속 그룹 <i id="sort-icon-dept" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('joinedCount')">참여 교육 수 <i id="sort-icon-joinedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('completedCount')">수료 교육 갯수 <i id="sort-icon-completedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('bestAward')">우수 수료 <i id="sort-icon-bestAward" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th style="cursor: default;">수료 교육명 목록</th>
                             </tr>
                         </thead>
                         <tbody id="completerTableBody"></tbody>
@@ -768,16 +768,21 @@
             filterCompleterTable();
         }
 
-        // 🔀 정렬 아이콘(⬆️/⬇️) 업데이트 도우미
+    // 🔀 FontAwesome 세련된 정렬 아이콘 업데이트 도우미
         function updateSortIcons(activeKey, order) {
             const keys = ['name', 'dept', 'joinedCount', 'completedCount', 'bestAward'];
+            
             keys.forEach(k => {
                 const iconEl = document.getElementById(`sort-icon-${k}`);
                 if (iconEl) {
                     if (k === activeKey) {
-                        iconEl.innerText = order === 'asc' ? '🔼' : '🔽';
+                        // 활성화된 열: 오렌지 포인트 컬러 & 방향 표시
+                        iconEl.className = order === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+                        iconEl.style.color = 'var(--primary-vivid)';
                     } else {
-                        iconEl.innerText = '↕️';
+                        // 비활성화된 열: 은은한 기본 ↕️ 화살표
+                        iconEl.className = 'fa-solid fa-sort';
+                        iconEl.style.color = '#d1d5db';
                     }
                 }
             });
