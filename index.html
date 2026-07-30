@@ -525,13 +525,13 @@
                 <div class="table-wrap">
                     <table class="completer-table">
                         <thead>
-                            <tr>
-                                <th>이름</th>
-                                <th>소속 그룹</th>
-                                <th>참여 교육 수</th>
-                                <th>수료 교육 갯수</th>
-                                <th>우수 수료</th>
-                                <th>수료 교육명 목록</th>
+                            <tr style="cursor: pointer; user-select: none;">
+                                <th onclick="sortTableBy('name')">이름 <span id="sort-icon-name">↕️</span></th>
+                                <th onclick="sortTableBy('dept')">소속 그룹 <span id="sort-icon-dept">↕️</span></th>
+                                <th onclick="sortTableBy('joinedCount')">참여 교육 수 <span id="sort-icon-joinedCount">↕️</span></th>
+                                <th onclick="sortTableBy('completedCount')">수료 교육 갯수 <span id="sort-icon-completedCount">↕️</span></th>
+                                <th onclick="sortTableBy('bestAward')">우수 수료 <span id="sort-icon-bestAward">↕️</span></th>
+                                <th style="cursor: default;">수료 교육명 목록</th> <!-- 목록은 정렬 제외 -->
                             </tr>
                         </thead>
                         <tbody id="completerTableBody"></tbody>
@@ -719,6 +719,70 @@
                 document.getElementById('sectionsContainer').innerHTML = `<div style="text-align:center; padding: 60px 0; color: #dc2f02; font-size: 13px;">데이터를 불러오는 중 오류가 발생했습니다. 데이터 권한 및 인터넷 연결을 확인해 주세요.</div>`;
             }
         }
+
+        // 🔄 정렬 상태 변수 (기본값: 이름 오름차순)
+        let currentSortKey = '';
+        let currentSortOrder = 'asc'; // 'asc' 또는 'desc'
+
+        // 📊 수료자 명단 열 정렬 함수
+        function sortTableBy(key) {
+            if (currentSortKey === key) {
+                // 이미 같은 열을 누른 경우 정렬 방향 반전
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                // 새로운 열을 누른 경우 오름차순으로 시작
+                currentSortKey = key;
+                currentSortOrder = 'asc';
+            }
+
+            // 아이콘 표시 업데이트
+            updateSortIcons(key, currentSortOrder);
+
+            // 데이터 정렬 로직
+            totalCompleterData.sort((a, b) => {
+                let valA = a[key];
+                let valB = b[key];
+
+                // 숫자 타입 처리 (참여/수료 교육 수)
+                if (typeof valA === 'number' && typeof valB === 'number') {
+                    return currentSortOrder === 'asc' ? valA - valB : valB - valA;
+                }
+
+                // 우수 수료 처리 (숫자 변환 시도)
+                if (key === 'bestAward') {
+                    const numA = Number(valA) || 0;
+                    const numB = Number(valB) || 0;
+                    return currentSortOrder === 'asc' ? numA - numB : numB - numA;
+                }
+
+                // 텍스트(이름, 소속그룹 등) 가나다순 정렬
+                valA = String(valA || '').toLowerCase();
+                valB = String(valB || '').toLowerCase();
+
+                if (valA < valB) return currentSortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // 검색 필터 상태를 유지하면서 표 다시 그리기
+            filterCompleterTable();
+        }
+
+        // 🔀 정렬 아이콘(⬆️/⬇️) 업데이트 도우미
+        function updateSortIcons(activeKey, order) {
+            const keys = ['name', 'dept', 'joinedCount', 'completedCount', 'bestAward'];
+            keys.forEach(k => {
+                const iconEl = document.getElementById(`sort-icon-${k}`);
+                if (iconEl) {
+                    if (k === activeKey) {
+                        iconEl.innerText = order === 'asc' ? '🔼' : '🔽';
+                    } else {
+                        iconEl.innerText = '↕️';
+                    }
+                }
+            });
+        }
+
 
         // 🔄 화면 전환 컨트롤러
         function switchView(viewName) {
