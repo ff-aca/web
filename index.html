@@ -22,6 +22,11 @@
             --badge-recruiting-text: #b7791f;
             --badge-recruiting-border: #ffe599;
 
+            /* 🔵 진행중 뱃지 (신규 추가) */
+            --badge-ongoing-bg: #eff6ff;
+            --badge-ongoing-text: #1d4ed8;
+            --badge-ongoing-border: #bfdbfe;
+
             /* 🔴 준비중 뱃지 */
             --badge-preparing-bg: #ffeef0;
             --badge-preparing-text: #d92d20;
@@ -101,6 +106,7 @@
         .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
         .badge.completed { background: var(--badge-completed-bg); color: var(--badge-completed-text); border: 1px solid var(--badge-completed-border); }
         .badge.recruiting { background: var(--badge-recruiting-bg); color: var(--badge-recruiting-text); border: 1px solid var(--badge-recruiting-border); }
+        .badge.ongoing { background: var(--badge-ongoing-bg); color: var(--badge-ongoing-text); border: 1px solid var(--badge-ongoing-border); }
         .badge.preparing { background: var(--badge-preparing-bg); color: var(--badge-preparing-text); border: 1px solid var(--badge-preparing-border); }
 
         .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 16px; line-height: 1.4; letter-spacing: -0.3px; }
@@ -126,6 +132,12 @@
         .completer-table th { background: #f9fafb; padding: 14px 16px; border-bottom: 2px solid var(--border-color); font-weight: 700; color: #374151; white-space: nowrap; text-align: center; }
         .completer-table td { padding: 16px; border-bottom: 1px solid var(--border-color); color: #111827; vertical-align: middle; }
         
+        /* 💡 소속 그룹 열 너비 확대 (약 5글자 이상 더 들어가도록 넓힘) */
+        .completer-table th.col-dept, 
+        .completer-table td.col-dept { 
+            min-width: 140px; 
+        }
+
         .completer-table th:first-child, 
         .completer-table td:first-child { 
             white-space: nowrap; 
@@ -292,127 +304,33 @@
             background: #ffe4e1;
         }
 
-        /* ==========================================
-   📱 Mobile Responsive Styles (768px 이하)
-   ========================================== */
-    @media (max-width: 768px) {
-        /* 1. 기본 컨테이너 여백 조정 */
-        .container {
-            padding: 0 16px;
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            header { padding: 10px 0; }
+            .logo { font-size: 16px; }
+            .nav-btn { padding: 6px 10px; font-size: 12px; }
+            .portfolio-hero { padding: 24px 20px; margin: 16px 0 24px 0; border-radius: 18px; }
+            .hero-title { font-size: 22px; }
+            .hero-desc { font-size: 13px; margin-bottom: 24px; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding-top: 18px; }
+            .kpi-card { padding: 14px 12px; }
+            .kpi-num { font-size: 20px; }
+            .kpi-label { font-size: 11px; }
+            .search-bar { max-width: 100%; padding: 9px 16px; }
+            .filter-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .filter-group { justify-content: flex-start; overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
+            .filter-btn { padding: 6px 12px; font-size: 11px; }
+            .status-btn-group { width: 100%; justify-content: space-between; }
+            .status-btn { flex: 1; text-align: center; padding: 6px 0; font-size: 11px; }
+            .detail-top-grid { grid-template-columns: 1fr; gap: 14px; }
+            .detail-hero { padding: 22px 18px; border-radius: 16px; }
+            .detail-title { font-size: 20px; }
+            .section-card { padding: 18px 16px; border-radius: 14px; }
+            .table-wrap { -webkit-overflow-scrolling: touch; margin: 0 -4px; }
+            .completer-table th, .completer-table td { padding: 12px 10px; font-size: 12px; }
+            .photo-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .photo-card { height: 120px; }
         }
-
-        /* 2. 헤더 로고 & 네비게이션 */
-        header {
-            padding: 10px 0;
-        }
-        .logo {
-            font-size: 16px;
-        }
-        .nav-btn {
-            padding: 6px 10px;
-            font-size: 12px;
-        }
-
-        /* 3. 히어로 섹션 */
-        .portfolio-hero {
-            padding: 24px 20px;
-            margin: 16px 0 24px 0;
-            border-radius: 18px;
-        }
-        .hero-title {
-            font-size: 22px;
-        }
-        .hero-desc {
-            font-size: 13px;
-            margin-bottom: 24px;
-        }
-
-        /* 4. KPI 카드 (모바일 2x2 배치) */
-        .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding-top: 18px;
-        }
-        .kpi-card {
-            padding: 14px 12px;
-        }
-        .kpi-num {
-            font-size: 20px;
-        }
-        .kpi-label {
-            font-size: 11px;
-        }
-
-        /* 5. 검색창 & 필터 툴바 */
-        .search-bar {
-            max-width: 100%;
-            padding: 9px 16px;
-        }
-        .filter-toolbar {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-        .filter-group {
-            justify-content: flex-start;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-bottom: 4px;
-        }
-        .filter-btn {
-            padding: 6px 12px;
-            font-size: 11px;
-        }
-        .status-btn-group {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .status-btn {
-            flex: 1;
-            text-align: center;
-            padding: 6px 0;
-            font-size: 11px;
-        }
-
-        /* 6. 상세 페이지 2단 상단 카드 1열 전환 */
-        .detail-top-grid {
-            grid-template-columns: 1fr;
-            gap: 14px;
-        }
-        .detail-hero {
-            padding: 22px 18px;
-            border-radius: 16px;
-        }
-        .detail-title {
-            font-size: 20px;
-        }
-        .section-card {
-            padding: 18px 16px;
-            border-radius: 14px;
-        }
-
-        /* 7. 모바일 표 터치 스크롤 최적화 */
-        .table-wrap {
-            -webkit-overflow-scrolling: touch;
-            margin: 0 -4px;
-        }
-        .completer-table th, 
-        .completer-table td {
-            padding: 12px 10px;
-            font-size: 12px;
-        }
-
-        /* 8. 현장 스케치 갤러리 (2열 정렬) */
-        .photo-gallery-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        .photo-card {
-            height: 120px;
-        }
-    }
-
-
     </style>
 </head>
 <body>
@@ -482,6 +400,7 @@
                     <div class="status-btn-group">
                         <button class="status-btn active" onclick="setStatus('전체', this)">전체</button>
                         <button class="status-btn" onclick="setStatus('모집중', this)">🟡 모집중</button>
+                        <button class="status-btn" onclick="setStatus('진행중', this)">🔵 진행중</button>
                         <button class="status-btn" onclick="setStatus('준비중', this)">🔴 준비중</button>
                         <button class="status-btn" onclick="setStatus('완료', this)">🌿 완료</button>
                     </div>
@@ -503,7 +422,7 @@
             <div class="completer-card-box">
                 <div class="completer-header">
                     <div class="completer-title">
-                        <i class="fa-solid fa-award" style="color:var(--primary-vivid);"></i> 패파아카데미 교육 교육 참여자 LIST
+                        <i class="fa-solid fa-award" style="color:var(--primary-vivid);"></i> 패파아카데미 교육 참여자 LIST
                     </div>
                     
                     <!-- 🔍 검색 필터 드롭다운 + 검색창 그룹 -->
@@ -512,7 +431,7 @@
                             <option value="all">전체 검색</option>
                             <option value="name">이름</option>
                             <option value="dept">소속 그룹</option>
-                            <option value="course">수료 교육명</option>
+                            <option value="course">참여 교육명</option>
                         </select>
 
                         <div class="completer-search">
@@ -527,11 +446,11 @@
                         <thead>
                             <tr style="cursor: pointer; user-select: none;">
                                 <th onclick="sortTableBy('name')">이름 <i id="sort-icon-name" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
-                                <th onclick="sortTableBy('dept')">소속 그룹 <i id="sort-icon-dept" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
-                                <th onclick="sortTableBy('joinedCount')">참여 교육 수 <i id="sort-icon-joinedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
-                                <th onclick="sortTableBy('completedCount')">수료 교육 갯수 <i id="sort-icon-completedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
-                                <th onclick="sortTableBy('bestAward')">우수 수료 <i id="sort-icon-bestAward" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
-                                <th style="cursor: default;">수료 교육명 목록</th>
+                                <th class="col-dept" onclick="sortTableBy('dept')">소속 그룹 <i id="sort-icon-dept" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('joinedCount')">참여 <i id="sort-icon-joinedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('completedCount')">수료 <i id="sort-icon-completedCount" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th onclick="sortTableBy('bestAward')">우수수료 <i id="sort-icon-bestAward" class="fa-solid fa-sort" style="font-size: 11px; color: #b91c1c; margin-left: 4px;"></i></th>
+                                <th style="cursor: default;">참여 교육 목록</th>
                             </tr>
                         </thead>
                         <tbody id="completerTableBody"></tbody>
@@ -610,7 +529,7 @@
                             <tr>
                                 <th style="width: 60px; text-align: center;">No.</th>
                                 <th style="text-align: center;">이름</th>
-                                <th style="text-align: center;">소속 그룹</th>
+                                <th class="col-dept" style="text-align: center;">소속 그룹</th>
                                 <th style="text-align: center;">수료 여부</th>
                             </tr>
                         </thead>
@@ -692,8 +611,8 @@
                     const completedCount = eduData.filter(item => item.status === '완료').length;
                     document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
 
-                    // 2. 모집·진행 중 교육 수
-                    const recruitingCount = eduData.filter(item => item.status === '모집중').length;
+                    // 2. 모집·진행 중 교육 수 (모집중 + 진행중 합산)
+                    const recruitingCount = eduData.filter(item => item.status === '모집중' || item.status === '진행중').length;
                     document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
 
                     // 3. 오픈 예정 교육 수
@@ -727,35 +646,28 @@
         // 📊 수료자 명단 열 정렬 함수
         function sortTableBy(key) {
             if (currentSortKey === key) {
-                // 이미 같은 열을 누른 경우 정렬 방향 반전
                 currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
             } else {
-                // 새로운 열을 누른 경우 오름차순으로 시작
                 currentSortKey = key;
                 currentSortOrder = 'asc';
             }
 
-            // 아이콘 표시 업데이트
             updateSortIcons(key, currentSortOrder);
 
-            // 데이터 정렬 로직
             totalCompleterData.sort((a, b) => {
                 let valA = a[key];
                 let valB = b[key];
 
-                // 숫자 타입 처리 (참여/수료 교육 수)
                 if (typeof valA === 'number' && typeof valB === 'number') {
                     return currentSortOrder === 'asc' ? valA - valB : valB - valA;
                 }
 
-                // 우수 수료 처리 (숫자 변환 시도)
                 if (key === 'bestAward') {
                     const numA = Number(valA) || 0;
                     const numB = Number(valB) || 0;
                     return currentSortOrder === 'asc' ? numA - numB : numB - numA;
                 }
 
-                // 텍스트(이름, 소속그룹 등) 가나다순 정렬
                 valA = String(valA || '').toLowerCase();
                 valB = String(valB || '').toLowerCase();
 
@@ -764,11 +676,9 @@
                 return 0;
             });
 
-            // 검색 필터 상태를 유지하면서 표 다시 그리기
             filterCompleterTable();
         }
 
-    // 🔀 FontAwesome 세련된 정렬 아이콘 업데이트 도우미
         function updateSortIcons(activeKey, order) {
             const keys = ['name', 'dept', 'joinedCount', 'completedCount', 'bestAward'];
             
@@ -776,11 +686,9 @@
                 const iconEl = document.getElementById(`sort-icon-${k}`);
                 if (iconEl) {
                     if (k === activeKey) {
-                        // 활성화된 열: 오렌지 포인트 컬러 & 방향 표시
                         iconEl.className = order === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
                         iconEl.style.color = 'var(--primary-vivid)';
                     } else {
-                        // 비활성화된 열: 은은한 기본 ↕️ 화살표
                         iconEl.className = 'fa-solid fa-sort';
                         iconEl.style.color = '#d1d5db';
                     }
@@ -788,8 +696,6 @@
             });
         }
 
-
-        // 🔄 화면 전환 컨트롤러
         function switchView(viewName) {
             const mainPage = document.getElementById('mainPage');
             const completerPage = document.getElementById('completerPage');
@@ -816,7 +722,6 @@
             window.scrollTo(0, 0);
         }
 
-        // 📄 상세 페이지 열기
         function showDetailPage(id) {
             const item = eduData.find(d => d.id === id);
             if (!item) return;
@@ -837,12 +742,14 @@
             } else if(item.status === '모집중') {
                 badge.innerText = '🟡 모집중';
                 badge.className = 'badge recruiting';
+            } else if(item.status === '진행중') {
+                badge.innerText = '🔵 진행중';
+                badge.className = 'badge ongoing';
             } else {
                 badge.innerText = '🔴 준비중';
                 badge.className = 'badge preparing';
             }
 
-            // 🌐 히어로 섹션 상단 '전체 교육 안내 페이지' 버튼 바인딩
             const landingBtnContainer = document.getElementById('detLandingBtn');
             if (item.landingLink && item.landingLink !== "-") {
                 landingBtnContainer.innerHTML = `
@@ -854,15 +761,12 @@
                 landingBtnContainer.innerHTML = '';
             }
 
-            // 📄 1. 수강 현황 숫자로 바인딩
             document.getElementById('detSelected').innerText = (item.selected && item.selected !== "-") ? `${item.selected}명` : "-";
             document.getElementById('detCompleted').innerText = (item.completed && item.completed !== "-") ? `${item.completed}명` : "-";
 
-            // 📄 2. 학습 자료 리소스 버튼 (안내 페이지가 있으면 1순위에 추가)
             const linksContainer = document.getElementById('detResourceLinks');
             let resourceHtml = '';
 
-            // 🌐 전체 교육 안내 페이지 (landingLink 존재 시 최우선 배치)
             if (item.landingLink && item.landingLink !== "-") {
                 resourceHtml += `
                     <a href="${item.landingLink}" target="_blank" class="resource-btn highlight-card">
@@ -874,7 +778,6 @@
                 `;
             }
 
-            // 모집 공고 (recruitLink)
             if (item.recruitLink && item.recruitLink !== "-") {
                 resourceHtml += `
                     <a href="${item.recruitLink}" target="_blank" class="resource-btn">
@@ -891,7 +794,6 @@
                 `;
             }
 
-            // 구글 드라이브 (driveLink)
             if (item.driveLink && item.driveLink !== "-") {
                 resourceHtml += `
                     <a href="${item.driveLink}" target="_blank" class="resource-btn">
@@ -904,7 +806,6 @@
                 `;
             }
 
-            // 강의 마스터 파일 (masterLink)
             if (item.masterLink && item.masterLink !== "-") {
                 resourceHtml += `
                     <a href="${item.masterLink}" target="_blank" class="resource-btn">
@@ -919,7 +820,6 @@
 
             linksContainer.innerHTML = resourceHtml;
 
-            // 📄 3. 상세 커리큘럼 테이블 렌더링 (감각적인 컬러 팔레트 적용)
             const currContainer = document.getElementById('detCurriculum');
 
             if (item.detailedCurriculum && item.detailedCurriculum.length > 0) {
@@ -941,19 +841,15 @@
 
                 item.detailedCurriculum.forEach(row => {
                     const isOffline = row.mode === '대면';
-                    
-                    // 🎨 1. 감각적인 대면/비대면 파스텔 뱃지
                     const modeBadge = isOffline 
                         ? `<span style="font-size:11px; font-weight:700; color:#e11d48; background:#fff1f2; border:1px solid #fecdd3; padding:3px 9px; border-radius:12px; white-space:nowrap;">대면</span>` 
                         : `<span style="font-size:11px; font-weight:700; color:#059669; background:#ecfdf5; border:1px solid #a7f3d0; padding:3px 9px; border-radius:12px; white-space:nowrap;">비대면</span>`;
 
                     const sessionName = row.session || row.week || '-';
                     
-                    // 📄 2. 세련된 틴트 컬러 자료 버튼 (수평 1줄 정렬 유지)
                     let materialCell = `<span style="color:#d1d5db; font-size:12px;">-</span>`;
                     if (row.materialLink && row.materialLink !== "-") {
                         const links = String(row.materialLink).split(/,|\n/).map(l => l.trim()).filter(l => l.length > 0);
-                        
                         if (links.length > 0) {
                             const btns = links.map((url, idx) => {
                                 const label = links.length > 1 ? `자료${idx + 1}` : `자료보기`;
@@ -963,14 +859,12 @@
                                     </a>
                                 `;
                             }).join('');
-
                             materialCell = `<div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:nowrap;">${btns}</div>`;
                         }
                     }
 
                     tableHtml += `
                         <tr>
-                            <!-- 🎨 3. 회차: 감성적인 딥 코랄-오렌지 필 약식 뱃지 -->
                             <td style="text-align:center;">
                                 <span style="font-size:12px; font-weight:800; color:#c2410c; background:#fff7ed; padding:3px 8px; border-radius:6px; white-space:nowrap; border:1px solid #ffedd5;">${sessionName}</span>
                             </td>
@@ -989,7 +883,6 @@
                 currContainer.innerHTML = `<div style="color:#888; font-size:13px; text-align:center; padding:20px;">커리큘럼 준비 중입니다.</div>`;
             }
 
-            // 📄 4. 이 교육의 교육 참여자 LIST (소속 그룹 내용만 왼쪽 정렬)
             const detStudentBody = document.getElementById('detStudentTableBody');
             const detStudentCount = document.getElementById('detStudentCount');
 
@@ -1008,7 +901,7 @@
                         <tr>
                             <td style="text-align: center; color: #9ca3af; font-weight: 600;">${idx + 1}</td>
                             <td style="text-align: center; font-weight: 700;">${s.name}</td>
-                            <td style="text-align: left; color: #4b5563; padding-left: 16px;">${s.dept}</td>
+                            <td class="col-dept" style="text-align: left; color: #4b5563; padding-left: 16px;">${s.dept}</td>
                             <td style="text-align: center;"><span class="status-pill ${pillStyle}">${pillText}</span></td>
                         </tr>
                     `;
@@ -1018,20 +911,17 @@
                 detStudentBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 준비 중인 교육입니다.</td></tr>`;
             }
 
-            // 📄 5. 현장 스케치 & 후기 사진 렌더링
             const photoSection = document.getElementById('detPhotoSection');
             const photoGallery = document.getElementById('detPhotoGallery');
 
             if (item.photoLinks && item.photoLinks !== "-") {
                 const photos = String(item.photoLinks).split(/,|\n/).map(p => p.trim()).filter(p => p.length > 0);
-                
                 if (photos.length > 0) {
                     photoGallery.innerHTML = photos.map(url => `
                         <a href="${url}" target="_blank" title="원본 사진 보기">
                             <img src="${url}" class="photo-card" alt="교육 현장 스케치" onerror="this.style.display='none'">
                         </a>
                     `).join('');
-                    
                     photoSection.style.display = 'block';
                 } else {
                     photoSection.style.display = 'none';
@@ -1103,6 +993,9 @@
                         } else if(item.status === '모집중') {
                             badgeClass = 'recruiting';
                             badgeText = '🟡 모집중';
+                        } else if(item.status === '진행중') {
+                            badgeClass = 'ongoing';
+                            badgeText = '🔵 진행중';
                         } else {
                             badgeClass = 'preparing';
                             badgeText = '🔴 준비중';
@@ -1142,7 +1035,6 @@
             }
         }
 
-        // 전체 교육 참여자 LIST 테이블 렌더링
         function renderCompleterTable(list) {
             const tbody = document.getElementById('completerTableBody');
             
@@ -1174,7 +1066,7 @@
                 tbody.innerHTML += `
                     <tr>
                         <td style="text-align:center;">${c.name}</td>
-                        <td style="color:#555;">${c.dept}</td>
+                        <td class="col-dept" style="color:#555;">${c.dept}</td>
                         <td style="text-align:center; font-weight:600;">${c.joinedCount}개</td>
                         <td style="text-align:center; font-weight:700; color:var(--primary-vivid);">${c.completedCount}개</td>
                         <td style="text-align:center;">${bestBadgeHtml}</td>
@@ -1184,7 +1076,6 @@
             });
         }
 
-        // 🔍 교육 참여자 LIST 조건별 검색 필터링
         function filterCompleterTable() {
             const filterType = document.getElementById('completerFilterType').value;
             const query = document.getElementById('completerSearchInput').value.toLowerCase().trim();
@@ -1211,7 +1102,7 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" style="text-align:center; padding: 50px 0; color: #9ca3af; font-size: 13px;">
-                            검색 조건과 일치하는 수료자 데이터가 없습니다.
+                            검색 조건과 일치하는 참여자 데이터가 없습니다.
                         </td>
                     </tr>
                 `;
@@ -1220,7 +1111,6 @@
             }
         }
 
-        // 페이지 진입 시 데이터 자동 호출
         window.onload = fetchSheetData;
     </script>
 </body>
