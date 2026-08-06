@@ -151,6 +151,7 @@
         .status-pill.best { background: #fef3c7; color: #d97706; }
         .status-pill.pass { background: #eaf3ec; color: #225c2d; }
         .status-pill.fail { background: #f3f4f6; color: #9ca3af; }
+        .status-pill.ongoing { background: #eff6ff;  color: #1d4ed8;  border: 1px solid #bfdbfe; }
 
         .course-tag-list { display: flex; gap: 6px; flex-wrap: wrap; }
         .course-chip { background: #f3f4f6; padding: 3px 9px; border-radius: 6px; font-size: 11px; color: #4b5563; font-weight: 500; white-space: nowrap; }
@@ -894,8 +895,21 @@
                 item.students.forEach((s, idx) => {
                     let pillStyle = 'pass';
                     let pillText = '✅ 수료';
-                    if (s.status === '우수수료') { pillStyle = 'best'; pillText = '🥇 우수 수료'; }
-                    else if (s.status === '미수료') { pillStyle = 'fail'; pillText = '❌ 미수료'; }
+
+                    if (s.status === '우수수료' || s.status === '우수 수료') { 
+                        pillStyle = 'best'; 
+                        pillText = '🥇 우수 수료'; 
+                    } else if (s.status === '미수료') { 
+                        pillStyle = 'fail'; 
+                        pillText = '❌ 미수료'; 
+                    } else if (s.status === '진행중' || s.status === '수강중' || s.status === '수료예정') { 
+                        // 🔵 진행중/수강중 상태 처리
+                        pillStyle = 'ongoing'; 
+                        pillText = '🔵 진행중'; 
+                    } else if (!s.status || s.status === '-') {
+                        pillStyle = 'fail';
+                        pillText = '-';
+                    }
 
                     detStudentBody.innerHTML += `
                         <tr>
