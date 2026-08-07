@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy — 패파의 마케팅 A to Z</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfaf6;
+    --ink: #1c1712;
+    --ink-soft: #5c5248;
+    --muted: #9a9086;
+    --rule: #e6ddd2;
+    --coral: #d9502e;
+    --coral-deep: #a83c22;
+    --coral-tint: #fbe9e2;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif { font-family: 'Noto Serif KR', serif; }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+  }
+
+  /* ── Header ── */
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--coral);
+    font-weight: 700;
+    margin-bottom: 1.3rem;
+  }
+
+  .headline {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.7rem;
+    word-break: keep-all;
+  }
+
+  .headline .accent { color: var(--coral); }
+
+  .subline {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    word-break: keep-all;
+  }
+
+  .desc {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    word-break: keep-all;
+    max-width: 600px;
+  }
+
+  .meta-line {
+    margin-top: 2.2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+    line-height: 2;
+  }
+
+  .meta-line b { color: var(--ink); font-weight: 700; }
+  .meta-sep { color: var(--muted); margin: 0 0.55rem; }
+
+  /* ── Block / Section ── */
+  .block { margin-top: 3.4rem; }
+
+  .block-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 1.3rem;
+  }
+
+  /* ── Recommend list ── */
+  .rec-list { columns: 2; column-gap: 2.2rem; }
+
+  @media (max-width: 560px) { .rec-list { columns: 1; } }
+
+  .rec-item {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    padding: 0.35rem 0;
+    break-inside: avoid;
+  }
+
+  .rec-item::before { content: '→ '; color: var(--coral); font-weight: 700; }
+
+  /* ── Goals ── */
+  .goal-row {
+    display: flex;
+    gap: 1.6rem;
+    padding: 1.3rem 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .goal-row:first-child { border-top: none; padding-top: 0; }
+
+  .goal-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.6rem;
+    color: var(--coral);
+    font-weight: 700;
+    min-width: 2.4rem;
+  }
+
+  .goal-body h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.35rem;
+    word-break: keep-all;
+  }
+
+  .goal-body p {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    word-break: keep-all;
+  }
+
+  /* ── Curriculum ── */
+  .curr-row {
+    display: flex;
+    gap: 1.6rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--rule);
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .curr-row:first-child { border-top: none; padding-top: 0; }
+
+  .curr-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.5rem;
+    color: var(--muted);
+    font-weight: 700;
+    min-width: 2.2rem;
+  }
+
+  .curr-row.highlight .curr-num { color: var(--coral); }
+
+  .curr-main { flex: 1; min-width: 0; }
+
+  .curr-top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+
+  .curr-title { font-size: 0.98rem; font-weight: 700; color: var(--ink); word-break: keep-all; }
+
+  .curr-row.highlight .curr-title { color: var(--coral-deep); }
+
+  .curr-date { font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+
+  .curr-format {
+    font-size: 0.68rem;
+    color: var(--coral);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .curr-desc { font-size: 0.86rem; color: var(--ink-soft); line-height: 1.7; word-break: keep-all; }
+
+  /* ── Definition rows ── */
+  .def-row {
+    display: flex;
+    gap: 1.6rem;
+    padding: 0.95rem 0;
+    border-top: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+
+  .def-row:first-child { border-top: none; padding-top: 0; }
+
+  .def-label {
+    min-width: 100px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 700;
+    padding-top: 0.1rem;
+  }
+
+  .def-val { flex: 1; min-width: 0; font-size: 0.88rem; color: var(--ink); line-height: 1.7; word-break: keep-all; }
+
+  .def-val small { display: block; color: var(--muted); font-size: 0.78rem; margin-top: 0.2rem; font-weight: 400; }
+
+  .def-val.check::before { content: '✓  '; color: var(--coral); font-weight: 700; }
+
+  /* ── CTA band ── */
+  .cta-band {
+    margin-top: 4rem;
+    padding: 2.8rem 2rem;
+    background: var(--coral);
+    color: #fff;
+    text-align: center;
+  }
+
+  .cta-head {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    word-break: keep-all;
+  }
+
+  .cta-sub2 { font-size: 0.85rem; color: rgba(255,255,255,0.82); margin-bottom: 1.6rem; }
+
+  .cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: 2px solid rgba(255,255,255,0.55);
+    padding-bottom: 0.25rem;
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .cta-link:hover { border-bottom-color: #fff; }
+
+  /* ── Footer ── */
+  .footer2 {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .footer2 b { color: var(--ink); font-weight: 800; }
+  .footer2 b span { color: var(--coral); }
+
+  @media (max-width: 580px) {
+    .headline { font-size: 1.95rem; }
+    .cta-band { padding: 2.2rem 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="eyebrow">FF Academy · 마케팅 교육</div>
+  <h1 class="headline">패파의 마케팅 A to Z: <br> <span class="accent">마케터의 언어로 일하기</span></h1>
+  <p class="subline">마케팅 개념부터 실무 인사이트까지 이해하는 4주 과정</p>
+  <p class="desc">
+    마케팅, 궁금한데 낯설게 느껴지셨나요? 우리 회사의 실제 사례로 기본 개념부터 차근차근 익히고, 입문자도 쉽게 읽을 수 있는 책 한 권으로 가볍게 인사이트 나누는 시간을 가져봅니다.
+  </p>
+  <p class="meta-line">
+    <b>모집마감</b> 8/13(목) 오후 5시<span class="meta-sep">·</span>
+    <b>교육기간</b> 8/19(수) ~ 9/10(목) (총 4회차)<span class="meta-sep">·</span>
+    <b>정원</b> 15명 내외<span class="meta-sep">·</span>
+    <b>방식</b> 대면 + 비대면
+  </p>
+
+  <!-- 추천 대상 -->
+  <div class="block">
+    <div class="block-label">Who is this for?</div>
+    <div class="rec-list">
+      <div class="rec-item">마케팅그룹과 소통할 때 용어가 낯설었던 분</div>
+      <div class="rec-item">패파의 마케팅 전략과 사례가 궁금한 분</div>
+      <div class="rec-item">CAC, CTR 등 핵심 지표를 읽고 싶은 분</div>
+      <div class="rec-item">CMO의 인사이트를 직접 듣고 소통하고 싶은 분</div>
+    </div>
+  </div>
+
+  <!-- 교육 목표 -->
+  <div class="block">
+    <div class="block-label">교육 3대 목표</div>
+    <div class="goal-row">
+      <div class="goal-num">01</div>
+      <div class="goal-body">
+        <h4>마케팅 기본 개념과 우리 회사 마케팅 이해하기</h4>
+        <p>마케팅의 종류, 채널, 실무 지표 등 꼭 알아야 할 개념을 패파의 실제 사례로 쉽게 익힙니다.</p>
+      </div>
+    </div>
+    <div class="goal-row">
+      <div class="goal-num">02</div>
+      <div class="goal-body">
+        <h4>배운 개념을 실무 감각으로 확장하기</h4>
+        <p>고객 여정 퍼널과 핵심 지표 분석을 통해 내 업무와 연결되는 마케팅적 사고를 기릅니다.</p>
+      </div>
+    </div>
+    <div class="goal-row">
+      <div class="goal-num">03</div>
+      <div class="goal-body">
+        <h4>책 한 권으로 마케팅 인사이트 나누기</h4>
+        <p>마지막 회차 북토크에서 발제문 기반으로 생각을 나누며 패파 실무 적용점까지 함께 고민합니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 커리큘럼 -->
+  <div class="block">
+    <div class="block-label">Curriculum</div>
+
+    <div class="curr-row highlight">
+      <div class="curr-num">01</div>
+      <div class="curr-main">
+        <div class="curr-top">
+          <span class="curr-title">패스트파이브의 마케팅</span>
+          <span class="curr-date">8/19(수)</span>
+          <span class="curr-format">대면</span>
+        </div>
+        <p class="curr-desc"><strong>교육 담당자: 홍새미 CMO님</strong> · 마케팅그룹 조직/채널 구조 및 패파 대표 캠페인 사례</p>
+      </div>
+    </div>
+
+    <div class="curr-row">
+      <div class="curr-num">02</div>
+      <div class="curr-main">
+        <div class="curr-top">
+          <span class="curr-title">마케팅 기본 개념 1</span>
+          <span class="curr-date">8/26(수)</span>
+          <span class="curr-format">비대면</span>
+        </div>
+        <p class="curr-desc">마케팅의 주요 종류 이해, 매체 분류 알기 (Paid · Owned · Earned Media)</p>
+      </div>
+    </div>
+
+    <div class="curr-row">
+      <div class="curr-num">03</div>
+      <div class="curr-main">
+        <div class="curr-top">
+          <span class="curr-title">마케팅 기본 개념 2</span>
+          <span class="curr-date">9/2(수)</span>
+          <span class="curr-format">비대면</span>
+        </div>
+        <p class="curr-desc">고객 여정 퍼널과 타겟팅, 실무 필수 지표 읽기 (CPM, CTR, CAC 등)</p>
+      </div>
+    </div>
+
+    <div class="curr-row highlight">
+      <div class="curr-num">04</div>
+      <div class="curr-main">
+        <div class="curr-top">
+          <span class="curr-title">마케팅 북토크 📖</span>
+          <span class="curr-date">9/10(목)</span>
+          <span class="curr-format">대면</span>
+        </div>
+        <p class="curr-desc">발제문 기반 조별 토론 및 패파 실무 적용 논의 (선정 도서 추후 공지)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 개요 -->
+  <div class="block">
+    <div class="block-label">상세 개요 및 안내사항</div>
+    <div class="def-row">
+      <div class="def-label">참가 대상</div>
+      <div class="def-val">패스트파이브 전 직원</div>
+    </div>
+    <div class="def-row">
+      <div class="def-label">모집 인원</div>
+      <div class="def-val">15명 내외</div>
+    </div>
+    <div class="def-row">
+      <div class="def-label">교육 일정</div>
+      <div class="def-val">8월 19일(수) ~ 9월 10일(목), 총 4회차</div>
+    </div>
+    <div class="def-row">
+      <div class="def-label">교육 시간</div>
+      <div class="def-val">오후 7시</div>
+    </div>
+  </div>
+
+  <!-- 수료 조건 -->
+  <div class="block">
+    <div class="block-label">수료 조건</div>
+    <div class="def-row">
+      <div class="def-label">참석 조건</div>
+      <div class="def-val check">대면 교육 2회 필참 <small>1회차 (8/19) · 4회차 (9/10) 모두 참석 필수</small></div>
+    </div>
+    <div class="def-row">
+      <div class="def-label">과제 조건</div>
+      <div class="def-val check">매주 과제 누락 없이 제출<small>과제 난이도 어렵지 않아요 :)</small></div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-band">
+    <div class="cta-head">모집 마감 8/13(목) 17시</div>
+    <div class="cta-sub2">마케터의 언어로 일하는 법, 함께 배워보세요!</div>
+    <a href="https://forms.gle/uvJfKFHBECvPTHL76" class="cta-link">교육 신청하기 →</a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer2">
+    <b>FF <span>Academy</span></b>
+    <div>문의사항 · 슬랙 @구연정</div>
+  </div>
+
+</div>
+
+</body>
+</html>
