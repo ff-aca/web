@@ -305,127 +305,72 @@
             background: #ffe4e1;
         }
 
-        /* ==========================================
-   📱 Mobile Responsive Styles (768px 이하)
-   ========================================== */
-    @media (max-width: 768px) {
-        /* 1. 기본 컨테이너 여백 조정 */
-        .container {
-            padding: 0 16px;
-        }
+        /* 📱 모바일 스크롤 힌트 (가로 스크롤이 필요한 표 위에 표시) */
+        .mobile-scroll-hint { display: none; }
 
-        /* 2. 헤더 로고 & 네비게이션 */
-        header {
-            padding: 10px 0;
-        }
-        .logo {
-            font-size: 16px;
-        }
-        .nav-btn {
-            padding: 6px 10px;
-            font-size: 12px;
-        }
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            header { padding: 10px 0; }
 
-        /* 3. 히어로 섹션 */
-        .portfolio-hero {
-            padding: 24px 20px;
-            margin: 16px 0 24px 0;
-            border-radius: 18px;
-        }
-        .hero-title {
-            font-size: 22px;
-        }
-        .hero-desc {
-            font-size: 13px;
-            margin-bottom: 24px;
-        }
+            /* 헤더: 로고와 내비게이션이 한 줄에서 서로 텍스트를 밀어내며 이상하게 줄바꿈되는 문제 수정 */
+            .header-content { flex-wrap: wrap; row-gap: 10px; }
+            .logo { font-size: 16px; white-space: nowrap; }
+            .nav-links { width: 100%; }
+            .nav-btn { flex: 1; justify-content: center; padding: 8px 6px; font-size: 12px; white-space: nowrap; }
+            .portfolio-hero { padding: 24px 20px; margin: 16px 0 24px 0; border-radius: 18px; }
+            .hero-title { font-size: 22px; }
+            .hero-desc { font-size: 13px; margin-bottom: 24px; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding-top: 18px; }
+            .kpi-card { padding: 14px 12px; }
+            .kpi-num { font-size: 20px; }
+            .kpi-label { font-size: 11px; }
+            .search-bar { max-width: 100%; padding: 9px 16px; }
+            .filter-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .filter-group { justify-content: flex-start; overflow-x: auto; white-space: nowrap; padding-bottom: 4px; }
+            .filter-btn { padding: 6px 12px; font-size: 11px; }
+            .status-btn-group { width: 100%; justify-content: space-between; }
+            .status-btn { flex: 1; text-align: center; padding: 6px 0; font-size: 11px; }
+            .detail-top-grid { grid-template-columns: 1fr; gap: 14px; }
+            .detail-hero { padding: 22px 18px; border-radius: 16px; }
+            .detail-title { font-size: 20px; }
+            .section-card { padding: 18px 16px; border-radius: 14px; }
+            .table-wrap { -webkit-overflow-scrolling: touch; margin: 0 -4px; }
+            .completer-table th, .completer-table td { padding: 12px 10px; font-size: 12px; }
+            .photo-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .photo-card { height: 120px; }
 
-        /* 4. KPI 카드 (모바일 2x2 배치) */
-        .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding-top: 18px;
-        }
-        .kpi-card {
-            padding: 14px 12px;
-        }
-        .kpi-num {
-            font-size: 20px;
-        }
-        .kpi-label {
-            font-size: 11px;
-        }
+            /* 참여자 LIST 검색 필터: 드롭다운/검색창을 세로로 꽉 차게 배치 */
+            .completer-filter-group { width: 100%; }
+            .completer-filter-group #completerFilterType,
+            .completer-filter-group .completer-search { width: 100%; }
 
-        /* 5. 검색창 & 필터 툴바 */
-        .search-bar {
-            max-width: 100%;
-            padding: 9px 16px;
-        }
-        .filter-toolbar {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 10px;
-        }
-        .filter-group {
-            justify-content: flex-start;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-bottom: 4px;
-        }
-        .filter-btn {
-            padding: 6px 12px;
-            font-size: 11px;
-        }
-        .status-btn-group {
-            width: 100%;
-            justify-content: space-between;
-        }
-        .status-btn {
-            flex: 1;
-            text-align: center;
-            padding: 6px 0;
-            font-size: 11px;
-        }
+            /* 상세 커리큘럼 표: table-layout:fixed + 고정폭 컬럼 때문에 '주제' 칸이
+               한 글자씩 세로로 쪼개져 보이던 문제 수정. 표는 원래 너비를 유지한 채
+               테이블 래퍼가 가로 스크롤되도록 함 */
+            #detCurriculum table.completer-table {
+                table-layout: auto !important;
+                width: auto !important;
+                min-width: 720px;
+            }
+            /* 강의자 · 교육 자료 컬럼은 모바일에서 폭을 줄여, 남는 공간을
+               '주제' 컬럼에 더 배분되도록 함 (그래야 한 글자씩 세로로 안 쪼개짐) */
+            #detCurriculum table.completer-table th:nth-child(5),
+            #detCurriculum table.completer-table td:nth-child(5) { width: 110px !important; }
+            #detCurriculum table.completer-table th:nth-child(6),
+            #detCurriculum table.completer-table td:nth-child(6) { width: 120px !important; }
 
-        /* 6. 상세 페이지 2단 상단 카드 1열 전환 */
-        .detail-top-grid {
-            grid-template-columns: 1fr;
-            gap: 14px;
+            /* 가로 스크롤이 필요한 표 위에 안내 문구 표시 */
+            .mobile-scroll-hint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                font-size: 11px;
+                font-weight: 600;
+                color: #9ca3af;
+                margin-bottom: 8px;
+            }
         }
-        .detail-hero {
-            padding: 22px 18px;
-            border-radius: 16px;
-        }
-        .detail-title {
-            font-size: 20px;
-        }
-        .section-card {
-            padding: 18px 16px;
-            border-radius: 14px;
-        }
-
-        /* 7. 모바일 표 터치 스크롤 최적화 */
-        .table-wrap {
-            -webkit-overflow-scrolling: touch;
-            margin: 0 -4px;
-        }
-        .completer-table th, 
-        .completer-table td {
-            padding: 12px 10px;
-            font-size: 12px;
-        }
-
-        /* 8. 현장 스케치 갤러리 (2열 정렬) */
-        .photo-gallery-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-        .photo-card {
-            height: 120px;
-        }
-    }
-
-
     </style>
 </head>
 <body>
@@ -793,9 +738,64 @@
             });
         }
 
+        // ============================
+        // 🔙 브라우저 뒤로가기(Back) 대응 - History API 연동
+        // ============================
+        let appNavDepth = 0; // 이 페이지에서 직접 pushState한 횟수(방문 깊이)
 
-        // 🔄 화면 전환 컨트롤러
-        function switchView(viewName) {
+        function pushAppState(state, hash) {
+            appNavDepth++;
+            history.pushState(state, '', hash);
+        }
+
+        // popstate(브라우저 뒤로/앞으로가기)나 초기 진입 시, 화면을 실제로 그려주는 공통 함수
+        function renderState(state) {
+            if (!state) {
+                switchView('main', true);
+                return;
+            }
+            if (state.view === 'detail') {
+                showDetailPage(state.id, true);
+            } else {
+                switchView(state.view || 'main', true);
+            }
+        }
+
+        // 브라우저 뒤로가기/앞으로가기 버튼을 눌렀을 때 호출됨
+        window.addEventListener('popstate', function (e) {
+            if (appNavDepth > 0) appNavDepth--;
+            renderState(e.state);
+        });
+
+        // 상세 페이지의 "목록으로 돌아가기" 버튼: 브라우저 뒤로가기와 동일하게 동작시켜
+        // 히스토리가 꼬이지 않도록 함
+        function handleBackButtonClick() {
+            if (appNavDepth > 0) {
+                history.back();
+            } else {
+                switchView('main');
+            }
+        }
+
+        // 새로고침/최초 진입 시 URL 해시를 읽어 알맞은 화면으로 복원 + 히스토리 기준점 설정
+        function restoreInitialRoute() {
+            const hash = window.location.hash;
+            let state = { view: 'main' };
+
+            if (hash.startsWith('#detail-')) {
+                const id = Number(hash.replace('#detail-', ''));
+                if (!isNaN(id) && eduData.find(d => d.id === id)) {
+                    state = { view: 'detail', id: id };
+                }
+            } else if (hash === '#completer') {
+                state = { view: 'completer' };
+            }
+
+            history.replaceState(state, '', hash || '#main');
+            renderState(state);
+        }
+
+        function switchView(viewName, fromPopState) {
             const mainPage = document.getElementById('mainPage');
             const completerPage = document.getElementById('completerPage');
             const detailPage = document.getElementById('detailPage');
@@ -827,8 +827,7 @@
             window.scrollTo(0, 0);
         }
 
-        // 📄 상세 페이지 열기
-        function showDetailPage(id) {
+        function showDetailPage(id, fromPopState) {
             const item = eduData.find(d => d.id === id);
             if (!item) return;
 
@@ -1237,8 +1236,11 @@
             }
         }
 
-        // 페이지 진입 시 데이터 자동 호출
-        window.onload = fetchSheetData;
+        window.onload = function () {
+            // 히스토리 기준점을 먼저 잡아두어, 데이터 로딩 실패 시에도 뒤로가기 동작이 안전하게 유지되도록 함
+            history.replaceState({ view: 'main' }, '', window.location.hash || '#main');
+            fetchSheetData();
+        };
     </script>
 </body>
 </html>
