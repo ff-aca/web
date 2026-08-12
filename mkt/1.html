@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2회차 · 마케팅 기본 개념 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Noto+Serif+KR:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdfaf6;
+    --ink: #1c1712;
+    --ink-soft: #5c5248;
+    --muted: #9a9086;
+    --rule: #e6ddd2;
+    --coral: #d9502e;
+    --coral-deep: #a83c22;
+    --coral-tint: #fbe9e2;
+    --nav-h: 54px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    padding-top: var(--nav-h);
+  }
+
+  .container { max-width: 700px; margin: 0 auto; padding: 3.2rem 1.5rem 6rem; }
+
+  .serif { font-family: 'Noto Serif KR', serif; }
+
+  /* ── Sticky top nav ── */
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: var(--nav-h);
+    background: rgba(253, 250, 246, 0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .top-nav-inner {
+    max-width: 700px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+
+  .top-nav-inner::-webkit-scrollbar { display: none; }
+
+  .top-nav-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--ink);
+    flex-shrink: 0;
+    padding-right: 0.6rem;
+    border-right: 1px solid var(--rule);
+  }
+
+  .top-nav-brand span { color: var(--coral); }
+
+  .top-nav-link {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-decoration: none;
+    flex-shrink: 0;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .top-nav-link:hover { color: var(--coral-deep); }
+
+  .top-nav-link.active { color: var(--coral-deep); border-bottom-color: var(--coral); }
+
+  /* ── Header ── */
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--coral);
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
+  .headline {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.9rem;
+    word-break: keep-all;
+  }
+
+  .headline .accent { color: var(--coral); }
+
+  .subline { font-size: 0.92rem; color: var(--ink-soft); font-weight: 500; margin-bottom: 1.6rem; }
+
+  .desc p { font-size: 0.96rem; color: var(--ink-soft); line-height: 1.95; word-break: keep-all; max-width: 600px; }
+  .desc p + p { margin-top: 0.85rem; }
+
+  .meta-line {
+    margin-top: 2.2rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+  }
+
+  .meta-line b { color: var(--ink); font-weight: 700; }
+  .meta-sep { color: var(--muted); margin: 0 0.55rem; }
+
+  /* ── Block / Section ── */
+  .block { margin-top: 4rem; scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+  .block-num {
+    display: inline-block;
+    font-family: 'Noto Serif KR', serif;
+    color: var(--coral);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+
+  .block-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    word-break: keep-all;
+  }
+
+  .block-lead p {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    word-break: keep-all;
+    line-height: 1.9;
+  }
+  .block-lead p + p { margin-top: 0.7rem; }
+  .block-lead { margin-bottom: 1.5rem; }
+
+  /* ── Callout (비유 / 안내) ── */
+  .callout {
+    background: var(--coral-tint);
+    border-left: 3px solid var(--coral);
+    padding: 1.2rem 1.4rem;
+    border-radius: 4px;
+    margin: 1.6rem 0;
+  }
+
+  .callout-label {
+    display: block;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--coral-deep);
+    font-weight: 700;
+    margin-bottom: 0.55rem;
+  }
+
+  .callout p {
+    font-size: 0.89rem;
+    color: var(--ink-soft);
+    line-height: 1.95;
+    word-break: keep-all;
+  }
+
+  .callout p + p { margin-top: 0.7rem; }
+
+  /* ── STP list ── */
+  .stp-row { display: flex; gap: 1.4rem; padding: 1.3rem 0; border-top: 1px solid var(--rule); }
+  .stp-row:first-child { border-top: none; padding-top: 0; }
+  .stp-letter {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--coral);
+    min-width: 2rem;
+  }
+  .stp-body h4 { font-size: 0.94rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; word-break: keep-all; }
+  .stp-body p { font-size: 0.87rem; color: var(--ink-soft); line-height: 1.9; word-break: keep-all; }
+  .stp-body p + p { margin-top: 0.5rem; }
+
+  /* ── 마케팅 종류 type rows ── */
+  .type-row { padding: 1.7rem 0; border-top: 1px solid var(--rule); }
+  .type-row:first-child { border-top: none; padding-top: 0; }
+  .type-name { font-size: 1.02rem; font-weight: 700; color: var(--ink); margin-bottom: 0.35rem; word-break: keep-all; }
+  .type-metaphor { font-size: 0.86rem; color: var(--coral-deep); font-style: italic; margin-bottom: 0.7rem; word-break: keep-all; }
+  .type-detail p { font-size: 0.87rem; color: var(--ink-soft); line-height: 1.9; word-break: keep-all; }
+  .type-detail p + p { margin-top: 0.55rem; }
+  .ff-tag {
+    display: inline-block;
+    font-size: 0.66rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--coral);
+    padding: 0.12rem 0.5rem;
+    border-radius: 3px;
+    margin-right: 0.45rem;
+    vertical-align: 1px;
+    white-space: nowrap;
+  }
+  .type-when {
+    margin-top: 0.7rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .type-when b { color: var(--ink-soft); font-weight: 700; }
+
+  /* ── 매체 3분류 grid ── */
+  .media-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.7rem;
+    margin: 1.6rem 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 560px) { .media-cols { grid-template-columns: 1fr; gap: 1.8rem; } }
+
+  .media-col-title { font-size: 0.87rem; font-weight: 700; color: var(--coral-deep); margin-bottom: 0.55rem; }
+  .media-col-def { font-size: 0.81rem; color: var(--ink-soft); line-height: 1.8; margin-bottom: 0.8rem; word-break: keep-all; }
+  .media-col-note { font-size: 0.78rem; color: var(--muted); line-height: 1.7; margin-bottom: 0.7rem; word-break: keep-all; }
+  .media-col ul { list-style: none; }
+  .media-col li { font-size: 0.81rem; color: var(--ink-soft); line-height: 1.8; padding-left: 0.85rem; position: relative; word-break: keep-all; }
+  .media-col li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+  .sub-channel { margin-top: 1.8rem; }
+  .sub-channel-row { display: flex; gap: 1rem; padding: 1.1rem 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+  .sub-channel-row:first-child { border-top: none; padding-top: 0; }
+  .sub-channel-name { min-width: 110px; font-size: 0.86rem; font-weight: 700; color: var(--ink); }
+  .sub-channel-desc p { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.85; word-break: keep-all; }
+  .sub-channel-desc p + p { margin-top: 0.4rem; }
+  .sub-channel-desc { flex: 1; min-width: 0; }
+
+  /* ── 용어사전 ── */
+  .term-row { display: flex; gap: 1.4rem; padding: 1.1rem 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+  .term-row:first-child { border-top: none; padding-top: 0; }
+  .term-word { min-width: 110px; font-size: 0.88rem; font-weight: 700; color: var(--coral-deep); line-height: 1.5; }
+  .term-def { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.85; word-break: keep-all; }
+  .term-def small { display: block; color: var(--muted); font-size: 0.79rem; margin-top: 0.3rem; }
+
+  /* ── 과제 worksheet table ── */
+  .worksheet-wrap { overflow-x: auto; margin-top: 1.4rem; border: 1px solid var(--rule); border-radius: 6px; }
+  .worksheet { width: 100%; min-width: 640px; border-collapse: collapse; }
+  .worksheet th, .worksheet td {
+    padding: 0.9rem 1.05rem;
+    font-size: 0.82rem;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    line-height: 1.75;
+    word-break: keep-all;
+  }
+  .worksheet th { background: #f5efe7; color: var(--muted); font-weight: 700; font-size: 0.72rem; letter-spacing: 0.03em; white-space: nowrap; }
+  .worksheet tr:last-child td { border-bottom: none; }
+  .worksheet td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+
+  .qa-wrap { margin-top: 1.6rem; }
+  .qa-row { display: flex; gap: 1.4rem; padding: 0.95rem 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+  .qa-row:first-child { border-top: none; padding-top: 0; }
+  .qa-stage { min-width: 90px; font-size: 0.85rem; font-weight: 700; color: var(--coral-deep); }
+  .qa-q { flex: 1; min-width: 0; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.8; word-break: keep-all; }
+
+  .persona-box { margin-top: 1.6rem; padding: 1.2rem 1.4rem; background: #f5efe7; border-radius: 6px; }
+  .persona-box p { font-size: 0.87rem; color: var(--ink-soft); line-height: 1.9; word-break: keep-all; }
+  .persona-box p b { color: var(--ink); }
+  .persona-box p + p { margin-top: 0.6rem; }
+
+  .submit-line {
+    margin-top: 1.6rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.86rem;
+    color: var(--ink-soft);
+    line-height: 1.9;
+    word-break: keep-all;
+  }
+  .submit-line b { color: var(--ink); }
+
+  /* ── Next-time note ── */
+  .note {
+    margin-top: 3.6rem;
+    padding-left: 1.1rem;
+    border-left: 2px solid var(--coral);
+    font-size: 0.87rem;
+    color: var(--ink-soft);
+    line-height: 1.9;
+    word-break: keep-all;
+  }
+  .note strong { color: var(--ink); font-weight: 700; }
+
+  .footer2 {
+    margin-top: 3.6rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .footer2 b { color: var(--ink); font-weight: 800; }
+  .footer2 b span { color: var(--coral); }
+
+  @media (max-width: 580px) { .headline { font-size: 1.6rem; } }
+
+  /* ── Flow diagram (STP) ── */
+  .flow-row { display: flex; align-items: center; justify-content: center; gap: 0.9rem; margin: 1.8rem 0 2.2rem; flex-wrap: wrap; }
+  .flow-step { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .flow-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--coral-tint); border: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  }
+  .flow-label { font-size: 0.78rem; font-weight: 700; color: var(--ink-soft); }
+  .flow-arrow { font-size: 1.2rem; color: var(--muted); }
+
+  /* ── Type icon + spectrum ── */
+  .type-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.35rem; }
+  .type-head .type-name { margin-bottom: 0; }
+  .type-icon {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--coral); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .spectrum { margin-top: 1rem; max-width: 260px; }
+  .spectrum-track { position: relative; height: 6px; background: var(--rule); border-radius: 999px; }
+  .spectrum-dot {
+    position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--coral); transform: translate(-50%, -50%); box-shadow: 0 0 0 3px var(--coral-tint);
+  }
+  .spectrum-caption { display: flex; justify-content: space-between; font-size: 0.67rem; color: var(--muted); margin-top: 0.45rem; }
+  .loop-badge {
+    display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
+    font-size: 0.79rem; color: var(--coral-deep); font-weight: 700;
+  }
+
+  /* ── Media icon ── */
+  .media-icon {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--coral); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem; margin-bottom: 0.8rem;
+  }
+
+  /* ── Term icon ── */
+  .term-row { align-items: flex-start; }
+  .term-icon {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--coral-tint); color: var(--coral-deep);
+    display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; margin-top: 0.1rem;
+  }
+  .term-word-wrap { display: flex; align-items: flex-start; gap: 0.6rem; min-width: 130px; }
+
+  /* ── Funnel graphic ── */
+  .funnel-wrap { max-width: 460px; margin: 1.8rem auto 0.6rem; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .funnel-seg {
+    width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #fff; padding: 0.7rem 1rem; border-radius: 5px; text-align: center;
+  }
+  .funnel-seg .f-label { font-size: 0.82rem; font-weight: 700; }
+  .funnel-seg .f-num { font-size: 0.72rem; font-weight: 500; opacity: 0.9; margin-top: 0.15rem; }
+
+  /* ── Structured fields (목적 / 쉽게 말해 / 특징 / 예시) ── */
+  .type-fields { margin-top: 0.9rem; }
+  .field-row { display: flex; gap: 1rem; padding: 0.65rem 0; border-top: 1px dashed var(--rule); flex-wrap: wrap; }
+  .field-row:first-child { border-top: none; padding-top: 0; }
+  .field-label { min-width: 108px; font-size: 0.78rem; font-weight: 700; color: var(--coral-deep); flex-shrink: 0; padding-top: 0.05rem; }
+  .field-val { flex: 1; min-width: 0; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.85; word-break: keep-all; }
+  .field-val ul { list-style: none; margin-top: 0.25rem; }
+  .field-val li { padding-left: 0.9rem; position: relative; margin-bottom: 0.35rem; }
+  .field-val li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
+
+  /* ── Compare table (마케팅 종류 한눈에 보기) ── */
+  .compare-wrap { overflow-x: auto; margin: 1.6rem 0 2.2rem; border: 1px solid var(--rule); border-radius: 6px; }
+  .compare-table { width: 100%; min-width: 600px; border-collapse: collapse; }
+  .compare-table th, .compare-table td {
+    padding: 0.85rem 1rem; font-size: 0.81rem; text-align: left;
+    border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.7; word-break: keep-all;
+  }
+  .compare-table th { background: #f5efe7; color: var(--muted); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.03em; white-space: nowrap; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+
+  /* ── Media row (Paid / Owned / Earned) ── */
+  .media-row { padding: 1.7rem 0; border-top: 1px solid var(--rule); }
+  .media-row:first-child { border-top: none; padding-top: 0; }
+  .media-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.3rem; }
+  .media-head .media-icon { margin-bottom: 0; }
+  .media-name { font-size: 1.02rem; font-weight: 700; color: var(--ink); word-break: keep-all; }
+
+  /* ── SA / DA subsection ── */
+  .subad-row { padding: 1.4rem 0; border-top: 1px solid var(--rule); }
+  .subad-row:first-child { border-top: none; padding-top: 0; }
+  .subad-name { font-size: 0.96rem; font-weight: 700; color: var(--ink); margin-bottom: 0.6rem; word-break: keep-all; }
+  .subad-note {
+    margin-top: 1rem; font-size: 0.8rem; color: var(--ink-soft); line-height: 1.8;
+    background: #f5efe7; padding: 0.9rem 1.1rem; border-radius: 6px; word-break: keep-all;
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav class="top-nav">
+  <div class="top-nav-inner" id="navInner">
+    <span class="top-nav-brand">FF <span>Academy</span></span>
+    <a class="top-nav-link" href="#stp" data-nav>0. STP</a>
+    <a class="top-nav-link" href="#types" data-nav>1. 마케팅 종류</a>
+    <a class="top-nav-link" href="#media" data-nav>2. 매체 분류</a>
+    <a class="top-nav-link" href="#terms" data-nav>3. 용어사전</a>
+    <a class="top-nav-link" href="#assignment" data-nav>과제</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="eyebrow">FF Academy · 마케팅 베이직 · 2회차</div>
+  <h1 class="headline">마케팅 기본 개념 1 <br> <span class="accent">: 누구에게, 어떤 이야기를, 어디서 할까?</span></h1>
+  <div class="desc">
+    <p>마케팅팀 슬랙을 읽다가 '타겟팅', 'CTR' 등 알 수 없는 단어들을 보며 조용히 눈팅만 하고 창을 닫아 본 적 있으신가요?</p>
+    <p>사실 이런 말들 뒤에는 다 나름의 논리가 있어요. 마케터들은 머릿속에 "누구에게, 무슨 목적으로, 어디서 이야기할지"를 나누는 몇 가지 틀을 갖고 일해요.</p>
+    <p>이 페이지에서는 그 틀을 어려운 용어 대신 쉽게 익혀볼게요. 다 읽고 나면 마케팅 팀과의 대화가 조금은 다르게 들릴 거예요.</p>
+  </div>
+
+  <!-- 0. STP -->
+  <div class="block" id="stp">
+    <span class="block-num serif">Chapter 0</span>
+    <h2 class="block-title">본격적으로 들어가기 전에 — 누구에게 보여줄까?</h2>
+    <div class="block-lead">
+      <p>마케팅 종류와 채널을 배우기 전에, 딱 하나만 먼저 짚고 갈게요.</p>
+      <p>마케팅은 항상 "누구"를 정하는 것에서 시작해요. 이걸 정하지 않고 채널이나 문구를 고민하는 건, 목적지 없이 지도를 펴는 것과 비슷해요.</p>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 비유로 이해하기</span>
+      <p>소개팅 자리에서 처음 만난 사람에게, 그 사람이 관심 없는 이야기를 계속하면 대화가 이어지지 않죠. 상대가 어떤 사람인지 먼저 파악하고, 그 사람이 좋아할 만한 이야기를 골라서 하는 게 자연스러워요.</p>
+      <p>마케팅도 똑같아요. "모두에게" 말을 거는 건 사실 "아무에게도" 제대로 말을 걸지 못하는 것과 비슷해요. 예산과 시간은 늘 한정되어 있으니까요.</p>
+    </div>
+
+    <div class="flow-row">
+      <div class="flow-step">
+        <div class="flow-icon">🧩</div>
+        <div class="flow-label">Segment</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🎯</div>
+        <div class="flow-label">Target</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="flow-icon">🚩</div>
+        <div class="flow-label">Position</div>
+      </div>
+    </div>
+
+    <div class="stp-row">
+      <div class="stp-letter serif">S</div>
+      <div class="stp-body">
+        <h4>세그멘테이션 (Segmentation) — 비슷한 사람끼리 묶어보기</h4>
+        <p>전체 고객을 특징이 비슷한 그룹으로 나눠보는 것이에요. 업종, 팀 규모, 근무 형태처럼 기준은 다양하게 잡을 수 있어요.</p>
+        <p>예: 1인 프리랜서, 초기 스타트업(5인 이하), 중견 기업의 리모트 근무 팀 — 이렇게 나눠보면 각 그룹이 원하는 게 서로 다르다는 게 보여요.</p>
+      </div>
+    </div>
+    <div class="stp-row">
+      <div class="stp-letter serif">T</div>
+      <div class="stp-body">
+        <h4>타겟팅 (Targeting) — 그중 누구를 겨냥할지 정하기</h4>
+        <p>나눠놓은 그룹 중 지금 우리가 집중할 그룹을 고르는 것이에요. 모든 그룹을 동시에 잡으려 하면 메시지가 흐릿해져요.</p>
+        <p><span class="ff-tag">패스트파이브라면</span>광고마다 타겟이 조금씩 달라요. 강남점은 투자 유치 초기 스타트업 대표를, 홍대점은 1인 프리랜서·크리에이터를 주로 겨냥하는 식이에요.</p>
+      </div>
+    </div>
+    <div class="stp-row">
+      <div class="stp-letter serif">P</div>
+      <div class="stp-body">
+        <h4>포지셔닝 (Positioning) — 그 사람 머릿속에 어떤 이미지로 남을지 정하기</h4>
+        <p>"공유오피스" 하면 여러 브랜드 중 우리가 딱 떠오르게 만드는 것이에요. 같은 시장이라도 브랜드마다 다르게 자리잡을 수 있어요.</p>
+        <p>예: "가장 트렌디한 공간"으로 포지셔닝할 수도 있고, "가장 효율적인 오피스"로 자리잡을 수도 있어요. 어떤 포지셔닝이냐에 따라 그다음 광고 문구와 이미지도 완전히 달라져요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. 마케팅의 종류 -->
+  <div class="block" id="types">
+    <span class="block-num serif">Chapter 1</span>
+    <h2 class="block-title">마케팅의 종류 — 어떤 목적으로 하는가</h2>
+    <div class="block-lead">
+      <p>마케팅을 "친구를 사귀는 과정"에 비유해보면 이해가 쉬워요.</p>
+      <p>첫눈에 띄게 만들고, 실제로 다가가고, 만난 뒤엔 계속 더 나은 방법을 찾고, 좋은 이야기로 신뢰를 쌓고, 이미 친해진 사람은 잘 챙기는 것. 마케팅에도 이 다섯 가지 결이 다 있어요.</p>
+    </div>
+
+    <div class="compare-wrap">
+      <table class="compare-table">
+        <thead>
+          <tr><th>종류</th><th>목적</th><th>쉽게 말해</th><th>패파 예시</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🌟 브랜드</td>
+            <td>신뢰·인지도 구축</td>
+            <td>첫인상 좋게 남기기</td>
+            <td>브랜드 리뉴얼 캠페인, 브랜딩 영상</td>
+          </tr>
+          <tr>
+            <td>⚡ 퍼포먼스</td>
+            <td>즉각적 전환(클릭·문의·계약) 창출</td>
+            <td>바로 손 내밀어 잡기</td>
+            <td>검색광고, 리타겟팅 배너</td>
+          </tr>
+          <tr>
+            <td>🧪 그로스</td>
+            <td>퍼널 전 과정의 이탈 최소화·성장 실험</td>
+            <td>물 새는 바가지 구멍 막기</td>
+            <td>투어 신청 버튼 A/B 테스트</td>
+          </tr>
+          <tr>
+            <td>✍️ 콘텐츠</td>
+            <td>유용한 정보로 신뢰 선(先)제공</td>
+            <td>도움을 주면서 친해지기</td>
+            <td>창업가이드 블로그, 입주사 인터뷰</td>
+          </tr>
+          <tr>
+            <td>🤝 CRM·리텐션</td>
+            <td>기존 고객 유지·재계약·추천 유도</td>
+            <td>이미 사귄 친구 잘 챙기기</td>
+            <td>입주사 뉴스레터, 재계약 혜택</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="type-row">
+      <div class="type-head"><span class="type-icon">🌟</span><div class="type-name">브랜드 마케팅 (Brand Marketing)</div></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">목적</span><span class="field-val">브랜드의 가치, 정체성, 신뢰감을 전달해 고객의 마음속에 패스트파이브를 떠올리게 만드는 일이에요.</span></div>
+        <div class="field-row"><span class="field-label">쉽게 말해</span><span class="field-val">"소개팅 나가기 전에 나라는 사람의 첫인상을 멋지고 호감 가게 만드는 과정"이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">당장의 매출보다 장기적인 인지도, 이미지, 팬덤 구축을 목표로 해요. 효과가 바로 보이지 않고 몇 달, 몇 년에 걸쳐 천천히 쌓여요.</span></div>
+        <div class="field-row"><span class="field-label">패파의 실제 예시</span><span class="field-val">
+          <ul>
+            <li>패스트파이브 브랜드 리뉴얼 캠페인</li>
+            <li>"일하는 사람들의 오피스" 슬로건을 담은 브랜딩 영상 제작</li>
+            <li>입주사 대표님들의 성공 스토리를 담은 인터뷰 콘텐츠 제작</li>
+          </ul>
+        </span></div>
+      </div>
+      <div class="type-when"><b>언제 쓰면 좋을까</b> — 새로운 지점을 열었을 때, 혹은 시장에서 브랜드 이름 자체가 아직 낯설 때 특히 효과적이에요.</div>
+      <div class="spectrum">
+        <div class="spectrum-track"><div class="spectrum-dot" style="left:8%;"></div></div>
+        <div class="spectrum-caption"><span>장기 신뢰 구축</span><span>즉각적 전환</span></div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-head"><span class="type-icon">⚡</span><div class="type-name">퍼포먼스 마케팅 (Performance Marketing)</div></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">목적</span><span class="field-val">광고비를 투입해 명확히 수치화되는 단기적 결과(클릭, 문의, 계약 등)를 만들어내는 일이에요.</span></div>
+        <div class="field-row"><span class="field-label">쉽게 말해</span><span class="field-val">"100만 원을 넣으면 입주 문의가 몇 건 들어오는지 숫자로 측정하며 광고하는 과정"이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">데이터와 정량적 지표에 집중하며, 광고비 대비 효율(ROAS, CAC 등)을 실시간으로 추적하고 개선해요.</span></div>
+        <div class="field-row"><span class="field-label">패파의 실제 예시</span><span class="field-val">
+          <ul>
+            <li>네이버에 '강남 공유오피스'를 검색했을 때 패파 홈페이지를 노출시키는 검색광고</li>
+            <li>인스타그램에 '월 보증금 최저가 혜택' 배너를 띄워 '투어 신청' 버튼을 누르게 만드는 광고</li>
+          </ul>
+        </span></div>
+      </div>
+      <div class="type-when"><b>언제 쓰면 좋을까</b> — 이미 관심 있는 사람을 실제 계약까지 밀어붙여야 할 때, 혹은 이번 달 목표 계약 건수가 정해져 있을 때 유용해요.</div>
+      <div class="spectrum">
+        <div class="spectrum-track"><div class="spectrum-dot" style="left:92%;"></div></div>
+        <div class="spectrum-caption"><span>장기 신뢰 구축</span><span>즉각적 전환</span></div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-head"><span class="type-icon">🧪</span><div class="type-name">그로스 마케팅 (Growth Marketing)</div></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">목적</span><span class="field-val">제품·서비스 전 과정(퍼널)의 데이터를 분석해 고객의 이탈을 막고 성장을 이끌어내는 일이에요.</span></div>
+        <div class="field-row"><span class="field-label">쉽게 말해</span><span class="field-val">"물이 새는 바가지의 구멍을 찾아 막고, 고객이 들어와서 계약할 때까지의 모든 과정을 실험하며 고치는 작업"이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">광고 집행에만 그치지 않고 제품, 웹사이트 폼, 가격 정책 등 고객 경험 전반에 개입해 A/B 테스트를 진행해요.</span></div>
+        <div class="field-row"><span class="field-label">패파의 실제 예시</span><span class="field-val">
+          <ul>
+            <li>홈페이지의 '방문 투어 신청' 버튼 색상·위치를 바꿔가며 전환율(CR) 테스트하기</li>
+            <li>상담 신청 폼의 작성 항목을 5개에서 3개로 줄였을 때 문의량이 얼마나 늘어나는지 실험하기</li>
+          </ul>
+        </span></div>
+      </div>
+      <div class="type-when"><b>언제 쓰면 좋을까</b> — 이미 어느 정도 방문자나 리드는 있는데, 그중 실제로 전환되는 비율이 낮아서 아쉬울 때 시작하기 좋아요.</div>
+      <div class="spectrum">
+        <div class="spectrum-track"><div class="spectrum-dot" style="left:66%;"></div></div>
+        <div class="spectrum-caption"><span>장기 신뢰 구축</span><span>즉각적 전환</span></div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-head"><span class="type-icon">✍️</span><div class="type-name">콘텐츠 마케팅 (Content Marketing)</div></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">목적</span><span class="field-val">유용하고 신뢰할 수 있는 정보를 먼저 제공해, 광고처럼 느껴지지 않으면서 자연스럽게 브랜드를 신뢰하게 만드는 일이에요.</span></div>
+        <div class="field-row"><span class="field-label">쉽게 말해</span><span class="field-val">"당장 뭔가를 팔지 않고, 도움이 되는 이야기를 먼저 들려주면서 친해지는 과정"이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">판매보다 정보 제공이 우선이며, 브랜드 마케팅처럼 효과가 천천히, 장기적으로 쌓여요.</span></div>
+        <div class="field-row"><span class="field-label">패파의 실제 예시</span><span class="field-val">
+          <ul>
+            <li>"1인 창업자를 위한 세금 신고 가이드" 같은 블로그 콘텐츠 제작</li>
+            <li>인스타그램에 입주사 인터뷰·업무공간 활용 팁 콘텐츠 게시</li>
+          </ul>
+        </span></div>
+      </div>
+      <div class="type-when"><b>언제 쓰면 좋을까</b> — 당장 팔기보다, 아직 우리 브랜드를 잘 모르는 사람들과 장기적인 신뢰를 쌓고 싶을 때 적합해요.</div>
+      <div class="spectrum">
+        <div class="spectrum-track"><div class="spectrum-dot" style="left:24%;"></div></div>
+        <div class="spectrum-caption"><span>장기 신뢰 구축</span><span>즉각적 전환</span></div>
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="type-head"><span class="type-icon">🤝</span><div class="type-name">CRM / 리텐션 마케팅 (Retention Marketing)</div></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">목적</span><span class="field-val">이미 계약한 고객을 잘 관리해 재계약·추천으로 이어지게 만드는 일이에요.</span></div>
+        <div class="field-row"><span class="field-label">쉽게 말해</span><span class="field-val">"새로운 사람을 사귀기보다, 이미 사귄 친구와의 관계를 오래 잘 유지하는 과정"이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">신규 고객 유치보다 비용이 훨씬 적게 들며, 만족도·재계약률 같은 지표를 꾸준히 관리해요.</span></div>
+        <div class="field-row"><span class="field-label">패파의 실제 예시</span><span class="field-val">
+          <ul>
+            <li>입주사 대상 뉴스레터 발송, 재계약 시 혜택 제공</li>
+            <li>입주사 커뮤니티 이벤트로 관계 유지</li>
+          </ul>
+        </span></div>
+      </div>
+      <div class="type-when"><b>언제 쓰면 좋을까</b> — 계약이 끝난 뒤에도 계속 관계를 이어가야 할 때, 특히 재계약 시즌이 다가올 때 신경 써야 해요.</div>
+      <div class="loop-badge">♻️ 신규 고객 유치가 아니라, 이미 있는 고객을 지키는 순환 구조</div>
+    </div>
+  </div>
+
+  <!-- 2. 매체의 분류 -->
+  <div class="block" id="media">
+    <span class="block-num serif">Chapter 2</span>
+    <h2 class="block-title">매체의 분류 — 어떤 매체로 이야기하는가</h2>
+    <div class="block-lead">
+      <p>마케팅을 어떤 매체에서 이야기하느냐로 나누면 세 가지예요. 돈을 내고 빌리는 매체, 내가 직접 소유한 매체, 남이 대신 이야기해주는 매체예요.</p>
+      <p>이걸 각각 Paid · Owned · Earned 매체라고 불러요. 셋을 합쳐서 흔히 "POE"라고 줄여 말하기도 해요.</p>
+    </div>
+
+    <div class="media-row">
+      <div class="media-head"><span class="media-icon">💰</span><span class="media-name">Paid 매체 — 돈을 내고 빌리는 매체</span></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">정의</span><span class="field-val">타사 플랫폼에 비용을 지불하고 광고 슬롯을 구입하는 매체예요.</span></div>
+        <div class="field-row"><span class="field-label">장점</span><span class="field-val">돈을 쓰는 즉시 타겟 고객에게 빠르게 노출할 수 있어요.</span></div>
+        <div class="field-row"><span class="field-label">단점</span><span class="field-val">돈을 그만 쓰면 즉시 노출도 멈춰요.</span></div>
+        <div class="field-row"><span class="field-label">패파 예시</span><span class="field-val">메타(인스타그램·페이스북) 스폰서드 광고, 네이버 검색광고, 유튜브 전면 광고</span></div>
+      </div>
+    </div>
+
+    <div class="media-row">
+      <div class="media-head"><span class="media-icon">🏠</span><span class="media-name">Owned 매체 — 우리가 직접 소유한 매체</span></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">정의</span><span class="field-val">패스트파이브가 직접 소유하고 통제할 수 있는 매체예요.</span></div>
+        <div class="field-row"><span class="field-label">장점</span><span class="field-val">광고비가 들지 않으며, 원하는 메시지를 자유롭고 지속적으로 전달할 수 있어요.</span></div>
+        <div class="field-row"><span class="field-label">단점</span><span class="field-val">초기에 채널을 키우는 데 시간과 노력이 필요해요.</span></div>
+        <div class="field-row"><span class="field-label">패파 예시</span><span class="field-val">패스트파이브 실물 지점 공간(엘리베이터 디스플레이, 라운지 등), 패파 공식 앱, 공식 블로그·인스타그램, 입주사 대상 뉴스레터</span></div>
+      </div>
+    </div>
+
+    <div class="media-row">
+      <div class="media-head"><span class="media-icon">🗣️</span><span class="media-name">Earned 매체 — 고객이 자발적으로 만들어준 매체</span></div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">정의</span><span class="field-val">고객들의 입소문, 언론 보도, SNS 리뷰 등 제3자가 자발적으로 평가하고 만들어내는 매체예요.</span></div>
+        <div class="field-row"><span class="field-label">장점</span><span class="field-val">신뢰도가 매우 높고 파급력이 커요.</span></div>
+        <div class="field-row"><span class="field-label">단점</span><span class="field-val">패파 측에서 마음대로 통제하거나 컨트롤하기 어려워요.</span></div>
+        <div class="field-row"><span class="field-label">패파 예시</span><span class="field-val">블로거가 작성한 '패파 강남점 내돈내산 한 달 이용 후기', 언론사의 패파 관련 기사, 입주 멤버의 SNS 지점 인증샷</span></div>
+      </div>
+    </div>
+
+    <div class="block-lead" style="margin-top:2.2rem;">
+      <p><b style="color:var(--ink);">대표적인 디지털 광고 유형 — SA vs DA</b></p>
+      <p>Paid 매체를 집행할 때 가장 기본이 되는 디지털 광고 형태 두 가지예요.</p>
+    </div>
+
+    <div class="subad-row">
+      <div class="subad-name">① 검색광고 (SA : Search Advertising)</div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">정의</span><span class="field-val">사용자가 포털 사이트(네이버, 구글 등)에 특정 키워드를 검색했을 때 관련 광고를 노출하는 매체 방식이에요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">'명확한 니즈(의도)'를 가진 고객을 타겟팅해요. 목적 지향적인 매체라고 볼 수 있어요.</span></div>
+        <div class="field-row"><span class="field-label">패파 예시</span><span class="field-val">네이버 검색창에 [강남 공유오피스], [사무실 임대]를 검색한 사람에게 패파 홈페이지 링크 노출</span></div>
+      </div>
+      <div class="subad-note">참고로 광고비를 내지 않고 검색 결과 상단에 자연스럽게 노출되도록 만드는 작업을 SEO(검색엔진최적화)라고 해요. 돈을 내는 검색광고는 이와 구분해서 SEM이라고 부르기도 해요.</div>
+    </div>
+
+    <div class="subad-row">
+      <div class="subad-name">② 디스플레이 광고 (DA : Display Advertising)</div>
+      <div class="type-fields">
+        <div class="field-row"><span class="field-label">정의</span><span class="field-val">웹사이트나 앱의 광고 구역에 배너 이미지, 카드뉴스, 영상 등의 형태로 노출하는 매체예요.</span></div>
+        <div class="field-row"><span class="field-label">특징</span><span class="field-val">시각적 자극을 통해, 아직 검색하지 않은 '잠재 고객'의 관심을 끄는 방식이에요.</span></div>
+        <div class="field-row"><span class="field-label">패파 예시</span><span class="field-val">인스타그램 피드를 넘기다가 보이는 "독립 오피스 무이자 할부 혜택" 이미지 광고, 언론사 기사 우측에 뜨는 패파 배너 광고</span></div>
+      </div>
+    </div>
+
+    <div class="subad-note" style="margin-top:1.6rem;">그 외에 실무에서 자주 쓰는 Paid 매체로 <b>SNS 광고</b>도 있어요. 인스타그램·페이스북 피드에 자연스럽게 섞여 노출되는 매체로, 이미지나 짧은 영상으로 브랜드 느낌을 전달하기 좋아요.</div>
+  </div>
+
+  <!-- 3. 용어사전 -->
+  <div class="block" id="terms">
+    <span class="block-num serif">Chapter 3</span>
+    <h2 class="block-title">오늘의 미니 용어사전</h2>
+    <div class="block-lead"><p>회의 중에 자주 듣게 될 단어들만 짧게 정리했어요. 위에서 배운 개념과도 이어져 있어요.</p></div>
+
+    <div class="term-row">
+      <div class="term-word-wrap"><span class="term-icon">👁️</span><div class="term-word">인지도<br>Awareness</div></div>
+      <div class="term-def">우리 브랜드를 얼마나 많은 사람이 "알고 있는지"를 뜻해요. 브랜드 마케팅이 주로 이 숫자를 올리는 걸 목표로 해요.
+        <small>예: "이번 캠페인으로 인지도를 좀 올려봅시다."</small>
+      </div>
+    </div>
+    <div class="term-row">
+      <div class="term-word-wrap"><span class="term-icon">🌱</span><div class="term-word">리드<br>Lead</div></div>
+      <div class="term-def">아직 고객은 아니지만 관심을 보인 사람을 말해요. 문의를 남겼거나 투어를 신청한 사람 정도예요.
+        <small>예: "이번 주 리드가 몇 건 들어왔어요."</small>
+      </div>
+    </div>
+    <div class="term-row">
+      <div class="term-word-wrap"><span class="term-icon">✅</span><div class="term-word">전환<br>Conversion</div></div>
+      <div class="term-def">우리가 원하는 행동(계약, 신청, 구매 등)을 실제로 완료한 것이에요. 퍼포먼스 마케팅과 그로스 마케팅이 특히 이 숫자에 집중해요.
+        <small>예: "광고 클릭 대비 전환이 낮네요."</small>
+      </div>
+    </div>
+    <div class="term-row">
+      <div class="term-word-wrap"><span class="term-icon">🏆</span><div class="term-word">브랜드 자산<br>Brand Equity</div></div>
+      <div class="term-def">브랜드가 그동안 쌓아온 신뢰와 이미지의 가치예요. 같은 조건이라도 브랜드 자산이 높으면 사람들이 더 쉽게 선택하고, 더 비싼 가격도 받아들여요.
+        <small>예: "이 정도 브랜드 자산이면 프리미엄 라인도 승부가 됩니다."</small>
+      </div>
+    </div>
+    <div class="term-row">
+      <div class="term-word-wrap"><span class="term-icon">🧪</span><div class="term-word">그로스해킹<br>Growth Hacking</div></div>
+      <div class="term-def">적은 자원으로 빠르게 성장 방법을 실험하고 찾아내는 접근이에요. 그로스 마케팅에서 자주 쓰는 방법론이라고 보면 돼요.
+        <small>예: "이번엔 그로스해킹 관점에서 온보딩 화면부터 손봐볼게요."</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- 다음시간 예고 -->
+  <p class="note">
+    📌 다음 3회차에서는 오늘 배운 개념을 바탕으로 <strong>퍼널·타겟팅</strong>, 그리고 CPM·CTR·CAC·ROAS 같은 <strong>실무 지표</strong>를 다뤄요. 오늘 내용이 그 다음 시간의 기초가 되니, 헷갈리는 부분은 슬랙에 편하게 질문 남겨주세요.
+  </p>
+
+  <!-- 과제 -->
+  <div class="block" id="assignment">
+    <span class="block-num serif">Assignment</span>
+    <h2 class="block-title">과제 — 패스트파이브 고객 여정 퍼널 설계하기</h2>
+    <div class="block-lead">
+      <p>오늘 배운 개념을 실제로 한번 써볼 차례예요.</p>
+      <p>"고객 여정 퍼널"이란 한 사람이 우리 브랜드를 처음 알게 된 순간부터, 고객이 되고, 계속 남는 순간까지의 전체 흐름을 그려보는 거예요.</p>
+    </div>
+
+    <div class="callout">
+      <span class="callout-label">💡 비유로 이해하기</span>
+      <p>깔때기를 떠올려보세요. 위쪽 입구는 넓어서 많은 사람이 들어오지만, 아래로 내려갈수록 좁아지면서 실제로 끝까지 남는 사람은 줄어들어요.</p>
+      <p>고객 여정도 똑같아요. 처음엔 우리 브랜드를 스쳐 지나가듯 본 사람이 100명이라면, 투어를 신청하는 사람은 10명, 실제 계약하는 사람은 2~3명 정도로 줄어들죠. 마케터의 일은 이 깔때기의 각 단계에서 "왜 사람들이 다음 단계로 안 넘어갈까"를 고민하고 채우는 거예요.</p>
+    </div>
+
+    <div class="funnel-wrap">
+      <div class="funnel-seg" style="background:#f3b39f;">
+        <span class="f-label">① 인지</span><span class="f-num">약 100명이 우리를 봐요</span>
+      </div>
+      <div class="funnel-seg" style="width:82%; background:#ec8f6b;">
+        <span class="f-label">② 관심</span><span class="f-num">30명이 홈페이지를 둘러봐요</span>
+      </div>
+      <div class="funnel-seg" style="width:64%; background:#e26f45;">
+        <span class="f-label">③ 고려</span><span class="f-num">10명이 투어를 신청해요</span>
+      </div>
+      <div class="funnel-seg" style="width:46%; background:#c85530;">
+        <span class="f-label">④ 결정</span><span class="f-num">2~3명이 계약해요</span>
+      </div>
+      <div class="funnel-seg" style="width:32%; background:#a83c22;">
+        <span class="f-label">⑤ 재계약·추천</span><span class="f-num">남거나, 주변에 추천해요</span>
+      </div>
+    </div>
+
+    <div class="block-lead" style="margin-top:1.8rem;">
+      <p>아래는 "소규모 스타트업 대표"가 패스트파이브를 계약하기까지의 여정을 예시로 채워본 표예요. 참고해서 여러분만의 퍼널을 만들어보세요.</p>
+    </div>
+
+    <div class="worksheet-wrap">
+      <table class="worksheet">
+        <thead>
+          <tr><th>단계</th><th>고객의 행동·생각</th><th>우리의 액션 (채널·콘텐츠)</th><th>이 단계의 목표</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>① 인지</td>
+            <td>SNS 피드에서 우연히 광고를 보고 "이런 오피스도 있네" 인식</td>
+            <td>SNS 광고, 브랜드 콘텐츠 노출</td>
+            <td>브랜드 인지, 광고 클릭</td>
+          </tr>
+          <tr>
+            <td>② 관심</td>
+            <td>홈페이지에서 지점 위치·요금·시설 비교</td>
+            <td>홈페이지 UX, 지점 소개 콘텐츠, 검색광고</td>
+            <td>홈페이지 체류, 문의 유입</td>
+          </tr>
+          <tr>
+            <td>③ 고려</td>
+            <td>투어 신청 후 직접 방문, 다른 입주사 후기 검색</td>
+            <td>투어 응대, 입주사 후기(Earned), 상담</td>
+            <td>투어 전환율</td>
+          </tr>
+          <tr>
+            <td>④ 결정</td>
+            <td>조건 비교 후 계약서 검토, 계약</td>
+            <td>첫 달 할인 등 프로모션, 간소화된 계약 절차</td>
+            <td>계약 성사율(CVR)</td>
+          </tr>
+          <tr>
+            <td>⑤ 재계약·추천</td>
+            <td>이용하며 만족도 형성, 재계약 여부 고민, 주변에 추천</td>
+            <td>입주사 커뮤니티, 뉴스레터, 재계약 혜택</td>
+            <td>재계약률, 추천 건수</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="persona-box">
+      <p><b>이제 여러분 차례예요.</b> 아래 두 페르소나 중 하나를 골라, 위와 같은 방식으로 5단계 퍼널을 채워보세요.</p>
+      <p>(A) 1인 프리랜서·크리에이터 (개인 멤버십 고객) &nbsp;/&nbsp; (B) 리모트로 근무하는 소규모 팀 (팀 멤버십 고객)</p>
+    </div>
+
+    <div class="qa-wrap">
+      <div class="qa-row">
+        <div class="qa-stage">① 인지</div>
+        <div class="qa-q">이 페르소나는 평소 어디서 정보를 얻을까요? 그 채널에서 우리를 어떻게 마주치게 할 수 있을까요?</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-stage">② 관심</div>
+        <div class="qa-q">이 사람이 다른 브랜드와 우리를 비교한다면, 무엇을 기준으로 비교할까요?</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-stage">③ 고려</div>
+        <div class="qa-q">계약 직전 이 사람이 가장 망설이는 이유는 뭘까요? 그 망설임을 없애줄 방법이 있을까요?</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-stage">④ 결정</div>
+        <div class="qa-q">마지막으로 결정을 밀어주는 한마디나 혜택이 있다면 무엇일까요?</div>
+      </div>
+      <div class="qa-row">
+        <div class="qa-stage">⑤ 재계약·추천</div>
+        <div class="qa-q">이 사람이 계속 남거나, 주변에 추천하게 만들려면 무엇이 필요할까요?</div>
+      </div>
+    </div>
+
+    <p class="submit-line">
+      완성한 퍼널은 표나 슬라이드 한 장 정도로 정리해서 <b>슬랙 #패파아카데미_마케팅</b> 채널에 3회차(9/3) 시작 전까지 올려주세요. 정답을 찾는 과제가 아니니, 여러분의 논리로 채워보시면 충분해요.
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer2">
+    <b>FF <span>Academy</span></b>
+    <div>문의사항 · 슬랙 @구연정</div>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+    var sections = links.map(function (link) {
+      return document.querySelector(link.getAttribute('href'));
+    });
+
+    function setActive(id) {
+      links.forEach(function (link) {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+
+      sections.forEach(function (section) {
+        if (section) observer.observe(section);
+      });
+    }
+
+    links.forEach(function (link) {
+      link.addEventListener('click', function () {
+        setActive(link.getAttribute('href').slice(1));
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

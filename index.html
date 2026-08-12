@@ -305,11 +305,18 @@
             background: #ffe4e1;
         }
 
+        /* 📱 모바일 스크롤 힌트 (가로 스크롤이 필요한 표 위에 표시) */
+        .mobile-scroll-hint { display: none; }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             header { padding: 10px 0; }
-            .logo { font-size: 16px; }
-            .nav-btn { padding: 6px 10px; font-size: 12px; }
+
+            /* 헤더: 로고와 내비게이션이 한 줄에서 서로 텍스트를 밀어내며 이상하게 줄바꿈되는 문제 수정 */
+            .header-content { flex-wrap: wrap; row-gap: 10px; }
+            .logo { font-size: 16px; white-space: nowrap; }
+            .nav-links { width: 100%; }
+            .nav-btn { flex: 1; justify-content: center; padding: 8px 6px; font-size: 12px; white-space: nowrap; }
             .portfolio-hero { padding: 24px 20px; margin: 16px 0 24px 0; border-radius: 18px; }
             .hero-title { font-size: 22px; }
             .hero-desc { font-size: 13px; margin-bottom: 24px; }
@@ -331,6 +338,38 @@
             .completer-table th, .completer-table td { padding: 12px 10px; font-size: 12px; }
             .photo-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .photo-card { height: 120px; }
+
+            /* 참여자 LIST 검색 필터: 드롭다운/검색창을 세로로 꽉 차게 배치 */
+            .completer-filter-group { width: 100%; }
+            .completer-filter-group #completerFilterType,
+            .completer-filter-group .completer-search { width: 100%; }
+
+            /* 상세 커리큘럼 표: table-layout:fixed + 고정폭 컬럼 때문에 '주제' 칸이
+               한 글자씩 세로로 쪼개져 보이던 문제 수정. 표는 원래 너비를 유지한 채
+               테이블 래퍼가 가로 스크롤되도록 함 */
+            #detCurriculum table.completer-table {
+                table-layout: auto !important;
+                width: auto !important;
+                min-width: 720px;
+            }
+            /* 강의자 · 교육 자료 컬럼은 모바일에서 폭을 줄여, 남는 공간을
+               '주제' 컬럼에 더 배분되도록 함 (그래야 한 글자씩 세로로 안 쪼개짐) */
+            #detCurriculum table.completer-table th:nth-child(5),
+            #detCurriculum table.completer-table td:nth-child(5) { width: 110px !important; }
+            #detCurriculum table.completer-table th:nth-child(6),
+            #detCurriculum table.completer-table td:nth-child(6) { width: 120px !important; }
+
+            /* 가로 스크롤이 필요한 표 위에 안내 문구 표시 */
+            .mobile-scroll-hint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                font-size: 11px;
+                font-weight: 600;
+                color: #9ca3af;
+                margin-bottom: 8px;
+            }
         }
     </style>
 </head>
@@ -427,7 +466,7 @@
                     </div>
                     
                     <!-- 🔍 검색 필터 드롭다운 + 검색창 그룹 -->
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div class="completer-filter-group" style="display: flex; gap: 8px; flex-wrap: wrap;">
                         <select id="completerFilterType" onchange="filterCompleterTable()" style="border: 1px solid var(--border-color); background: #f9fafb; border-radius: 20px; padding: 0 12px; font-size: 13px; font-weight: 600; color: #374151; outline: none; cursor: pointer;">
                             <option value="all">전체 검색</option>
                             <option value="name">이름</option>
@@ -442,6 +481,7 @@
                     </div>
                 </div>
 
+                <div class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> 좌우로 스크롤하면 전체 항목을 볼 수 있어요</div>
                 <div class="table-wrap">
                     <table class="completer-table">
                         <thead>
@@ -463,7 +503,7 @@
 
         <!-- 📄 3. 개별 교육 상세 페이지 -->
         <div id="detailPage">
-            <button class="back-btn" onclick="switchView('main')"><i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기</button>
+            <button class="back-btn" onclick="handleBackButtonClick()"><i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기</button>
 
             <!-- 히어로 섹션 -->
             <div class="detail-hero">
@@ -549,7 +589,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxE8bjlHXE0bW0s6ibAX1RctRI1QrWGqvlZSqlkut7DWEgCFDNcg4t3WHIZSW6x6sE4/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxOwsHnHjGyVWS7Hvm-Kjj7RHghf4AhMDirCt8BaeWIiLb3odWnY32kPwkNS3GqSW4/exec";
 
         let eduData = [];
         let totalCompleterData = [];
@@ -590,54 +630,113 @@
             });
         }
 
+        // 받아온 원본 데이터를 화면에서 쓰는 형태로 가공해 전역 변수(eduData, totalCompleterData)에 반영
+        function applyFetchedData(data) {
+            // 1. 교육 목록 파싱
+            if (data.eduData && data.eduData.length > 0) {
+                eduData = data.eduData.map(item => ({
+                    ...item,
+                    id: Number(item.id),
+                    sessions: Number(item.sessions) || 1,
+                    category: normalizeCategory(item.category),
+                    status: item.status ? String(item.status).trim() : "완료",
+                    students: item.students || [],
+                    curriculum: parseCurriculum(item)
+                }));
+
+                // 1. 완료된 교육 수
+                const completedCount = eduData.filter(item => item.status === '완료').length;
+                document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
+
+                // 2. 모집·진행 중 교육 수 (모집중 + 진행중 합산)
+                const recruitingCount = eduData.filter(item => item.status === '모집중' || item.status === '진행중').length;
+                document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
+
+                // 3. 오픈 예정 교육 수
+                const preparingCount = eduData.filter(item => item.status === '준비중').length;
+                document.getElementById('kpiPreparingEdu').innerHTML = `${preparingCount}<span>개</span>`;
+            }
+
+            // 2. 통합 교육 참여자 LIST 파싱
+            if (data.totalCompleterData && data.totalCompleterData.length > 0) {
+                totalCompleterData = data.totalCompleterData.map(item => ({
+                    ...item,
+                    joinedCount: Number(item.joinedCount) || 0,
+                    completedCount: Number(item.completedCount) || 0,
+                    courses: item.courses ? String(item.courses).split(',').map(c => c.trim()) : []
+                }));
+
+                document.getElementById('kpiTotalCompleter').innerHTML = `${totalCompleterData.length}<span>명+</span>`;
+            }
+        }
+
         // 🚀 구글 시트 데이터 로드
+        // ⏱️ 응답이 영영 오지 않을 때 로딩 스피너가 무한히 도는 것을 막기 위한 타임아웃
+        const FETCH_TIMEOUT_MS = 20000;
+
         async function fetchSheetData() {
             try {
-                const response = await fetch(API_URL);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+                let response;
+                try {
+                    response = await fetch(API_URL, { signal: controller.signal });
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+
+                // 404/403 등은 fetch가 성공으로 처리하므로 직접 확인해야 함
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+
                 const data = await response.json();
-                
-                // 1. 교육 목록 파싱
-                if (data.eduData && data.eduData.length > 0) {
-                    eduData = data.eduData.map(item => ({
-                        ...item,
-                        id: Number(item.id),
-                        sessions: Number(item.sessions) || 1,
-                        category: normalizeCategory(item.category),
-                        status: item.status ? String(item.status).trim() : "완료",
-                        students: item.students || [],
-                        curriculum: parseCurriculum(item)
-                    }));
 
-                    // 1. 완료된 교육 수
-                    const completedCount = eduData.filter(item => item.status === '완료').length;
-                    document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
-
-                    // 2. 모집·진행 중 교육 수 (모집중 + 진행중 합산)
-                    const recruitingCount = eduData.filter(item => item.status === '모집중' || item.status === '진행중').length;
-                    document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
-
-                    // 3. 오픈 예정 교육 수
-                    const preparingCount = eduData.filter(item => item.status === '준비중').length;
-                    document.getElementById('kpiPreparingEdu').innerHTML = `${preparingCount}<span>개</span>`;
-                }
-
-                // 2. 통합 교육 참여자 LIST 파싱
-                if (data.totalCompleterData && data.totalCompleterData.length > 0) {
-                    totalCompleterData = data.totalCompleterData.map(item => ({
-                        ...item,
-                        joinedCount: Number(item.joinedCount) || 0,
-                        completedCount: Number(item.completedCount) || 0,
-                        courses: item.courses ? String(item.courses).split(',').map(c => c.trim()) : []
-                    }));
-
-                    document.getElementById('kpiTotalCompleter').innerHTML = `${totalCompleterData.length}<span>명+</span>`;
-                }
-
+                applyFetchedData(data);
                 applyFilters();
+                restoreInitialRoute();
             } catch (error) {
                 console.error("구글 시트 데이터 로드 실패:", error);
-                document.getElementById('sectionsContainer').innerHTML = `<div style="text-align:center; padding: 60px 0; color: #dc2f02; font-size: 13px;">데이터를 불러오는 중 오류가 발생했습니다. 데이터 권한 및 인터넷 연결을 확인해 주세요.</div>`;
+                showLoadError(error);
             }
+        }
+
+        // ❗ 로딩 실패 시 원인별 안내 + 다시 시도 버튼 (무한 로딩 대신 항상 뭔가 보이도록)
+        function showLoadError(error) {
+            let message;
+
+            if (error && error.name === 'AbortError') {
+                message = '데이터를 불러오는 데 시간이 너무 오래 걸리고 있어요.<br>잠시 후 다시 시도해 주세요.';
+            } else if (error && String(error.message).indexOf('HTTP 404') !== -1) {
+                message = '데이터 주소를 찾을 수 없습니다. (404)<br>구글 앱스 스크립트 배포 URL이 변경되었을 수 있어요.';
+            } else if (error && String(error.message).indexOf('HTTP 403') !== -1) {
+                message = '데이터에 접근할 권한이 없습니다. (403)<br>앱스 스크립트 배포의 액세스 권한 설정을 확인해 주세요.';
+            } else {
+                message = '데이터를 불러오지 못했습니다.<br>네트워크 상태 또는 데이터 접근 권한을 확인해 주세요.';
+            }
+
+            document.getElementById('sectionsContainer').innerHTML = `
+                <div style="text-align:center; padding: 60px 20px; color: #4b5563; font-size: 13px; line-height:1.7;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:26px; color:var(--primary-vivid); display:block; margin-bottom:14px;"></i>
+                    ${message}
+                    <div style="margin-top:18px;">
+                        <button onclick="retryFetch()" style="background:#111827; color:#fff; border:none; padding:9px 18px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer;">
+                            <i class="fa-solid fa-rotate-right" style="margin-right:6px;"></i> 다시 시도
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryFetch() {
+            document.getElementById('sectionsContainer').innerHTML = `
+                <div class="loading-box">
+                    <i class="fa-solid fa-circle-notch"></i>
+                    Loading...
+                </div>
+            `;
+            fetchSheetData();
         }
 
         // 🔄 정렬 상태 변수 (기본값: 이름 오름차순)
@@ -697,11 +796,68 @@
             });
         }
 
-        function switchView(viewName) {
+        // ============================
+        // 🔙 브라우저 뒤로가기(Back) 대응 - History API 연동
+        // ============================
+        let appNavDepth = 0; // 이 페이지에서 직접 pushState한 횟수(방문 깊이)
+
+        function pushAppState(state, hash) {
+            appNavDepth++;
+            history.pushState(state, '', hash);
+        }
+
+        // popstate(브라우저 뒤로/앞으로가기)나 초기 진입 시, 화면을 실제로 그려주는 공통 함수
+        function renderState(state) {
+            if (!state) {
+                switchView('main', true);
+                return;
+            }
+            if (state.view === 'detail') {
+                showDetailPage(state.id, true);
+            } else {
+                switchView(state.view || 'main', true);
+            }
+        }
+
+        // 브라우저 뒤로가기/앞으로가기 버튼을 눌렀을 때 호출됨
+        window.addEventListener('popstate', function (e) {
+            if (appNavDepth > 0) appNavDepth--;
+            renderState(e.state);
+        });
+
+        // 상세 페이지의 "목록으로 돌아가기" 버튼: 브라우저 뒤로가기와 동일하게 동작시켜
+        // 히스토리가 꼬이지 않도록 함
+        function handleBackButtonClick() {
+            if (appNavDepth > 0) {
+                history.back();
+            } else {
+                switchView('main');
+            }
+        }
+
+        // 새로고침/최초 진입 시 URL 해시를 읽어 알맞은 화면으로 복원 + 히스토리 기준점 설정
+        function restoreInitialRoute() {
+            const hash = window.location.hash;
+            let state = { view: 'main' };
+
+            if (hash.startsWith('#detail-')) {
+                const id = Number(hash.replace('#detail-', ''));
+                if (!isNaN(id) && eduData.find(d => d.id === id)) {
+                    state = { view: 'detail', id: id };
+                }
+            } else if (hash === '#completer') {
+                state = { view: 'completer' };
+            }
+
+            history.replaceState(state, '', hash || '#main');
+            renderState(state);
+        }
+
+        function switchView(viewName, fromPopState) {
             const mainPage = document.getElementById('mainPage');
             const completerPage = document.getElementById('completerPage');
             const detailPage = document.getElementById('detailPage');
-            
+
             const btnNavMain = document.getElementById('btnNavMain');
             const btnNavCompleter = document.getElementById('btnNavCompleter');
 
@@ -720,10 +876,16 @@
                 btnNavCompleter.classList.add('active');
                 renderCompleterTable(totalCompleterData);
             }
+
+            // 뒤로가기로 인한 렌더링이 아니면, 현재 화면 상태를 히스토리에 기록
+            if (!fromPopState) {
+                pushAppState({ view: viewName }, '#' + viewName);
+            }
+
             window.scrollTo(0, 0);
         }
 
-        function showDetailPage(id) {
+        function showDetailPage(id, fromPopState) {
             const item = eduData.find(d => d.id === id);
             if (!item) return;
 
@@ -825,6 +987,7 @@
 
             if (item.detailedCurriculum && item.detailedCurriculum.length > 0) {
                 let tableHtml = `
+                    <div class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> 좌우로 스크롤하면 전체 항목을 볼 수 있어요</div>
                     <div class="table-wrap">
                         <table class="completer-table" style="text-align:center; table-layout: fixed; width: 100%;">
                             <thead>
@@ -892,26 +1055,28 @@
             if (item.students && item.students.length > 0) {
                 detStudentCount.innerText = `${item.students.length}명`;
 
-                item.students.forEach((s, idx) => {
+                // ⚡ 성능 개선: 반복문 안에서 innerHTML +=(누적)을 하면 매번 표 전체를 다시
+                // 그리게 되어 인원이 많을수록 느려짐. 문자열을 다 만든 뒤 한 번만 반영.
+                const studentRowsHtml = item.students.map((s, idx) => {
                     let pillStyle = 'pass';
                     let pillText = '✅ 수료';
 
-                    if (s.status === '우수수료' || s.status === '우수 수료') { 
-                        pillStyle = 'best'; 
-                        pillText = '🥇 우수 수료'; 
-                    } else if (s.status === '미수료') { 
-                        pillStyle = 'fail'; 
-                        pillText = '❌ 미수료'; 
-                    } else if (s.status === '진행중' || s.status === '수강중' || s.status === '수료예정') { 
+                    if (s.status === '우수수료' || s.status === '우수 수료') {
+                        pillStyle = 'best';
+                        pillText = '🥇 우수 수료';
+                    } else if (s.status === '미수료') {
+                        pillStyle = 'fail';
+                        pillText = '❌ 미수료';
+                    } else if (s.status === '진행중' || s.status === '수강중' || s.status === '수료예정') {
                         // 🔵 진행중/수강중 상태 처리
-                        pillStyle = 'ongoing'; 
-                        pillText = '🔵 진행중'; 
+                        pillStyle = 'ongoing';
+                        pillText = '🔵 진행중';
                     } else if (!s.status || s.status === '-') {
                         pillStyle = 'fail';
                         pillText = '-';
                     }
 
-                    detStudentBody.innerHTML += `
+                    return `
                         <tr>
                             <td style="text-align: center; color: #9ca3af; font-weight: 600;">${idx + 1}</td>
                             <td style="text-align: center; font-weight: 700;">${s.name}</td>
@@ -919,7 +1084,9 @@
                             <td style="text-align: center;"><span class="status-pill ${pillStyle}">${pillText}</span></td>
                         </tr>
                     `;
-                });
+                }).join('');
+
+                detStudentBody.innerHTML = studentRowsHtml;
             } else {
                 detStudentCount.innerText = `0명`;
                 detStudentBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 준비 중인 교육입니다.</td></tr>`;
@@ -947,6 +1114,12 @@
             document.getElementById('mainPage').style.display = 'none';
             document.getElementById('completerPage').style.display = 'none';
             document.getElementById('detailPage').style.display = 'block';
+
+            // 뒤로가기로 인한 렌더링이 아니면, 상세 페이지 상태를 히스토리에 기록
+            if (!fromPopState) {
+                pushAppState({ view: 'detail', id: id }, '#detail-' + id);
+            }
+
             window.scrollTo(0, 0);
         }
 
@@ -969,7 +1142,10 @@
             const filtered = eduData.filter(item => {
                 const matchCat = (selectedCategory === '전체') || (item.category === selectedCategory);
                 const matchStatus = (selectedStatus === '전체') || (item.status === selectedStatus);
-                const matchSearch = item.name.toLowerCase().includes(searchText) || item.target.toLowerCase().includes(searchText);
+                // 시트에 빈 칸이 있어도 오류로 페이지 전체가 멈추지 않도록 방어
+                const name = String(item.name || '').toLowerCase();
+                const target = String(item.target || '').toLowerCase();
+                const matchSearch = name.includes(searchText) || target.includes(searchText);
                 return matchCat && matchStatus && matchSearch;
             });
             renderSections(filtered);
@@ -1064,20 +1240,22 @@
                 return;
             }
 
-            tbody.innerHTML = '';
-            list.forEach(c => {
+            // ⚡ 성능 개선: forEach 안에서 innerHTML +=(누적)을 하면 매번 표 전체를
+            // 다시 그리게 되어 참여자 수가 많아질수록 체감 속도가 눈에 띄게 느려짐.
+            // 문자열을 다 만든 뒤 DOM에는 딱 한 번만 반영하도록 변경.
+            const rowsHtml = list.map(c => {
                 const courseChipsHtml = c.courses.map(courseName => `<span class="course-chip">${courseName}</span>`).join('');
-                
+
                 let bestBadgeHtml = `<span style="color:#aaa;">-</span>`;
                 const awardCount = Number(c.bestAward);
-                
+
                 if (!isNaN(awardCount) && awardCount > 0) {
                     bestBadgeHtml = `<span class="status-pill best">🥇 ${awardCount}회 우수</span>`;
                 } else if (typeof c.bestAward === 'string' && c.bestAward.includes('우수')) {
                     bestBadgeHtml = `<span class="status-pill best">${c.bestAward}</span>`;
                 }
 
-                tbody.innerHTML += `
+                return `
                     <tr>
                         <td style="text-align:center;">${c.name}</td>
                         <td class="col-dept" style="color:#555;">${c.dept}</td>
@@ -1087,7 +1265,9 @@
                         <td><div class="course-tag-list">${courseChipsHtml}</div></td>
                     </tr>
                 `;
-            });
+            }).join('');
+
+            tbody.innerHTML = rowsHtml;
         }
 
         function filterCompleterTable() {
@@ -1100,9 +1280,10 @@
             }
 
             const filtered = totalCompleterData.filter(c => {
-                const nameMatch = c.name.toLowerCase().includes(query);
-                const deptMatch = c.dept.toLowerCase().includes(query);
-                const courseMatch = c.courses.some(crs => crs.toLowerCase().includes(query));
+                // 시트에 빈 칸이 있어도 검색이 오류로 멈추지 않도록 방어
+                const nameMatch = String(c.name || '').toLowerCase().includes(query);
+                const deptMatch = String(c.dept || '').toLowerCase().includes(query);
+                const courseMatch = (c.courses || []).some(crs => String(crs || '').toLowerCase().includes(query));
 
                 if (filterType === 'name') return nameMatch;
                 if (filterType === 'dept') return deptMatch;
@@ -1125,7 +1306,11 @@
             }
         }
 
-        window.onload = fetchSheetData;
+        window.onload = function () {
+            // 히스토리 기준점을 먼저 잡아두어, 데이터 로딩 실패 시에도 뒤로가기 동작이 안전하게 유지되도록 함
+            history.replaceState({ view: 'main' }, '', window.location.hash || '#main');
+            fetchSheetData();
+        };
     </script>
 </body>
 </html>
