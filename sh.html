@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- STREAMING_CHUNK:Configuring meta tags and page title... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>상헌이 워라밸 절대 지켜 Visualizer</title>
+    <title>상헌이 워라밸 절대 지켜 MAP 🗺️</title>
+
     <!-- Open Graph (OG) Meta Tags for KakaoTalk / Social Previews -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="상헌이 워라밸 절대 지켜 Visualizer">
+    <meta property="og:title" content="상헌이 워라밸 절대 지켜 MAP 🗺️">
     <meta property="og:description" content="🏠 출발 기준 수원·영통·용인·화성 5개 영업 권역 자차 동선 및 실시간 거리 분석 시각화 지도">
     <meta property="og:image" content="https://placehold.co/1200x630/0f172a/38bdf8?text=%EC%83%81%ED%97%88%EC%9D%B4+%EC%9B%8C%EB%9D%BC%EB%B0%B8+%EC%A0%88%EB%8C%80+%EC%A7%80%EC%B0%B8+Visualizer">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Leaflet CSS & JS -->
@@ -17,6 +20,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- STREAMING_CHUNK:Styling layout and custom scrollbar... -->
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         * { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
@@ -31,14 +35,11 @@
             width: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(30, 41, 59, 0.5);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #475569;
+            border-radius: 4px;
         }
 
         .dong-marker {
@@ -66,20 +67,21 @@
 </head>
 <body class="bg-slate-950 text-slate-100 overflow-hidden flex flex-col h-screen">
 
+    <!-- STREAMING_CHUNK:Rendering navigation header bar... -->
     <!-- Navigation Bar (Responsive for PC & Mobile) -->
-    <header class="bg-slate-900 border-b border-slate-800/90 px-3 sm:px-5 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between relative z-10 gap-2 shrink-0">
+    <header class="bg-slate-900 border-b border-slate-800 px-3 sm:px-5 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between relative z-10 gap-2 shrink-0">
         <div class="flex items-center gap-2.5">
             <div class="p-1.5 sm:p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20">
                 <i class="fa-solid fa-layer-group text-sm sm:text-lg text-white"></i>
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 class="text-xs sm:text-base font-bold text-white leading-tight">상헌이 워라밸 절대 지켜 Visualizer</h1>
+                    <h1 class="text-xs sm:text-base font-bold   text-white leading-tight">상헌이 워라밸 절대 지켜 MAP 🗺️</h1>
                     <span class="text-[9px] sm:text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-semibold flex items-center gap-1">
                         <i class="fa-solid fa-circle-check text-emerald-400"></i> GPS 검증
                     </span>
                 </div>
-                <p class="text-[10px] sm:text-xs text-slate-400 truncate max-w-[200px] sm:max-w-none">출발: 🏠</p>
+                <p class="text-[10px] sm:text-xs text-slate-400 truncate max-w-[200px] sm:max-w-none">📍 어느 땅을 먹어볼까 </p>
             </div>
         </div>
 
@@ -95,11 +97,12 @@
                 <i class="fa-solid fa-compress text-indigo-400"></i> <span class="hidden sm:inline">전체</span>
             </button>
             <button onclick="focusStartPoint()" class="p-1.5 sm:px-3 sm:py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1">
-                <i class="fa-solid fa-house"></i> <span class="hidden sm:inline">🏠</span>
+                <i class="fa-solid fa-house"></i> <span class="hidden sm:inline">집으로</span>
             </button>
         </div>
     </header>
 
+    <!-- STREAMING_CHUNK:Building map and interactive sidebar layout... -->
     <!-- Main Container -->
     <div class="flex-1 flex relative overflow-hidden">
         <!-- Interactive Map Container -->
@@ -114,8 +117,8 @@
             <span>검색 및 권역 목록</span>
         </button>
 
-        <!-- Sidebar Panel (Refined Dark Neutral UI) -->
-        <aside id="sidebar-panel" class="fixed lg:relative inset-x-0 bottom-0 lg:inset-auto lg:right-0 w-full lg:w-96 max-h-[80vh] lg:max-h-none h-auto lg:h-full bg-slate-900/95 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-800/90 p-3.5 sm:p-4 overflow-y-auto custom-scrollbar flex flex-col z-[1500] shadow-2xl transition-transform duration-300 translate-y-full lg:translate-y-0 rounded-t-2xl lg:rounded-none">
+        <!-- Sidebar Panel (PC Side Bar / Mobile Bottom Sheet) -->
+        <aside id="sidebar-panel" class="fixed lg:relative inset-x-0 bottom-0 lg:inset-auto lg:right-0 w-full lg:w-[28rem] xl:w-[32rem] shrink-0 max-h-[80vh] lg:max-h-none h-auto lg:h-full bg-slate-900/95 lg:bg-slate-900/95 backdrop-blur-md border-t lg:border-t-0 lg:border-l border-slate-800 p-3.5 sm:p-4 overflow-y-auto custom-scrollbar flex flex-col z-[1500] shadow-2xl transition-transform duration-300 translate-y-full lg:translate-y-0 rounded-t-2xl lg:rounded-none">
             
             <!-- Mobile Drawer Handle -->
             <div class="lg:hidden w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-3 cursor-pointer" onclick="closeMobilePanel()"></div>
@@ -129,7 +132,7 @@
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
                     <input type="text" id="dong-search" oninput="filterDongList()" placeholder="예: 영통동, 망포동, 화서동, 수지, 인계동..." 
-                           class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
                 </div>
             </div>
 
@@ -137,22 +140,23 @@
             <div class="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-slate-800/60 border border-slate-700/60 rounded-xl">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-bullseye text-rose-400"></i> 🏠 기준 반경 원
+                        <i class="fa-solid fa-bullseye text-rose-400"></i> 🏠우리집🏠 기준 반경
                     </span>
                     <button onclick="toggleDistanceRings()" id="btn-ring-toggle" class="text-[11px] px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded hover:bg-rose-500/30 font-bold">ON</button>
                 </div>
                 <div class="grid grid-cols-4 gap-1 text-[10px] sm:text-[11px] text-center">
-                    <div class="p-1 bg-slate-900 rounded border border-slate-800 text-rose-300 font-medium">5km 이내</div>
-                    <div class="p-1 bg-slate-900 rounded border border-slate-800 text-amber-300 font-medium">10km 이내</div>
-                    <div class="p-1 bg-slate-900 rounded border border-slate-800 text-indigo-300 font-medium">20km 이내</div>
-                    <div class="p-1 bg-slate-900 rounded border border-slate-800 text-slate-400">35km+</div>
+                    <div class="p-1 bg-slate-800 rounded border border-rose-500/30 text-rose-300">5km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-amber-500/30 text-amber-300">10km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-indigo-500/30 text-indigo-300">20km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-slate-600 text-slate-400">35km+</div>
                 </div>
             </div>
 
+            <!-- STREAMING_CHUNK:Structuring detail info card and accordion items... -->
             <!-- Selected Location Detail Info Card -->
-            <div id="detail-info-card" class="mb-3 sm:mb-4 p-3.5 bg-slate-950/90 border border-indigo-500/40 rounded-xl hidden transition-all shadow-xl">
+            <div id="detail-info-card" class="mb-3 sm:mb-4 p-3 sm:p-3.5 bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 rounded-xl hidden transition-all shadow-xl">
                 <div class="flex items-center justify-between mb-1.5">
-                    <span id="detail-region-badge" class="text-[10px] px-2 py-0.5 font-bold rounded bg-slate-800 text-slate-200 border border-slate-700">2지역 (영통)</span>
+                    <span id="detail-region-badge" class="text-[10px] px-2 py-0.5 font-bold rounded bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">2지역 (영통)</span>
                     <button onclick="closeDetailCard()" class="text-slate-400 hover:text-white text-xs p-1"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div class="flex items-baseline justify-between mb-0.5">
@@ -164,11 +168,11 @@
                     <span id="detail-coords">GPS: 37.2510, 127.0710</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 my-2">
-                    <div class="p-2 bg-slate-900 rounded-lg text-center border border-slate-800">
+                    <div class="p-1.5 sm:p-2 bg-slate-800/80 rounded-lg text-center border border-slate-700/50">
                         <div class="text-[9px] sm:text-[10px] text-slate-400">실시간 직선거리</div>
                         <div id="detail-distance" class="text-xs sm:text-sm font-bold text-indigo-400">약 6.8 km</div>
                     </div>
-                    <div class="p-2 bg-slate-900 rounded-lg text-center border border-slate-800">
+                    <div class="p-1.5 sm:p-2 bg-slate-800/80 rounded-lg text-center border border-slate-700/50">
                         <div class="text-[9px] sm:text-[10px] text-slate-400">예상 자차 이동시간</div>
                         <div id="detail-time" class="text-xs sm:text-sm font-bold text-emerald-400">약 14분</div>
                     </div>
@@ -184,27 +188,27 @@
             <div class="space-y-2.5 flex-1">
                 
                 <!-- Region 1 Card -->
-                <div class="bg-slate-950/60 border border-slate-800/90 rounded-xl overflow-hidden transition-all hover:border-slate-700">
-                    <div class="p-3 bg-slate-900 flex items-center justify-between cursor-pointer hover:bg-slate-800/80 border-l-4 border-rose-500" onclick="onRegionCardHeaderClick('r1')">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <div class="bg-slate-800/40 border border-slate-700/70 rounded-xl overflow-hidden transition-all hover:border-slate-600">
+                    <div class="p-3 bg-slate-800/60 border-l-[3px] border-rose-500 flex items-center justify-between cursor-pointer hover:bg-slate-800" onclick="onRegionCardHeaderClick('r1')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">1지역: 화성 / 오산</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded font-mono border border-slate-700">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">1지역: 화성 지역</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">(계정 19,326개)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">(계정 19,326개)</span>
                             </div>
                         </div>
                         <i id="arrow-r1" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
                     </div>
-                    <div id="list-r1-wrapper" class="p-2.5 space-y-2 bg-slate-950/40">
-                        <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10px] text-slate-300">
-                            <div class="font-bold text-slate-200 mb-1 flex items-center gap-1">
+                    <div id="list-r1-wrapper" class="p-2.5 space-y-2">
+                        <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-700/60 text-[10px] text-slate-300">
+                            <div class="font-bold text-slate-300 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-list-check text-rose-400"></i> 포함 행정구역 전체 (23개+)
                             </div>
                             <div class="flex flex-wrap gap-1 leading-tight text-[9.5px]">
-                                <span class="px-1.5 py-0.5 bg-rose-500/10 text-rose-300 rounded border border-rose-500/20 font-medium">오산시 전체</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">오산시 전체</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">금곡동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">마도면</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">목동</span>
@@ -237,34 +241,33 @@
                 </div>
 
                 <!-- Region 2 Card -->
-                <div class="bg-slate-950/60 border border-slate-800/90 rounded-xl overflow-hidden transition-all hover:border-slate-700">
-                    <div class="p-3 bg-slate-900 flex items-center justify-between cursor-pointer hover:bg-slate-800/80 border-l-4 border-emerald-500" onclick="onRegionCardHeaderClick('r2')">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <div class="bg-emerald-950/20 border border-emerald-500/40 rounded-xl overflow-hidden transition-all hover:border-emerald-500/70">
+                    <div class="p-3 bg-slate-800/60 border-l-[3px] border-emerald-500 flex items-center justify-between cursor-pointer hover:bg-slate-800" onclick="onRegionCardHeaderClick('r2')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">2지역: 영통 / 화성동부</span>
-                                    <span class="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.2 rounded font-bold">강력 추천 ⭐</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded font-mono border border-slate-700">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
+                                    <span class="text-xs sm:text-sm font-bold text-emerald-300">2지역: 수원 영통 지역 🌟</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">(계정 14,186개)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">(계정 14,186개)</span>
                             </div>
                         </div>
                         <i id="arrow-r2" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
                     </div>
-                    <div id="list-r2-wrapper" class="p-2.5 space-y-2 bg-slate-950/40">
-                        <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10px] text-slate-300">
-                            <div class="font-bold text-slate-200 mb-1 flex items-center gap-1">
+                    <div id="list-r2-wrapper" class="p-2.5 space-y-2">
+                        <div class="p-2 bg-slate-900/80 rounded-lg border border-emerald-500/20 text-[10px] text-slate-300">
+                            <div class="font-bold text-slate-300 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-list-check text-emerald-400"></i> 포함 행정구역 전체
                             </div>
                             <div class="flex flex-wrap gap-1 leading-tight text-[9.5px]">
-                                <span class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-300 rounded border border-emerald-500/20 font-medium">수원 영통구(하동,원천 제외)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">수원 영통구(하동,원천 제외)</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">이의동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">매탄동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">영통동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">신동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">망포동</span>
-                                <span class="px-1.5 py-0.5 bg-emerald-500/10 text-emerald-300 rounded border border-emerald-500/20 font-medium">화성 동부권</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">화성 동부권</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">기산동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">기안동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">남양읍</span>
@@ -285,29 +288,37 @@
                 </div>
 
                 <!-- Region 3 Card -->
-                <div class="bg-slate-950/60 border border-slate-800/90 rounded-xl overflow-hidden transition-all hover:border-slate-700">
-                    <div class="p-3 bg-slate-900 flex items-center justify-between cursor-pointer hover:bg-slate-800/80 border-l-4 border-indigo-500" onclick="onRegionCardHeaderClick('r3')">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                <div class="bg-slate-800/40 border border-slate-700/70 rounded-xl overflow-hidden transition-all hover:border-slate-600">
+                    <div class="p-3 bg-slate-800/60 border-l-[3px] border-indigo-500 flex items-center justify-between cursor-pointer hover:bg-slate-800" onclick="onRegionCardHeaderClick('r3')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">3지역: 수원 (권선/장안/팔달 일부)</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded font-mono border border-slate-700">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">3지역: 수원 지역</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">(계정 14,062개)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">(계정 14,062개)</span>
                             </div>
                         </div>
                         <i id="arrow-r3" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
                     </div>
-                    <div id="list-r3-wrapper" class="p-2.5 space-y-2 bg-slate-950/40">
-                        <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10px] text-slate-300">
-                            <div class="font-bold text-slate-200 mb-1 flex items-center gap-1">
+                    <div id="list-r3-wrapper" class="p-2.5 space-y-2">
+                        <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-700/60 text-[10px] text-slate-300">
+                            <div class="font-bold text-slate-300 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-list-check text-indigo-400"></i> 포함 행정구역 전체
                             </div>
                             <div class="flex flex-wrap gap-1 leading-tight text-[9.5px]">
-                                <span class="px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20 font-medium">권선구 전체</span>
-                                <span class="px-1.5 py-0.5 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20 font-medium">장안구 전체</span>
-                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">팔달구 지정동(교동/고등/남창/매산/신풍/장안/화서/매산로)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">권선구 전체</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">장안구 전체</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">팔달구 지정동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">교동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">고등동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">남창동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">매산동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">신풍동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">장안동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">화서동</span>
+                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">매산로1~3가</span>
                             </div>
                         </div>
                         <div id="list-r3" class="grid grid-cols-2 gap-1.5 text-xs"></div>
@@ -315,32 +326,32 @@
                 </div>
 
                 <!-- Region 4 Card -->
-                <div class="bg-slate-950/60 border border-slate-800/90 rounded-xl overflow-hidden transition-all hover:border-slate-700">
-                    <div class="p-3 bg-slate-900 flex items-center justify-between cursor-pointer hover:bg-slate-800/80 border-l-4 border-amber-500" onclick="onRegionCardHeaderClick('r4')">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <div class="bg-slate-800/40 border border-slate-700/70 rounded-xl overflow-hidden transition-all hover:border-slate-600">
+                    <div class="p-3 bg-slate-800/60 border-l-[3px] border-amber-500 flex items-center justify-between cursor-pointer hover:bg-slate-800" onclick="onRegionCardHeaderClick('r4')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">4지역: 용인 (기흥/처인)</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded font-mono border border-slate-700">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">4지역: 용인 지역</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">(계정 16,795개)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">(계정 16,795개)</span>
                             </div>
                         </div>
                         <i id="arrow-r4" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
                     </div>
-                    <div id="list-r4-wrapper" class="p-2.5 space-y-2 bg-slate-950/40">
-                        <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10px] text-slate-300">
-                            <div class="font-bold text-slate-200 mb-1 flex items-center gap-1">
+                    <div id="list-r4-wrapper" class="p-2.5 space-y-2">
+                        <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-700/60 text-[10px] text-slate-300">
+                            <div class="font-bold text-slate-300 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-list-check text-amber-400"></i> 포함 행정구역 전체
                             </div>
                             <div class="flex flex-wrap gap-1 leading-tight text-[9.5px]">
-                                <span class="px-1.5 py-0.5 bg-amber-500/10 text-amber-300 rounded border border-amber-500/20 font-medium">용인 기흥구(보정,영덕 제외)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">용인 기흥구(보정,영덕 제외)</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">신갈동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">구갈동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">동백동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">공세/보라동</span>
-                                <span class="px-1.5 py-0.5 bg-amber-500/10 text-amber-300 rounded border border-amber-500/20 font-medium">용인 처인구 전체</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">용인 처인구 전체</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">김량장동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">역북/삼가동</span>
                                 <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">남사읍</span>
@@ -353,30 +364,30 @@
                 </div>
 
                 <!-- Region 5 Card -->
-                <div class="bg-slate-950/60 border border-slate-800/90 rounded-xl overflow-hidden transition-all hover:border-slate-700">
-                    <div class="p-3 bg-slate-900 flex items-center justify-between cursor-pointer hover:bg-slate-800/80 border-l-4 border-purple-500" onclick="onRegionCardHeaderClick('r5')">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                <div class="bg-slate-800/40 border border-slate-700/70 rounded-xl overflow-hidden transition-all hover:border-slate-600">
+                    <div class="p-3 bg-slate-800/60 border-l-[3px] border-purple-400 flex items-center justify-between cursor-pointer hover:bg-slate-800" onclick="onRegionCardHeaderClick('r5')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">5지역: 수지 / 팔달잔여 / 흥덕</span>
-                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded font-mono border border-slate-700">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">5지역: 수지 지역</span>
+                                    <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
-                                <span class="text-[10px] text-slate-400 font-mono">(계정 13,490개)</span>
+                                <span class="text-[10px] text-slate-500 font-mono">(계정 13,490개)</span>
                             </div>
                         </div>
                         <i id="arrow-r5" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
                     </div>
-                    <div id="list-r5-wrapper" class="p-2.5 space-y-2 bg-slate-950/40">
-                        <div class="p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10px] text-slate-300">
-                            <div class="font-bold text-slate-200 mb-1 flex items-center gap-1">
+                    <div id="list-r5-wrapper" class="p-2.5 space-y-2">
+                        <div class="p-2 bg-slate-900/80 rounded-lg border border-slate-700/60 text-[10px] text-slate-300">
+                            <div class="font-bold text-slate-300 mb-1 flex items-center gap-1">
                                 <i class="fa-solid fa-list-check text-purple-400"></i> 포함 행정구역 전체
                             </div>
                             <div class="flex flex-wrap gap-1 leading-tight text-[9.5px]">
-                                <span class="px-1.5 py-0.5 bg-purple-500/10 text-purple-300 rounded border border-purple-500/20 font-medium">용인 수지구 전체</span>
-                                <span class="px-1.5 py-0.5 bg-purple-500/10 text-purple-300 rounded border border-purple-500/20 font-medium">기흥 보정동/영덕동(흥덕)</span>
-                                <span class="px-1.5 py-0.5 bg-purple-500/10 text-purple-300 rounded border border-purple-500/20 font-medium">수원 영통 하동/원천동(광교)</span>
-                                <span class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded">팔달구 잔여(인계/우만/지동 등)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">용인 수지구 전체</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">기흥 보정동/영덕동(흥덕)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">수원 영통 하동/원천동(광교)</span>
+                                <span class="px-1.5 py-0.5 bg-slate-700 text-slate-200 rounded font-semibold">팔달구 잔여(인계/우만/지동 등)</span>
                             </div>
                         </div>
                         <div id="list-r5" class="grid grid-cols-2 gap-1.5 text-xs"></div>
@@ -385,122 +396,112 @@
 
             </div>
 
-            <!-- Min/Max Driving Time Comparison Section (Neat Dark Theme) -->
-            <!-- Min/Max Driving Time Comparison Section (Dedicated Separate Block) -->
+            <!-- STREAMING_CHUNK:Adding Min/Max driving time comparison section... -->
+            <!-- Min/Max Driving Time Comparison Section -->
             <div class="mt-4 p-3.5 bg-slate-800/60 border border-slate-700/70 rounded-xl shadow-xl">
                 <div class="font-bold text-xs sm:text-sm text-slate-200 mb-3 flex items-center justify-between border-b border-slate-700 pb-2">
                     <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-stopwatch text-slate-400"></i> 권역별 🏠 기준 차 이동시간 (극과 극)
+                        <i class="fa-solid fa-stopwatch text-slate-400"></i> 권역별 우리집 기준 이동시간 🚘
                     </span>
                     <span class="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-mono whitespace-nowrap shrink-0">자차 이동</span>
                 </div>
 
                 <div class="space-y-2 text-[11px]">
                     <!-- R1 -->
-                    <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800/80">
-                        <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-rose-500"></span> 1지역 (화성 / 오산)
-                            </span>
-                            <span class="text-slate-400 font-mono text-[10px]">계정 19,326개</span>
+                    <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
+                        <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>1지역 (화성)</span>
+                            <span class="text-slate-500 font-mono text-[10px]">계정 19,326개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">⚡ 가장 가까운 곳</span>
-                                <span class="font-semibold text-slate-200">동탄2/방교동</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-emerald-400 block text-[9.5px] font-bold">⚡ 가장 가까운 곳</span>
+                                <span class="font-semibold text-slate-100">동탄2/방교동</span>
                                 <span class="text-emerald-400 font-bold block mt-0.5">(약 5~6분)</span>
                             </div>
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">🐢 가장 먼 곳</span>
-                                <span class="font-semibold text-slate-200">서신면/우정읍</span>
-                                <span class="text-rose-400 font-bold block mt-0.5">(약 48~50분)</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-amber-400 block text-[9.5px] font-bold">🐢 가장 먼 곳</span>
+                                <span class="font-semibold text-slate-100">서신면/우정읍</span>
+                                <span class="text-amber-400 font-bold block mt-0.5">(약 48~50분)</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- R2 -->
-                    <div class="p-2.5 bg-slate-900 rounded-lg border border-emerald-500/30">
-                        <div class="font-bold text-emerald-400 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 2지역 (영통 / 화성동부) ⭐추천
-                            </span>
-                            <span class="text-slate-400 font-mono text-[10px]">계정 14,186개</span>
+                    <div class="p-2.5 bg-slate-900/70 rounded-lg border border-emerald-500/30">
+                        <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>2지역 (수원 영통) 🌟</span>
+                            <span class="text-slate-500 font-mono text-[10px]">계정 14,186개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">⚡ 가장 가까운 곳</span>
-                                <span class="font-semibold text-slate-200">동탄1/능동/망포</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-emerald-400 block text-[9.5px] font-bold">⚡ 가장 가까운 곳</span>
+                                <span class="font-semibold text-slate-100">동탄1/능동/망포</span>
                                 <span class="text-emerald-400 font-bold block mt-0.5">(약 5~12분)</span>
                             </div>
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">🐢 가장 먼 곳</span>
-                                <span class="font-semibold text-slate-200">남양읍</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-amber-400 block text-[9.5px] font-bold">🐢 가장 먼 곳</span>
+                                <span class="font-semibold text-slate-100">남양읍</span>
                                 <span class="text-amber-400 font-bold block mt-0.5">(약 38분)</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- R3 -->
-                    <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800/80">
-                        <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-indigo-500"></span> 3지역 (수원)
-                            </span>
-                            <span class="text-slate-400 font-mono text-[10px]">계정 14,062개</span>
+                    <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
+                        <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0"></span>3지역 (수원)</span>
+                            <span class="text-slate-500 font-mono text-[10px]">계정 14,062개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">⚡ 가장 가까운 곳</span>
-                                <span class="font-semibold text-slate-200">권선구/팔달구</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-emerald-400 block text-[9.5px] font-bold">⚡ 가장 가까운 곳</span>
+                                <span class="font-semibold text-slate-100">권선구/팔달구</span>
                                 <span class="text-emerald-400 font-bold block mt-0.5">(약 20~21분)</span>
                             </div>
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">🐢 가장 먼 곳</span>
-                                <span class="font-semibold text-slate-200">장안구 (북수원)</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-amber-400 block text-[9.5px] font-bold">🐢 가장 먼 곳</span>
+                                <span class="font-semibold text-slate-100">장안구 (북수원)</span>
                                 <span class="text-amber-400 font-bold block mt-0.5">(약 28분)</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- R4 -->
-                    <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800/80">
-                        <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-amber-500"></span> 4지역 (용인)
-                            </span>
-                            <span class="text-slate-400 font-mono text-[10px]">계정 16,795개</span>
+                    <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
+                        <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>4지역 (용인)</span>
+                            <span class="text-slate-500 font-mono text-[10px]">계정 16,795개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">⚡ 가장 가까운 곳</span>
-                                <span class="font-semibold text-slate-200">기흥 공세/보라/신갈</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-emerald-400 block text-[9.5px] font-bold">⚡ 가장 가까운 곳</span>
+                                <span class="font-semibold text-slate-100">기흥 공세/보라/신갈</span>
                                 <span class="text-emerald-400 font-bold block mt-0.5">(약 18분)</span>
                             </div>
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">🐢 가장 먼 곳</span>
-                                <span class="font-semibold text-slate-200">처인구 외곽(백암/모현)</span>
-                                <span class="text-rose-400 font-bold block mt-0.5">(약 35~45분)</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-amber-400 block text-[9.5px] font-bold">🐢 가장 먼 곳</span>
+                                <span class="font-semibold text-slate-100">처인구 외곽(백암/모현)</span>
+                                <span class="text-amber-400 font-bold block mt-0.5">(약 35~45분)</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- R5 -->
-                    <div class="p-2.5 bg-slate-900 rounded-lg border border-slate-800/80">
-                        <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-purple-500"></span> 5지역 (수지 / 팔달잔여 / 흥덕)
-                            </span>
-                            <span class="text-slate-400 font-mono text-[10px]">계정 13,490개</span>
+                    <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
+                        <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400 shrink-0"></span>5지역 (수지)</span>
+                            <span class="text-slate-500 font-mono text-[10px]">계정 13,490개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">⚡ 가장 가까운 곳</span>
-                                <span class="font-semibold text-slate-200">흥덕/보정/광교</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-emerald-400 block text-[9.5px] font-bold">⚡ 가장 가까운 곳</span>
+                                <span class="font-semibold text-slate-100">흥덕/보정/광교</span>
                                 <span class="text-emerald-400 font-bold block mt-0.5">(약 20분)</span>
                             </div>
-                            <div class="bg-slate-950/70 p-2 rounded border border-slate-800">
-                                <span class="text-slate-400 block text-[9.5px] font-medium">🐢 가장 먼 곳</span>
-                                <span class="font-semibold text-slate-200">수지구 풍덕천/동천</span>
+                            <div class="bg-slate-800/70 p-1.5 sm:p-2 rounded border border-slate-700/60">
+                                <span class="text-amber-400 block text-[9.5px] font-bold">🐢 가장 먼 곳</span>
+                                <span class="font-semibold text-slate-100">수지구 풍덕천/동천</span>
                                 <span class="text-amber-400 font-bold block mt-0.5">(약 26~30분)</span>
                             </div>
                         </div>
@@ -510,7 +511,7 @@
             </div>
 
             <!-- Verification Footer -->
-            <div class="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-slate-950/80 border border-slate-800 rounded-xl text-xs text-slate-300">
+            <div class="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-slate-800/60 border border-slate-700/70 rounded-xl text-xs text-slate-300">
                 <div class="font-bold text-slate-200 mb-1 flex items-center gap-1.5">
                     <i class="fa-solid fa-shield-halved text-emerald-400"></i> GPS 위치 정밀 검증 완료
                 </div>
@@ -522,6 +523,7 @@
         </aside>
     </div>
 
+    <!-- STREAMING_CHUNK:Initializing JavaScript logic and leaflet map... -->
     <script>
         function toggleMobilePanel() {
             const panel = document.getElementById('sidebar-panel');
@@ -546,10 +548,11 @@
             backdrop.classList.add('hidden');
         }
 
-        // Start point: 🏠 (GPS: West of DongtanGiheung-ro)
+        /* STREAMING_CHUNK:Defining precise GPS coordinates for starting point... */
+        // Start point: 1623-dong area (GPS: 37.1905, 127.0918)
         const startPoint = {
-            lat: 37.1891,
-            lng: 127.0913,
+            lat: 37.1905,
+            lng: 127.0918,
             title: "🏠",
             address: "경기 화성시 동탄감배산로 30"
         };
@@ -566,20 +569,21 @@
             return (R * c).toFixed(1);
         }
 
+        /* STREAMING_CHUNK:Populating territory dataset and marker coordinates... */
         const dongDataset = [
             // Region 1: Hwaseong & Osan (Accounts: 19,326)
-            { id: "r1_1", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 동탄2(청계/목/신/산척/송/장지/영천/중)", lat: 37.1950, lng: 127.1150, time: "5분", parking: "양호", density: "최상", desc: "동탄초 인근 동탄2 신도시 전체(청계·목·신·산척·송·장지·영천·중동)." },
+            { id: "r1_1", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 동탄2(청계/목/신/산척/송/장지/영천/중)", lat: 37.1950, lng: 127.1150, time: "5분", parking: "양호", density: "최상", desc: "🏠 인근 동탄2 신도시 전체(청계·목·신·산척·송·장지·영천·중동)." },
             { id: "r1_2", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 병점동/양산동", lat: 37.2070, lng: 127.0350, time: "11분", parking: "보통", density: "높음", desc: "병점역 및 양산동 일대 주택/아파트 단지." },
-            { id: "r1_3", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "오산시(오산동/원동/금암/신장)", lat: 37.1500, lng: 127.0700, time: "12분", parking: "보통", density: "높음", desc: "오산시 전 지역. 동탄초에서 직통 접근 최적." },
+            { id: "r1_3", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "오산시(오산동/원동/금암/신장)", lat: 37.1500, lng: 127.0700, time: "12분", parking: "보통", density: "높음", desc: "오산시 전 지역. 출발지에서 직통 접근 최적." },
             { id: "r1_4", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 향남읍", lat: 37.1330, lng: 126.9210, time: "32분", parking: "양호", density: "보통", desc: "향남1·2지구 신도시 구역." },
             { id: "r1_5", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 정남면/팔탄면/양감면", lat: 37.1600, lng: 126.9800, time: "22분", parking: "양호", density: "낮음", desc: "공장 및 주택 혼재 구역." },
             { id: "r1_6", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 우정읍(조암)/장안면", lat: 37.0810, lng: 126.8150, time: "48분", parking: "양호", density: "매우 낮음", desc: "화성 남서쪽 최외곽." },
             { id: "r1_7", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 서신면/마도면/송산면", lat: 37.1700, lng: 126.7300, time: "50분", parking: "양호", density: "매우 낮음", desc: "해안 외곽 구역." },
             { id: "r1_8", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 비봉면/매송면/새솔동", lat: 37.2400, lng: 126.8500, time: "38분", parking: "양호", density: "보통", desc: "화성 북서부 매송/비봉 및 송산그린시티 새솔동." },
-            { id: "r1_9", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 방교동/금곡동", lat: 37.1730, lng: 127.0980, time: "6분", parking: "양호", density: "보통", desc: "동탄초 바로 남측 인접 산단 및 주거지." },
+            { id: "r1_9", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 방교동/금곡동", lat: 37.1730, lng: 127.0980, time: "6분", parking: "양호", density: "보통", desc: "출발지 바로 남측 인접 산단 및 주거지." },
 
             // Region 2: Yeongtong & East Hwaseong (Accounts: 14,186)
-            { id: "r2_1", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 영통동", lat: 37.2510, lng: 127.0710, time: "14분", parking: "양호", density: "최상", desc: "아파트 밀집지역. 동탄초 직통 도로 연결 최적." },
+            { id: "r2_1", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 영통동", lat: 37.2510, lng: 127.0710, time: "14분", parking: "양호", density: "최상", desc: "아파트 밀집지역. 직통 도로 연결 최적." },
             { id: "r2_2", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 망포동", lat: 37.2450, lng: 127.0580, time: "12분", parking: "양호", density: "최상", desc: "동탄 북단 접경. 차로 10~15분 도착." },
             { id: "r2_3", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 매탄동", lat: 37.2610, lng: 127.0420, time: "16분", parking: "보통", density: "높음", desc: "삼성전자 상가 및 대단지 아파트." },
             { id: "r2_4", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 이의동(광교)", lat: 37.2970, lng: 127.0480, time: "22분", parking: "양호", density: "높음", desc: "광교신도시 원천/하동 제외 구역." },
@@ -608,6 +612,7 @@
             { id: "r5_4", region: "r5", regionName: "5지역(수지/광교/흥덕)", accounts: "13,490", name: "수원 팔달구 잔여(인계/우만/지동/행궁 일부)", lat: 37.2780, lng: 127.0300, time: "22분", parking: "보통", density: "높음", desc: "인계동 중심 상권 및 우만동/지동 구역." }
         ];
 
+        /* STREAMING_CHUNK:Configuring Leaflet map tiles and layers... */
         const map = L.map('map', { zoomControl: false }).setView([startPoint.lat, startPoint.lng], 11);
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -623,6 +628,7 @@
         let currentMode = 'all';
         let showRings = true;
 
+        // 5 Region Colors
         const regionColors = {
             r1: '#f43f5e', // Rose
             r2: '#10b981', // Emerald
@@ -655,6 +661,8 @@
             });
         }
 
+        /* STREAMING_CHUNK:Drawing territory polygon boundaries... */
+        // 5 Region Polygon Boundaries
         const polygonData = {
             r1: [ [37.220, 126.980], [37.180, 127.010], [37.120, 127.080], [37.050, 127.050], [37.050, 126.750], [37.200, 126.650], [37.270, 126.800] ],
             r2: [ [37.260, 127.020], [37.280, 127.070], [37.230, 127.090], [37.180, 127.060], [37.180, 127.010], [37.220, 126.950] ],
@@ -675,6 +683,7 @@
             polygonLayers[key] = poly;
         });
 
+        /* STREAMING_CHUNK:Rendering map pins and popups... */
         function renderDongMarkers() {
             dongDataset.forEach(item => {
                 const color = regionColors[item.region];
@@ -726,14 +735,15 @@
                 const items = dongDataset.filter(d => d.region === rKey);
                 
                 container.innerHTML = items.map(d => `
-                    <div onclick='onDongCardClick("${d.id}")' class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg cursor-pointer transition flex items-center justify-between group">
-                        <span class="font-semibold text-slate-300 group-hover:text-white truncate text-[11px]">${d.name}</span>
-                        <span class="text-[10px] text-indigo-400 font-bold ml-1">${d.time}</span>
+                    <div onclick='onDongCardClick("${d.id}")' class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700/60 rounded-lg cursor-pointer transition flex items-center justify-between group">
+                        <span class="font-semibold text-slate-200 group-hover:text-white truncate text-[11px]">${d.name}</span>
+                        <span class="text-[10px] text-slate-400 font-bold ml-1">${d.time}</span>
                     </div>
                 `).join('');
             });
         }
 
+        /* STREAMING_CHUNK:Creating starting point marker... */
         // Start Point Marker
         const startIcon = L.divIcon({
             className: 'custom-start-pin',
@@ -743,7 +753,7 @@
                         <i class="fa-solid fa-house" style="font-size: 18px;"></i>
                     </div>
                     <div style="background: rgba(15, 23, 42, 0.95); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 8px; margin-top: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
-                        출발🚘
+                        🚘 출발
                     </div>
                 </div>
             `,
@@ -757,14 +767,13 @@
                 <span class="text-xs font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded">출발점</span>
                 <h3 class="font-bold text-sm text-slate-800 mt-1">${startPoint.title}</h3>
                 <p class="text-xs text-slate-600 mt-0.5">${startPoint.address}</p>
-                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 정밀 GPS: 37.1891, 127.0913</div>
+                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 정밀 GPS: 37.1905, 127.0918</div>
             </div>
         `);
 
+        /* STREAMING_CHUNK:Defining event handlers and interactive functions... */
         function onRegionCardHeaderClick(rKey) {
-            // 1. Toggle collapse/expand of dong list
             toggleRegionCollapse(rKey);
-            // 2. Focus map view onto the selected region's polygon boundary
             focusRegionOnMap(rKey);
         }
 
@@ -894,6 +903,7 @@
             startMarker.openPopup();
         }
 
+        /* STREAMING_CHUNK:Starting application on load... */
         window.onload = function() {
             drawDistanceRings();
             renderDongMarkers();
