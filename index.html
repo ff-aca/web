@@ -589,7 +589,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxE8bjlHXE0bW0s6ibAX1RctRI1QrWGqvlZSqlkut7DWEgCFDNcg4t3WHIZSW6x6sE4/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxOwsHnHjGyVWS7Hvm-Kjj7RHghf4AhMDirCt8BaeWIiLb3odWnY32kPwkNS3GqSW4/exec";
 
         let eduData = [];
         let totalCompleterData = [];
@@ -630,55 +630,113 @@
             });
         }
 
+        // 받아온 원본 데이터를 화면에서 쓰는 형태로 가공해 전역 변수(eduData, totalCompleterData)에 반영
+        function applyFetchedData(data) {
+            // 1. 교육 목록 파싱
+            if (data.eduData && data.eduData.length > 0) {
+                eduData = data.eduData.map(item => ({
+                    ...item,
+                    id: Number(item.id),
+                    sessions: Number(item.sessions) || 1,
+                    category: normalizeCategory(item.category),
+                    status: item.status ? String(item.status).trim() : "완료",
+                    students: item.students || [],
+                    curriculum: parseCurriculum(item)
+                }));
+
+                // 1. 완료된 교육 수
+                const completedCount = eduData.filter(item => item.status === '완료').length;
+                document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
+
+                // 2. 모집·진행 중 교육 수 (모집중 + 진행중 합산)
+                const recruitingCount = eduData.filter(item => item.status === '모집중' || item.status === '진행중').length;
+                document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
+
+                // 3. 오픈 예정 교육 수
+                const preparingCount = eduData.filter(item => item.status === '준비중').length;
+                document.getElementById('kpiPreparingEdu').innerHTML = `${preparingCount}<span>개</span>`;
+            }
+
+            // 2. 통합 교육 참여자 LIST 파싱
+            if (data.totalCompleterData && data.totalCompleterData.length > 0) {
+                totalCompleterData = data.totalCompleterData.map(item => ({
+                    ...item,
+                    joinedCount: Number(item.joinedCount) || 0,
+                    completedCount: Number(item.completedCount) || 0,
+                    courses: item.courses ? String(item.courses).split(',').map(c => c.trim()) : []
+                }));
+
+                document.getElementById('kpiTotalCompleter').innerHTML = `${totalCompleterData.length}<span>명+</span>`;
+            }
+        }
+
         // 🚀 구글 시트 데이터 로드
+        // ⏱️ 응답이 영영 오지 않을 때 로딩 스피너가 무한히 도는 것을 막기 위한 타임아웃
+        const FETCH_TIMEOUT_MS = 20000;
+
         async function fetchSheetData() {
             try {
-                const response = await fetch(API_URL);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+                let response;
+                try {
+                    response = await fetch(API_URL, { signal: controller.signal });
+                } finally {
+                    clearTimeout(timeoutId);
+                }
+
+                // 404/403 등은 fetch가 성공으로 처리하므로 직접 확인해야 함
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+
                 const data = await response.json();
-                
-                // 1. 교육 목록 파싱
-                if (data.eduData && data.eduData.length > 0) {
-                    eduData = data.eduData.map(item => ({
-                        ...item,
-                        id: Number(item.id),
-                        sessions: Number(item.sessions) || 1,
-                        category: normalizeCategory(item.category),
-                        status: item.status ? String(item.status).trim() : "완료",
-                        students: item.students || [],
-                        curriculum: parseCurriculum(item)
-                    }));
 
-                    // 1. 완료된 교육 수
-                    const completedCount = eduData.filter(item => item.status === '완료').length;
-                    document.getElementById('kpiCompletedEdu').innerHTML = `${completedCount}<span>개</span>`;
-
-                    // 2. 모집·진행 중 교육 수 (모집중 + 진행중 합산)
-                    const recruitingCount = eduData.filter(item => item.status === '모집중' || item.status === '진행중').length;
-                    document.getElementById('kpiRecruitingEdu').innerHTML = `${recruitingCount}<span>개</span>`;
-
-                    // 3. 오픈 예정 교육 수
-                    const preparingCount = eduData.filter(item => item.status === '준비중').length;
-                    document.getElementById('kpiPreparingEdu').innerHTML = `${preparingCount}<span>개</span>`;
-                }
-
-                // 2. 통합 교육 참여자 LIST 파싱
-                if (data.totalCompleterData && data.totalCompleterData.length > 0) {
-                    totalCompleterData = data.totalCompleterData.map(item => ({
-                        ...item,
-                        joinedCount: Number(item.joinedCount) || 0,
-                        completedCount: Number(item.completedCount) || 0,
-                        courses: item.courses ? String(item.courses).split(',').map(c => c.trim()) : []
-                    }));
-
-                    document.getElementById('kpiTotalCompleter').innerHTML = `${totalCompleterData.length}<span>명+</span>`;
-                }
-
+                applyFetchedData(data);
                 applyFilters();
                 restoreInitialRoute();
             } catch (error) {
                 console.error("구글 시트 데이터 로드 실패:", error);
-                document.getElementById('sectionsContainer').innerHTML = `<div style="text-align:center; padding: 60px 0; color: #dc2f02; font-size: 13px;">데이터를 불러오는 중 오류가 발생했습니다. 데이터 권한 및 인터넷 연결을 확인해 주세요.</div>`;
+                showLoadError(error);
             }
+        }
+
+        // ❗ 로딩 실패 시 원인별 안내 + 다시 시도 버튼 (무한 로딩 대신 항상 뭔가 보이도록)
+        function showLoadError(error) {
+            let message;
+
+            if (error && error.name === 'AbortError') {
+                message = '데이터를 불러오는 데 시간이 너무 오래 걸리고 있어요.<br>잠시 후 다시 시도해 주세요.';
+            } else if (error && String(error.message).indexOf('HTTP 404') !== -1) {
+                message = '데이터 주소를 찾을 수 없습니다. (404)<br>구글 앱스 스크립트 배포 URL이 변경되었을 수 있어요.';
+            } else if (error && String(error.message).indexOf('HTTP 403') !== -1) {
+                message = '데이터에 접근할 권한이 없습니다. (403)<br>앱스 스크립트 배포의 액세스 권한 설정을 확인해 주세요.';
+            } else {
+                message = '데이터를 불러오지 못했습니다.<br>네트워크 상태 또는 데이터 접근 권한을 확인해 주세요.';
+            }
+
+            document.getElementById('sectionsContainer').innerHTML = `
+                <div style="text-align:center; padding: 60px 20px; color: #4b5563; font-size: 13px; line-height:1.7;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size:26px; color:var(--primary-vivid); display:block; margin-bottom:14px;"></i>
+                    ${message}
+                    <div style="margin-top:18px;">
+                        <button onclick="retryFetch()" style="background:#111827; color:#fff; border:none; padding:9px 18px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer;">
+                            <i class="fa-solid fa-rotate-right" style="margin-right:6px;"></i> 다시 시도
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function retryFetch() {
+            document.getElementById('sectionsContainer').innerHTML = `
+                <div class="loading-box">
+                    <i class="fa-solid fa-circle-notch"></i>
+                    Loading...
+                </div>
+            `;
+            fetchSheetData();
         }
 
         // 🔄 정렬 상태 변수 (기본값: 이름 오름차순)
@@ -997,26 +1055,28 @@
             if (item.students && item.students.length > 0) {
                 detStudentCount.innerText = `${item.students.length}명`;
 
-                item.students.forEach((s, idx) => {
+                // ⚡ 성능 개선: 반복문 안에서 innerHTML +=(누적)을 하면 매번 표 전체를 다시
+                // 그리게 되어 인원이 많을수록 느려짐. 문자열을 다 만든 뒤 한 번만 반영.
+                const studentRowsHtml = item.students.map((s, idx) => {
                     let pillStyle = 'pass';
                     let pillText = '✅ 수료';
 
-                    if (s.status === '우수수료' || s.status === '우수 수료') { 
-                        pillStyle = 'best'; 
-                        pillText = '🥇 우수 수료'; 
-                    } else if (s.status === '미수료') { 
-                        pillStyle = 'fail'; 
-                        pillText = '❌ 미수료'; 
-                    } else if (s.status === '진행중' || s.status === '수강중' || s.status === '수료예정') { 
+                    if (s.status === '우수수료' || s.status === '우수 수료') {
+                        pillStyle = 'best';
+                        pillText = '🥇 우수 수료';
+                    } else if (s.status === '미수료') {
+                        pillStyle = 'fail';
+                        pillText = '❌ 미수료';
+                    } else if (s.status === '진행중' || s.status === '수강중' || s.status === '수료예정') {
                         // 🔵 진행중/수강중 상태 처리
-                        pillStyle = 'ongoing'; 
-                        pillText = '🔵 진행중'; 
+                        pillStyle = 'ongoing';
+                        pillText = '🔵 진행중';
                     } else if (!s.status || s.status === '-') {
                         pillStyle = 'fail';
                         pillText = '-';
                     }
 
-                    detStudentBody.innerHTML += `
+                    return `
                         <tr>
                             <td style="text-align: center; color: #9ca3af; font-weight: 600;">${idx + 1}</td>
                             <td style="text-align: center; font-weight: 700;">${s.name}</td>
@@ -1024,7 +1084,9 @@
                             <td style="text-align: center;"><span class="status-pill ${pillStyle}">${pillText}</span></td>
                         </tr>
                     `;
-                });
+                }).join('');
+
+                detStudentBody.innerHTML = studentRowsHtml;
             } else {
                 detStudentCount.innerText = `0명`;
                 detStudentBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#999; padding:20px;">수료자 데이터가 없거나 준비 중인 교육입니다.</td></tr>`;
@@ -1080,7 +1142,10 @@
             const filtered = eduData.filter(item => {
                 const matchCat = (selectedCategory === '전체') || (item.category === selectedCategory);
                 const matchStatus = (selectedStatus === '전체') || (item.status === selectedStatus);
-                const matchSearch = item.name.toLowerCase().includes(searchText) || item.target.toLowerCase().includes(searchText);
+                // 시트에 빈 칸이 있어도 오류로 페이지 전체가 멈추지 않도록 방어
+                const name = String(item.name || '').toLowerCase();
+                const target = String(item.target || '').toLowerCase();
+                const matchSearch = name.includes(searchText) || target.includes(searchText);
                 return matchCat && matchStatus && matchSearch;
             });
             renderSections(filtered);
@@ -1175,20 +1240,22 @@
                 return;
             }
 
-            tbody.innerHTML = '';
-            list.forEach(c => {
+            // ⚡ 성능 개선: forEach 안에서 innerHTML +=(누적)을 하면 매번 표 전체를
+            // 다시 그리게 되어 참여자 수가 많아질수록 체감 속도가 눈에 띄게 느려짐.
+            // 문자열을 다 만든 뒤 DOM에는 딱 한 번만 반영하도록 변경.
+            const rowsHtml = list.map(c => {
                 const courseChipsHtml = c.courses.map(courseName => `<span class="course-chip">${courseName}</span>`).join('');
-                
+
                 let bestBadgeHtml = `<span style="color:#aaa;">-</span>`;
                 const awardCount = Number(c.bestAward);
-                
+
                 if (!isNaN(awardCount) && awardCount > 0) {
                     bestBadgeHtml = `<span class="status-pill best">🥇 ${awardCount}회 우수</span>`;
                 } else if (typeof c.bestAward === 'string' && c.bestAward.includes('우수')) {
                     bestBadgeHtml = `<span class="status-pill best">${c.bestAward}</span>`;
                 }
 
-                tbody.innerHTML += `
+                return `
                     <tr>
                         <td style="text-align:center;">${c.name}</td>
                         <td class="col-dept" style="color:#555;">${c.dept}</td>
@@ -1198,7 +1265,9 @@
                         <td><div class="course-tag-list">${courseChipsHtml}</div></td>
                     </tr>
                 `;
-            });
+            }).join('');
+
+            tbody.innerHTML = rowsHtml;
         }
 
         function filterCompleterTable() {
@@ -1211,9 +1280,10 @@
             }
 
             const filtered = totalCompleterData.filter(c => {
-                const nameMatch = c.name.toLowerCase().includes(query);
-                const deptMatch = c.dept.toLowerCase().includes(query);
-                const courseMatch = c.courses.some(crs => crs.toLowerCase().includes(query));
+                // 시트에 빈 칸이 있어도 검색이 오류로 멈추지 않도록 방어
+                const nameMatch = String(c.name || '').toLowerCase().includes(query);
+                const deptMatch = String(c.dept || '').toLowerCase().includes(query);
+                const courseMatch = (c.courses || []).some(crs => String(crs || '').toLowerCase().includes(query));
 
                 if (filterType === 'name') return nameMatch;
                 if (filterType === 'dept') return deptMatch;
