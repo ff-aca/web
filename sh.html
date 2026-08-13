@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영업 권역 및 세부 동/구 단위 지도 Visualizer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        * { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        
+        #map {
+            width: 100%;
+            height: calc(100vh - 72px);
+            z-index: 1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .dong-marker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.8);
+            transition: all 0.2s ease;
+        }
+        .dong-marker:hover {
+            transform: scale(1.2);
+            z-index: 1000 !important;
+        }
+
+        .distance-badge {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 overflow-hidden">
+
+    <!-- Navigation Bar -->
+    <header class="h-18 bg-slate-900 border-b border-slate-800 px-5 py-3 flex items-center justify-between relative z-10">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-layer-group text-lg text-white"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-base font-bold text-white">영업 권역 & 세부 동/구 분석 지도</h1>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">동단위 정밀분석</span>
+                </div>
+                <p class="text-xs text-slate-400">출발지: 동탄초등학교 (경기 화성시 동탄감배산로 26)</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <!-- Mode Toggle Switch -->
+            <div class="bg-slate-800 p-1 rounded-lg border border-slate-700 flex items-center gap-1 text-xs">
+                <button id="btn-view-all" onclick="setLayerMode('all')" class="px-3 py-1.5 rounded-md font-medium text-white bg-slate-700 transition">전체 표시</button>
+                <button id="btn-view-polygon" onclick="setLayerMode('polygon')" class="px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition">권역별 면적</button>
+                <button id="btn-view-dong" onclick="setLayerMode('dong')" class="px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition">세부 동 핀만 보기</button>
+            </div>
+
+            <button onclick="resetMapView()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-compress text-indigo-400"></i> 전체보기
+            </button>
+            <button onclick="focusStartPoint()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
+                <i class="fa-solid fa-school"></i> 출발지(동탄초)
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="flex h-[calc(100vh-72px)] relative">
+        <!-- Interactive Map Container -->
+        <div id="map" class="flex-1 bg-slate-950"></div>
+
+        <!-- Right Control Panel Sidebar -->
+        <aside class="w-96 bg-slate-900/95 backdrop-blur-md border-l border-slate-800 p-4 overflow-y-auto custom-scrollbar flex flex-col z-10 shadow-2xl">
+            
+            <!-- Search & Filter Box -->
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex justify-between">
+                    <span>세부 동/구 검색</span>
+                    <span id="search-count" class="text-indigo-400 font-normal">총 48개 세부지역</span>
+                </label>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                    <input type="text" id="dong-search" oninput="filterDongList()" placeholder="예: 영통동, 망포동, 화서동, 향남, 처인구..." 
+                           class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+                </div>
+            </div>
+
+            <!-- Distance Ring Filter Toggle -->
+            <div class="mb-4 p-3 bg-slate-800/60 border border-slate-700/60 rounded-xl">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-bullseye text-rose-400"></i> 동탄초 기준 거리 반경 (반경 원)
+                    </span>
+                    <button onclick="toggleDistanceRings()" id="btn-ring-toggle" class="text-[11px] px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded hover:bg-rose-500/30">ON</button>
+                </div>
+                <div class="grid grid-cols-4 gap-1 text-[11px] text-center">
+                    <div class="p-1 bg-slate-800 rounded border border-rose-500/30 text-rose-300">5km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-amber-500/30 text-amber-300">10km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-indigo-500/30 text-indigo-300">20km 이내</div>
+                    <div class="p-1 bg-slate-800 rounded border border-slate-600 text-slate-400">30km+</div>
+                </div>
+            </div>
+
+            <!-- Selected Location Detail Info Card (Appears when clicked) -->
+            <div id="detail-info-card" class="mb-4 p-3.5 bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 rounded-xl hidden transition-all">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span id="detail-region-badge" class="text-[10px] px-2 py-0.5 font-bold rounded bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">2지역 (영통/화성동부)</span>
+                    <button onclick="closeDetailCard()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <h3 id="detail-dong-name" class="text-base font-bold text-white mb-1">영통구 영통동</h3>
+                <div class="grid grid-cols-2 gap-2 my-2.5">
+                    <div class="p-2 bg-slate-800/80 rounded-lg text-center">
+                        <div class="text-[10px] text-slate-400">동탄초 직선거리</div>
+                        <div id="detail-distance" class="text-sm font-bold text-indigo-400">약 7.2 km</div>
+                    </div>
+                    <div class="p-2 bg-slate-800/80 rounded-lg text-center">
+                        <div class="text-[10px] text-slate-400">예상 차 이동시간</div>
+                        <div id="detail-time" class="text-sm font-bold text-emerald-400">약 15분</div>
+                    </div>
+                </div>
+                <p id="detail-desc" class="text-xs text-slate-300 leading-relaxed">아파트 단지 밀집도가 매우 높아 하루 10곳 자차 순회 영업에 최적인 핵심 지역입니다.</p>
+                <div id="detail-tags" class="mt-2.5 flex flex-wrap gap-1">
+                    <span class="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded">주차 수월</span>
+                    <span class="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-300 rounded">아파트 밀집</span>
+                </div>
+            </div>
+
+            <!-- Region Cards Accordion & Dong Lists -->
+            <div class="space-y-3 flex-1 overflow-y-auto custom-scrollbar pr-1">
+                
+                <!-- Region 1 -->
+                <div class="bg-slate-800/50 border border-indigo-500/30 rounded-xl overflow-hidden">
+                    <div class="p-3 bg-indigo-950/40 flex items-center justify-between cursor-pointer hover:bg-indigo-900/40" onclick="toggleRegionCollapse('r1')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+                            <span class="text-xs font-bold text-white">1지역: 수원 (권선/장안/팔달 세부동)</span>
+                        </div>
+                        <i id="arrow-r1" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </div>
+                    <div id="list-r1" class="p-2.5 grid grid-cols-2 gap-1.5 text-xs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Region 2 -->
+                <div class="bg-slate-800/50 border border-emerald-500/40 rounded-xl overflow-hidden">
+                    <div class="p-3 bg-emerald-950/40 flex items-center justify-between cursor-pointer hover:bg-emerald-900/40" onclick="toggleRegionCollapse('r2')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-bold text-emerald-300">2지역: 영통 / 화성 동부 (추천 ⭐)</span>
+                        </div>
+                        <i id="arrow-r2" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </div>
+                    <div id="list-r2" class="p-2.5 grid grid-cols-2 gap-1.5 text-xs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Region 3 -->
+                <div class="bg-slate-800/50 border border-amber-500/30 rounded-xl overflow-hidden">
+                    <div class="p-3 bg-amber-950/40 flex items-center justify-between cursor-pointer hover:bg-amber-900/40" onclick="toggleRegionCollapse('r3')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span class="text-xs font-bold text-amber-300">3지역: 용인 (기흥/처인 세부동)</span>
+                        </div>
+                        <i id="arrow-r3" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </div>
+                    <div id="list-r3" class="p-2.5 grid grid-cols-2 gap-1.5 text-xs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Region 4 -->
+                <div class="bg-slate-800/50 border border-rose-500/30 rounded-xl overflow-hidden">
+                    <div class="p-3 bg-rose-950/40 flex items-center justify-between cursor-pointer hover:bg-rose-900/40" onclick="toggleRegionCollapse('r4')">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                            <span class="text-xs font-bold text-rose-300">4지역: 화성 서남부 / 오산</span>
+                        </div>
+                        <i id="arrow-r4" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+                    </div>
+                    <div id="list-r4" class="p-2.5 grid grid-cols-2 gap-1.5 text-xs">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recommendation Tip Footer -->
+            <div class="mt-4 p-3 bg-indigo-950/80 border border-indigo-500/30 rounded-xl text-xs text-slate-300">
+                <div class="font-bold text-indigo-300 mb-1"><i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> 영업동선 핵심 팁</div>
+                <p class="leading-relaxed text-[11px] text-slate-400">
+                    동탄초 기준 **10km 반경(주황색 원)** 내에 포함되는 **2지역(영통, 망포, 매탄, 반송, 능동, 진안 등)**이 하루 10곳 자차 이동 시 주행거리 최소화 및 주차 시간 절약에 압도적으로 유리합니다.
+                </p>
+            </div>
+
+        </aside>
+    </div>
+
+    <script>
+        // Start point: Dongtan Elementary School
+        const startPoint = {
+            lat: 37.1994,
+            lng: 127.0963,
+            title: "동탄초등학교",
+            address: "경기 화성시 동탄구 동탄감배산로 26"
+        };
+
+        // Comprehensive Dataset for all Dong and Gu mentioned in user prompt
+        const dongDataset = [
+            // Region 1: Suwon (Gwonseon, Jangan, Paldal old town)
+            { id: "r1_1", region: "r1", regionName: "1지역(수원)", name: "수원 권선구(권선동)", lat: 37.257, lng: 127.025, dist: "8.5km", time: "18분", parking: "보통", density: "높음", desc: "권선동/곡반정동 일대. 동탄에서 접근성 양호하나 퇴근시간 1번국도 정체." },
+            { id: "r1_2", region: "r1", regionName: "1지역(수원)", name: "수원 권선구(구운동/탑동)", lat: 37.281, lng: 126.971, dist: "14.2km", time: "28분", parking: "어려움", density: "보통", desc: "서수원 버스터미널 및 구도심 주택가 밀집." },
+            { id: "r1_3", region: "r1", regionName: "1지역(수원)", name: "수원 장안구(정자동)", lat: 37.301, lng: 126.991, dist: "16.5km", time: "30분", parking: "보통", density: "높음", desc: "대규모 아파트 단지 형성, 이동 거리가 다소 길어짐." },
+            { id: "r1_4", region: "r1", regionName: "1지역(수원)", name: "수원 장안구(조원동/파장동)", lat: 37.315, lng: 127.012, dist: "17.8km", time: "32분", parking: "보통", density: "보통", desc: "북수원 외곽 지역으로 동탄 출발 시 이동 소요시간 증가." },
+            { id: "r1_5", region: "r1", regionName: "1지역(수원)", name: "팔달구 고등동/화서동", lat: 37.283, lng: 127.002, dist: "13.5km", time: "26분", parking: "매우 어려움", density: "보통", desc: "구도심 및 재개발 지역. 골목길이 좁고 자차 방문 주차 난이도 최상." },
+            { id: "r1_6", region: "r1", regionName: "1지역(수원)", name: "팔달구 매산동/교동", lat: 37.269, lng: 127.008, dist: "11.8km", time: "24분", parking: "매우 어려움", density: "보통", desc: "수원역 인근 상업 및 구도심 주택지. 주차공간 확보 대단히 어려움." },
+            { id: "r1_7", region: "r1", regionName: "1지역(수원)", name: "팔달구 신풍동/장안동/남창동", lat: 37.284, lng: 127.014, dist: "13.8km", time: "27분", parking: "어려움", density: "낮음", desc: "행궁동/행리단길 주변. 일방통행 및 관광객 차들로 일중 교통 혼잡." },
+
+            // Region 2: Yeongtong & East Hwaseong (RECOMMENDED)
+            { id: "r2_1", region: "r2", regionName: "2지역(영통/화성동부)", name: "영통구 영통동", lat: 37.251, lng: 127.071, dist: "6.8km", time: "14분", parking: "양호", density: "최상", desc: "아파트 밀집지역. 동탄초에서 직통 도로 접근 가능하여 동선 최적." },
+            { id: "r2_2", region: "r2", regionName: "2지역(영통/화성동부)", name: "영통구 망포동", lat: 37.245, lng: 127.058, dist: "5.5km", time: "12분", parking: "양호", density: "최상", desc: "동탄 바로 북단 접경. 차로 10~15분 도착, 순회 영업에 가장 유리." },
+            { id: "r2_3", region: "r2", regionName: "2지역(영통/화성동부)", name: "영통구 매탄동", lat: 37.261, lng: 127.042, dist: "8.2km", time: "16분", parking: "보통", density: "높음", desc: "삼성전자 상가 및 대단지 아파트 구성. 이동 효율우수." },
+            { id: "r2_4", region: "r2", regionName: "2지역(영통/화성동부)", name: "영통구 이의동(광교)", lat: 37.297, lng: 127.048, dist: "12.5km", time: "22분", parking: "양호", density: "높음", desc: "신도시 구역. 주차시설 완비 및 정돈된 도로 망." },
+            { id: "r2_5", region: "r2", regionName: "2지역(영통/화성동부)", name: "영통구 신동", lat: 37.253, lng: 127.049, dist: "7.1km", time: "15분", parking: "양호", density: "보통", desc: "신동 카페거리 및 원룸/아파트 혼합 구역." },
+            { id: "r2_6", region: "r2", regionName: "2지역(영통/화성동부)", name: "화성시 반송동(동탄1)", lat: 37.202, lng: 127.072, dist: "2.3km", time: "5분", parking: "양호", density: "최상", desc: "동탄초 바로 이웃. 출발지와 인접하여 이동시간 거의 제로." },
+            { id: "r2_7", region: "r2", regionName: "2지역(영통/화성동부)", name: "화성시 능동/석우동", lat: 37.215, lng: 127.068, dist: "3.5km", time: "8분", parking: "양호", density: "높음", desc: "서동탄역 및 동탄 산단 인근. 이동 동선 최우수." },
+            { id: "r2_8", region: "r2", regionName: "2지역(영통/화성동부)", name: "화성시 진안동/병점동", lat: 37.213, lng: 127.040, dist: "5.8km", time: "12분", parking: "보통", density: "높음", desc: "병점역 중심 주거지. 이동시간 짧아 방문 효율 뛰어남." },
+            { id: "r2_9", region: "r2", regionName: "2지역(영통/화성동부)", name: "화성시 기산동/반월동", lat: 37.228, lng: 127.062, dist: "4.2km", time: "10분", parking: "양호", density: "높음", desc: "수원 영통과 동탄 사이 위치. 순회 동선 연결선상 최우수." },
+            { id: "r2_10", region: "r2", regionName: "2지역(영통/화성동부)", name: "화성시 봉담읍/기안동", lat: 37.215, lng: 126.955, dist: "13.0km", time: "22분", parking: "보통", density: "보통", desc: "봉담 신도시 및 대학가 주변. 도로망 무난함." },
+
+            // Region 3: Yongin (Giheung & Cheoin)
+            { id: "r3_1", region: "r3", regionName: "3지역(용인)", name: "용인 기흥구(구갈동/신갈동)", lat: 37.275, lng: 127.116, dist: "10.2km", time: "20분", parking: "보통", density: "높음", desc: "신갈IC/동탄기흥IC 타고 빠른 진입 가능." },
+            { id: "r3_2", region: "r3", regionName: "3지역(용인)", name: "용인 기흥구(동백동)", lat: 37.278, lng: 127.152, dist: "14.5km", time: "26분", parking: "양호", density: "높음", desc: "동백 신도시 아파트 단지 밀집." },
+            { id: "r3_3", region: "r3", regionName: "3지역(용인)", name: "용인 기흥구(공세동/고매동)", lat: 37.230, lng: 127.110, dist: "5.2km", time: "11분", parking: "양호", density: "보통", desc: "동탄 북동쪽 바로 인접. 기흥 롯데아울렛 및 주택가." },
+            { id: "r3_4", region: "r3", regionName: "3지역(용인)", name: "용인 처인구(김량장동/역북동)", lat: 37.236, lng: 127.198, dist: "13.8km", time: "25분", parking: "보통", density: "높음", desc: "처인구 중심 시가지. 명지대/용인시청 인근." },
+            { id: "r3_5", region: "r3", regionName: "3지역(용인)", name: "용인 처인구(포곡읍/모현읍)", lat: 37.285, lng: 127.221, dist: "20.5km", time: "35분", parking: "양호", density: "낮음", desc: "에버랜드 주변 및 외곽 마을. 이동 거리 상당함." },
+            { id: "r3_6", region: "r3", regionName: "3지역(용인)", name: "용인 처인구(남사읍/이동읍)", lat: 37.151, lng: 127.158, dist: "12.8km", time: "20분", parking: "양호", density: "보통", desc: "동탄 남동쪽 국도로 바로 이동 가능." },
+            { id: "r3_7", region: "r3", regionName: "3지역(용인)", name: "용인 처인구(양지면/백암면)", lat: 37.231, lng: 127.352, dist: "28.5km", time: "40분", parking: "양호", density: "매우 낮음", desc: "용인 최동단. 매일 순회 방문 시 이동거리 누적 과다." },
+
+            // Region 4: West/South Hwaseong & Osan
+            { id: "r4_1", region: "r4", regionName: "4지역(화성서남부/오산)", name: "오산시(오산동/원동/금암동)", lat: 37.150, lng: 127.070, dist: "6.2km", time: "12분", parking: "보통", density: "높음", desc: "동탄 바로 남쪽 오산 시가지. 이동 거리 짧고 양호." },
+            { id: "r4_2", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성시 동탄2(청계/목/신동/장지)", lat: 37.195, lng: 127.115, dist: "2.1km", time: "5분", parking: "양호", density: "최상", desc: "동탄초 인근 동탄2 신도시 전체. 이동 매우 수월." },
+            { id: "r4_3", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성 향남읍", lat: 37.133, lng: 126.921, dist: "19.5km", time: "32분", parking: "양호", density: "보통", desc: "향남1·2지구 신도시. 동탄에서 서남쪽으로 20km 이동." },
+            { id: "r4_4", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성 남양읍/새솔동", lat: 37.210, lng: 126.820, dist: "26.0km", time: "40분", parking: "양호", density: "보통", desc: "화성시청 위치. 이동거리 길어 매일 10곳 방문 시 피로도 높음." },
+            { id: "r4_5", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성 팔탄면/정남면", lat: 37.160, lng: 126.980, dist: "12.5km", time: "22분", parking: "양호", density: "낮음", desc: "공장 및 주택 혼재 구역." },
+            { id: "r4_6", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성 우정읍/장안면(조암)", lat: 37.081, lng: 126.815, dist: "33.0km", time: "48분", parking: "양호", density: "매우 낮음", desc: "화성 남서쪽 최외곽. 동탄 출발 시 왕복 70km 이상." },
+            { id: "r4_7", region: "r4", regionName: "4지역(화성서남부/오산)", name: "화성 서신면/마도면/송산면", lat: 37.170, lng: 126.730, dist: "34.5km", time: "50분", parking: "양호", density: "매우 낮음", desc: "제부도/궁평항 방향 해안 외곽. 자차 방문 동선 최악." }
+        ];
+
+        // Map initialization
+        const map = L.map('map', { zoomControl: false }).setView([startPoint.lat, startPoint.lng], 11);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // CartoDB Voyager map tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Layer Storage
+        const dongMarkers = [];
+        const polygonLayers = {};
+        let distanceRingsLayerGroup = L.layerGroup().addTo(map);
+        let currentMode = 'all'; // 'all', 'polygon', 'dong'
+        let showRings = true;
+
+        // Colors
+        const regionColors = {
+            r1: '#6366f1', // Indigo
+            r2: '#10b981', // Emerald
+            r3: '#f59e0b', // Amber
+            r4: '#f43f5e'  // Rose
+        };
+
+        // Draw Distance Circles around Dongtan Elementary
+        function drawDistanceRings() {
+            distanceRingsLayerGroup.clearLayers();
+            if (!showRings) return;
+
+            const rings = [
+                { r: 5000, color: '#f43f5e', label: '5km (차 10분내)' },
+                { r: 10000, color: '#f59e0b', label: '10km (차 20분내)' },
+                { r: 20000, color: '#6366f1', label: '20km (차 35분내)' },
+                { r: 35000, color: '#64748b', label: '35km (광역 외곽)' }
+            ];
+
+            rings.forEach(ring => {
+                const circle = L.circle([startPoint.lat, startPoint.lng], {
+                    radius: ring.r,
+                    color: ring.color,
+                    weight: 1.5,
+                    dashArray: '5, 8',
+                    fillColor: ring.color,
+                    fillOpacity: 0.03,
+                    interactive: false
+                }).addTo(distanceRingsLayerGroup);
+            });
+        }
+
+        // Region Polygon Coordinates (Outer boundaries)
+        const polygonData = {
+            r1: [ [37.330, 126.960], [37.320, 127.030], [37.280, 127.020], [37.250, 126.960], [37.280, 126.930] ],
+            r2: [ [37.280, 127.020], [37.295, 127.085], [37.230, 127.090], [37.180, 127.060], [37.180, 127.010], [37.230, 126.980] ],
+            r3: [ [37.310, 127.080], [37.330, 127.280], [37.180, 127.360], [37.080, 127.200], [37.180, 127.090] ],
+            r4: [ [37.220, 126.980], [37.180, 127.010], [37.120, 127.080], [37.050, 127.050], [37.050, 126.750], [37.200, 126.650], [37.270, 126.800] ]
+        };
+
+        Object.keys(polygonData).forEach(key => {
+            const poly = L.polygon(polygonData[key], {
+                color: regionColors[key],
+                weight: 2,
+                opacity: 0.7,
+                fillColor: regionColors[key],
+                fillOpacity: 0.15
+            }).addTo(map);
+
+            polygonLayers[key] = poly;
+        });
+
+        // Create Dong Pins
+        function renderDongMarkers() {
+            dongDataset.forEach(item => {
+                const color = regionColors[item.region];
+                
+                // DivIcon Marker
+                const icon = L.divIcon({
+                    className: 'custom-dong-pin',
+                    html: `<div class="dong-marker" style="background-color: ${color}; width: 28px; height: 28px;">
+                            ${item.name.split(' ').pop().substring(0, 2)}
+                          </div>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+
+                const marker = L.marker([item.lat, item.lng], { icon: icon }).addTo(map);
+
+                marker.bindPopup(`
+                    <div class="p-2 font-sans text-xs">
+                        <span class="text-[10px] font-bold px-1.5 py-0.5 rounded text-white mb-1 inline-block" style="background-color:${color}">
+                            ${item.regionName}
+                        </span>
+                        <h4 class="font-bold text-sm text-slate-800">${item.name}</h4>
+                        <div class="mt-1.5 pt-1.5 border-t border-slate-200 grid grid-cols-2 gap-1 text-[11px] text-slate-600">
+                            <div>거리: <b class="text-slate-800">${item.dist}</b></div>
+                            <div>차 이동: <b class="text-indigo-600">${item.time}</b></div>
+                            <div>주차: <b class="text-slate-800">${item.parking}</b></div>
+                            <div>밀도: <b class="text-slate-800">${item.density}</b></div>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1">${item.desc}</p>
+                    </div>
+                `);
+
+                marker.on('click', () => {
+                    selectDong(item);
+                });
+
+                dongMarkers.push({ data: item, marker: marker });
+            });
+        }
+
+        // Render Sidebar Lists
+        function populateSidebarLists() {
+            ['r1', 'r2', 'r3', 'r4'].forEach(rKey => {
+                const container = document.getElementById(`list-${rKey}`);
+                const items = dongDataset.filter(d => d.region === rKey);
+                
+                container.innerHTML = items.map(d => `
+                    <div onclick='onDongCardClick("${d.id}")' class="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700/60 rounded-lg cursor-pointer transition flex items-center justify-between group">
+                        <span class="font-semibold text-slate-200 group-hover:text-white truncate">${d.name}</span>
+                        <span class="text-[10px] text-indigo-400 font-bold ml-1">${d.time}</span>
+                    </div>
+                `).join('');
+            });
+        }
+
+        // Start Point Marker (Dongtan Elementary)
+        const startIcon = L.divIcon({
+            className: 'custom-start-pin',
+            html: `
+                <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
+                    <div style="background-color: #ef4444; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(239,68,68,0.5); border: 3px solid white;">
+                        <i class="fa-solid fa-school" style="font-size: 18px;"></i>
+                    </div>
+                    <div style="background: rgba(15, 23, 42, 0.95); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 8px; margin-top: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
+                        🚩 출발지: 동탄초
+                    </div>
+                </div>
+            `,
+            iconSize: [100, 65],
+            iconAnchor: [50, 20]
+        });
+
+        const startMarker = L.marker([startPoint.lat, startPoint.lng], { icon: startIcon, zIndexOffset: 2000 }).addTo(map);
+        startMarker.bindPopup(`
+            <div class="p-2 font-sans">
+                <span class="text-xs font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded">출발점</span>
+                <h3 class="font-bold text-sm text-slate-800 mt-1">${startPoint.title}</h3>
+                <p class="text-xs text-slate-600 mt-0.5">${startPoint.address}</p>
+                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 하루 10곳 자차 방문 영업 기준점</div>
+            </div>
+        `);
+
+        // Select & Focus Dong
+        function selectDong(item) {
+            map.setView([item.lat, item.lng], 13);
+            
+            // Show Detail Card
+            const card = document.getElementById('detail-info-card');
+            card.classList.remove('hidden');
+
+            document.getElementById('detail-dong-name').innerText = item.name;
+            document.getElementById('detail-distance').innerText = item.dist;
+            document.getElementById('detail-time').innerText = item.time;
+            document.getElementById('detail-desc').innerText = item.desc;
+
+            const badge = document.getElementById('detail-region-badge');
+            badge.innerText = item.regionName;
+            badge.style.backgroundColor = `${regionColors[item.region]}40`;
+            badge.style.borderColor = regionColors[item.region];
+            badge.style.color = '#ffffff';
+
+            document.getElementById('detail-tags').innerHTML = `
+                <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">주차: ${item.parking}</span>
+                <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">고객밀도: ${item.density}</span>
+            `;
+
+            // Open Popup
+            const targetMarker = dongMarkers.find(m => m.data.id === item.id);
+            if (targetMarker) targetMarker.marker.openPopup();
+        }
+
+        function onDongCardClick(id) {
+            const target = dongDataset.find(d => d.id === id);
+            if (target) selectDong(target);
+        }
+
+        function closeDetailCard() {
+            document.getElementById('detail-info-card').classList.add('hidden');
+        }
+
+        // Search Filter
+        function filterDongList() {
+            const query = document.getElementById('dong-search').value.trim().toLowerCase();
+            let count = 0;
+
+            dongMarkers.forEach(m => {
+                const match = m.data.name.toLowerCase().includes(query) || m.data.regionName.toLowerCase().includes(query);
+                if (match) {
+                    if (currentMode !== 'polygon') m.marker.addTo(map);
+                    count++;
+                } else {
+                    map.removeLayer(m.marker);
+                }
+            });
+
+            document.getElementById('search-count').innerText = `검색결과: ${count}개`;
+        }
+
+        // Toggle Distance Rings
+        function toggleDistanceRings() {
+            showRings = !showRings;
+            const btn = document.getElementById('btn-ring-toggle');
+            if (showRings) {
+                btn.innerText = 'ON';
+                btn.className = 'text-[11px] px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded hover:bg-rose-500/30';
+            } else {
+                btn.innerText = 'OFF';
+                btn.className = 'text-[11px] px-2 py-0.5 bg-slate-700 text-slate-400 border border-slate-600 rounded';
+            }
+            drawDistanceRings();
+        }
+
+        // Set Layer View Mode
+        function setLayerMode(mode) {
+            currentMode = mode;
+            
+            // Buttons UI
+            ['all', 'polygon', 'dong'].forEach(m => {
+                const btn = document.getElementById(`btn-view-${m}`);
+                if (m === mode) {
+                    btn.className = "px-3 py-1.5 rounded-md font-medium text-white bg-slate-700 transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white transition";
+                }
+            });
+
+            // Toggle Polygons
+            Object.keys(polygonLayers).forEach(k => {
+                if (mode === 'dong') {
+                    map.removeLayer(polygonLayers[k]);
+                } else {
+                    polygonLayers[k].addTo(map);
+                }
+            });
+
+            // Toggle Dong Markers
+            dongMarkers.forEach(m => {
+                if (mode === 'polygon') {
+                    map.removeLayer(m.marker);
+                } else {
+                    m.marker.addTo(map);
+                }
+            });
+        }
+
+        // Collapse Accordion
+        function toggleRegionCollapse(rKey) {
+            const list = document.getElementById(`list-${rKey}`);
+            const arrow = document.getElementById(`arrow-${rKey}`);
+            if (list.classList.contains('hidden')) {
+                list.classList.remove('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                list.classList.add('hidden');
+                arrow.style.transform = 'rotate(-90deg)';
+            }
+        }
+
+        // Reset View
+        function resetMapView() {
+            map.setView([37.210, 127.060], 11);
+            closeDetailCard();
+        }
+
+        // Focus Start Point
+        function focusStartPoint() {
+            map.setView([startPoint.lat, startPoint.lng], 13);
+            startMarker.openPopup();
+        }
+
+        // Initialize Map Content
+        drawDistanceRings();
+        renderDongMarkers();
+        populateSidebarLists();
+        resetMapView();
+    </script>
+</body>
+</html>
