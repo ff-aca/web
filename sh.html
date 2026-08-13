@@ -300,10 +300,10 @@
             backdrop.classList.add('hidden');
         }
 
-        // Start point: Dongtan Elementary School
+        // Start point: Dongtan Elementary School (Corrected GPS: West of DongtanGiheung-ro)
         const startPoint = {
-            lat: 37.1994,
-            lng: 127.0963,
+            lat: 37.1891,
+            lng: 127.0913,
             title: "동탄초등학교",
             address: "경기 화성시 동탄구 동탄감배산로 26"
         };
@@ -520,7 +520,7 @@
                 <span class="text-xs font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded">출발점</span>
                 <h3 class="font-bold text-sm text-slate-800 mt-1">${startPoint.title}</h3>
                 <p class="text-xs text-slate-600 mt-0.5">${startPoint.address}</p>
-                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 GPS: 37.1994, 127.0963</div>
+                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 정밀 GPS: 37.1891, 127.0913 (동탄기흥로 서측)</div>
             </div>
         `);
 
@@ -653,4 +653,3 @@
     </script>
 </body>
 </html>
-```
