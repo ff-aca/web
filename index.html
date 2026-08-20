@@ -4,7 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>패파아카데미 자료실</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- ⚡ 접속 준비(DNS·연결)를 미리 시작해 첫 요청 대기 시간을 줄임 -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://script.google.com" crossorigin>
+    <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+
+    <!-- ⚡ 아이콘 폰트를 '화면 그리기를 막지 않는' 방식으로 불러옴 (첫 화면이 더 빨리 뜸) -->
+    <link rel="preload" as="style"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          onload="this.onload=null; this.rel='stylesheet';">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    </noscript>
+
     <style>
         :root {
             /* 🍊 비비드 오렌지 포인트 & 🩶 모던 쿨그레이 */
@@ -155,6 +168,14 @@
 
         .course-tag-list { display: flex; gap: 6px; flex-wrap: wrap; }
         .course-chip { background: #f3f4f6; padding: 3px 9px; border-radius: 6px; font-size: 11px; color: #4b5563; font-weight: 500; white-space: nowrap; }
+
+        /* ⏳ 스켈레톤 로딩 (빈 화면 대신 카드 자리를 미리 보여줌) */
+        .sk-track-head { margin: 44px 0 20px 0; }
+        .sk-line { background: linear-gradient(90deg, #f1f3f5 25%, #e7eaee 37%, #f1f3f5 63%); background-size: 400% 100%; animation: skshimmer 1.4s ease infinite; border-radius: 6px; }
+        @keyframes skshimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+        .sk-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 18px; padding: 22px 20px 18px 20px; }
+        .sk-card-top { display: flex; justify-content: space-between; margin-bottom: 16px; }
 
         /* ⏳ 로딩 인디케이터 스타일 */
         .loading-box { text-align: center; padding: 80px 0; color: #6b7280; font-size: 14px; font-weight: 600; }
@@ -308,15 +329,65 @@
         /* 📱 모바일 스크롤 힌트 (가로 스크롤이 필요한 표 위에 표시) */
         .mobile-scroll-hint { display: none; }
 
+        /* ============================================
+           📁 교육 자료 모아보기 / 📸 교육 후기 사진 모아보기
+           ============================================ */
+        #materialsPage, #photosPage { display: none; padding-top: 12px; }
+
+        /* 페이지 상단 안내 영역 */
+        .archive-head { margin: 4px 0 22px 0; }
+        .archive-sub { font-size: 12px; font-weight: 800; color: var(--primary-vivid); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+        .archive-title { font-size: 24px; font-weight: 900; color: #111827; letter-spacing: -0.6px; margin-bottom: 8px; }
+        .archive-desc { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+        .archive-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+        .archive-count { font-size: 13px; font-weight: 700; color: #6b7280; }
+        .archive-count b { color: var(--primary-vivid); }
+
+        /* 교육별 그룹 카드 */
+        .archive-group { background: #fff; border: 1px solid var(--border-color); border-radius: 18px; padding: 24px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .archive-group-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid #f3f4f6; }
+        .archive-group-titlewrap { display: flex; flex-direction: column; gap: 5px; }
+        .archive-group-track { font-size: 11px; font-weight: 800; color: var(--primary-vivid); letter-spacing: 1px; }
+        .archive-group-title { font-size: 17px; font-weight: 800; color: #111827; letter-spacing: -0.3px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+        .archive-group-title:hover { color: var(--primary-vivid); }
+        .archive-group-title i { font-size: 11px; opacity: 0.6; }
+        .archive-group-meta { font-size: 12px; color: #9ca3af; font-weight: 500; }
+
+        /* 자료 링크 목록 */
+        .material-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+        .material-item { display: flex; align-items: center; gap: 11px; padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 11px; text-decoration: none; background: #fff; transition: 0.15s; }
+        .material-item:hover { border-color: var(--primary-vivid); background: #fffaf8; transform: translateY(-1px); }
+        .material-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+        .material-icon.session { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+        .material-icon.recruit { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .material-icon.landing { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .material-body { display: block; min-width: 0; flex: 1; }
+        .material-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .material-sub { display: block; font-size: 11px; color: #9ca3af; font-weight: 500; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .material-item > i.go { font-size: 11px; color: #d1d5db; flex-shrink: 0; }
+        .material-item:hover > i.go { color: var(--primary-vivid); }
+
+        /* 사진 그룹 갤러리 */
+        .archive-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+        .archive-photo-grid a { display: block; line-height: 0; }
+        .archive-photo-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 11px; border: 1px solid var(--border-color); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; background: #f3f4f6; }
+        .archive-photo-grid img:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+
+        /* 비어있을 때 */
+        .archive-empty { text-align: center; padding: 70px 20px; color: #9ca3af; font-size: 13px; line-height: 1.7; }
+        .archive-empty i { font-size: 30px; color: #e5e7eb; display: block; margin-bottom: 14px; }
+
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             header { padding: 10px 0; }
 
-            /* 헤더: 로고와 내비게이션이 한 줄에서 서로 텍스트를 밀어내며 이상하게 줄바꿈되는 문제 수정 */
+            /* 헤더: 로고와 내비게이션이 한 줄에서 서로 텍스트를 밀어내며 이상하게 줄바꿈되는 문제 수정.
+               메뉴가 4개라 모바일에서는 2×2 격자로 배치 */
             .header-content { flex-wrap: wrap; row-gap: 10px; }
             .logo { font-size: 16px; white-space: nowrap; }
-            .nav-links { width: 100%; }
-            .nav-btn { flex: 1; justify-content: center; padding: 8px 6px; font-size: 12px; white-space: nowrap; }
+            .nav-links { width: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .nav-btn { justify-content: center; padding: 8px 6px; font-size: 12px; white-space: nowrap; border: 1px solid var(--border-color); }
             .portfolio-hero { padding: 24px 20px; margin: 16px 0 24px 0; border-radius: 18px; }
             .hero-title { font-size: 22px; }
             .hero-desc { font-size: 13px; margin-bottom: 24px; }
@@ -359,6 +430,14 @@
             #detCurriculum table.completer-table th:nth-child(6),
             #detCurriculum table.completer-table td:nth-child(6) { width: 120px !important; }
 
+            /* 자료/사진 모아보기 페이지 모바일 대응 */
+            .archive-title { font-size: 20px; }
+            .archive-group { padding: 18px 16px; border-radius: 14px; }
+            .archive-group-title { font-size: 15px; }
+            .material-list { grid-template-columns: 1fr; }
+            .archive-photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .archive-photo-grid img { height: 120px; }
+
             /* 가로 스크롤이 필요한 표 위에 안내 문구 표시 */
             .mobile-scroll-hint {
                 display: flex;
@@ -384,6 +463,12 @@
             <nav class="nav-links">
                 <button class="nav-btn active" id="btnNavMain" onclick="switchView('main')">
                     <i class="fa-solid fa-book-open"></i> 교육 프로그램
+                </button>
+                <button class="nav-btn" id="btnNavMaterials" onclick="switchView('materials')">
+                    <i class="fa-solid fa-folder-open"></i> 교육 자료
+                </button>
+                <button class="nav-btn" id="btnNavPhotos" onclick="switchView('photos')">
+                    <i class="fa-solid fa-camera"></i> 교육 후기 사진
                 </button>
                 <button class="nav-btn" id="btnNavCompleter" onclick="switchView('completer')">
                     <i class="fa-solid fa-award"></i> 교육 참여자 LIST
@@ -447,13 +532,48 @@
                 </div>
             </div>
 
-            <!-- 데이터 로딩 인디케이터 컨테이너 -->
-            <div id="sectionsContainer">
-                <div class="loading-box">
-                    <i class="fa-solid fa-circle-notch"></i>
-                    Loading...
+            <!-- 데이터 로딩 인디케이터 컨테이너 (실제 화면과 같은 모양의 스켈레톤) -->
+            <div id="sectionsContainer"></div>
+        </div>
+
+
+        <!-- 📁 교육 자료 모아보기 페이지 -->
+        <div id="materialsPage">
+            <div class="archive-head">
+                <div class="archive-sub">ALL MATERIALS</div>
+                <h1 class="archive-title">교육 자료 모아보기</h1>
+                <p class="archive-desc">
+                    지금까지 진행한 모든 교육의 회차별 강의 자료와 모집 공고·교육장 링크를 한 곳에 모았습니다.
+                </p>
+            </div>
+
+            <div class="archive-toolbar">
+                <div class="archive-count" id="materialsCount"></div>
+                <div class="search-bar" style="max-width: 340px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: #9ca3af; margin-top: 2px;"></i>
+                    <input type="text" id="materialsSearchInput" placeholder="교육명 또는 자료 제목 검색..." oninput="renderMaterialsPage()">
                 </div>
             </div>
+
+            <div id="materialsContainer"></div>
+        </div>
+
+
+        <!-- 📸 교육 후기 사진 모아보기 페이지 -->
+        <div id="photosPage">
+            <div class="archive-head">
+                <div class="archive-sub">PHOTO ARCHIVE</div>
+                <h1 class="archive-title">교육 후기 사진 모아보기</h1>
+                <p class="archive-desc">
+                    각 교육의 현장 스케치 사진을 교육별로 모아 볼 수 있습니다. 사진을 누르면 원본이 열려요.
+                </p>
+            </div>
+
+            <div class="archive-toolbar">
+                <div class="archive-count" id="photosCount"></div>
+            </div>
+
+            <div id="photosContainer"></div>
         </div>
 
 
@@ -589,7 +709,58 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxOwsHnHjGyVWS7Hvm-Kjj7RHghf4AhMDirCt8BaeWIiLb3odWnY32kPwkNS3GqSW4/exec";
+        /* ──────────────────────────────────────────────
+           데이터 불러오는 곳 (2단계)
+
+           1순위: data.json  — 앱스 스크립트가 주기적으로 GitHub에 올려두는 정적 파일.
+                  GitHub Pages(CDN)에서 바로 내려오기 때문에 거의 즉시 로딩됩니다.
+           2순위: API_URL    — 위 파일이 아직 없거나 실패했을 때만 앱스 스크립트를 직접 호출.
+           ────────────────────────────────────────────── */
+        const STATIC_DATA_URL = "./data.json";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxxwvxRZfVjchWAAVe6RBGI55TMbEAxW9iE28YPXCfATYMJtLDN6VnnBmQ7d1IB00i2/exec";
+
+        // ⏳ 데이터가 오기 전에도 빈 화면이 보이지 않도록 실제 카드와 같은 모양의 자리표시를 그림
+        function renderSkeleton() {
+            const skCard = `
+                <div class="sk-card">
+                    <div class="sk-card-top">
+                        <div class="sk-line" style="width:58px; height:12px;"></div>
+                        <div class="sk-line" style="width:54px; height:20px; border-radius:12px;"></div>
+                    </div>
+                    <div class="sk-line" style="width:92%; height:15px; margin-bottom:8px;"></div>
+                    <div class="sk-line" style="width:64%; height:15px; margin-bottom:18px;"></div>
+                    <div style="display:flex; gap:6px; margin-bottom:12px;">
+                        <div class="sk-line" style="width:64px; height:18px;"></div>
+                        <div class="sk-line" style="width:52px; height:18px;"></div>
+                    </div>
+                    <div class="sk-line" style="width:46%; height:12px; margin-bottom:20px;"></div>
+                    <div class="sk-line" style="width:100%; height:1px; margin-bottom:14px;"></div>
+                    <div style="display:flex; justify-content:flex-end;">
+                        <div class="sk-line" style="width:72px; height:12px;"></div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('sectionsContainer').innerHTML = `
+                <section style="margin-bottom:48px;">
+                    <div class="sk-track-head">
+                        <div class="sk-line" style="width:150px; height:11px; margin-bottom:8px;"></div>
+                        <div class="sk-line" style="width:210px; height:20px;"></div>
+                    </div>
+                    <div class="grid">${skCard.repeat(3)}</div>
+                </section>
+                <section>
+                    <div class="sk-track-head" style="margin-top:0;">
+                        <div class="sk-line" style="width:170px; height:11px; margin-bottom:8px;"></div>
+                        <div class="sk-line" style="width:240px; height:20px;"></div>
+                    </div>
+                    <div class="grid">${skCard.repeat(3)}</div>
+                </section>
+            `;
+        }
+
+        // 스크립트가 실행되는 즉시 스켈레톤 표시 (데이터 요청보다 먼저)
+        renderSkeleton();
 
         let eduData = [];
         let totalCompleterData = [];
@@ -674,32 +845,55 @@
         // ⏱️ 응답이 영영 오지 않을 때 로딩 스피너가 무한히 도는 것을 막기 위한 타임아웃
         const FETCH_TIMEOUT_MS = 20000;
 
-        async function fetchSheetData() {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+        // 지정한 시간 안에 응답이 없으면 중단하는 fetch
+        async function fetchJsonWithTimeout(url, timeoutMs) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-                let response;
-                try {
-                    response = await fetch(API_URL, { signal: controller.signal });
-                } finally {
-                    clearTimeout(timeoutId);
-                }
+            try {
+                const response = await fetch(url, { signal: controller.signal });
 
                 // 404/403 등은 fetch가 성공으로 처리하므로 직접 확인해야 함
                 if (!response.ok) {
                     throw new Error('HTTP ' + response.status);
                 }
 
-                const data = await response.json();
-
-                applyFetchedData(data);
-                applyFilters();
-                restoreInitialRoute();
-            } catch (error) {
-                console.error("구글 시트 데이터 로드 실패:", error);
-                showLoadError(error);
+                return await response.json();
+            } finally {
+                clearTimeout(timeoutId);
             }
+        }
+
+        async function fetchSheetData() {
+            let data = null;
+            let lastError = null;
+
+            // 1순위: GitHub에 올려둔 정적 데이터 (CDN에서 즉시 응답)
+            try {
+                data = await fetchJsonWithTimeout(STATIC_DATA_URL, 8000);
+            } catch (error) {
+                lastError = error;
+                console.warn('data.json을 불러오지 못해 앱스 스크립트로 대체합니다.', error);
+            }
+
+            // 2순위: 앱스 스크립트 직접 호출 (정적 파일이 아직 없을 때)
+            if (!data) {
+                try {
+                    data = await fetchJsonWithTimeout(API_URL, FETCH_TIMEOUT_MS);
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+
+            if (!data) {
+                console.error("데이터 로드 실패:", lastError);
+                showLoadError(lastError);
+                return;
+            }
+
+            applyFetchedData(data);
+            applyFilters();
+            restoreInitialRoute();
         }
 
         // ❗ 로딩 실패 시 원인별 안내 + 다시 시도 버튼 (무한 로딩 대신 항상 뭔가 보이도록)
@@ -730,12 +924,7 @@
         }
 
         function retryFetch() {
-            document.getElementById('sectionsContainer').innerHTML = `
-                <div class="loading-box">
-                    <i class="fa-solid fa-circle-notch"></i>
-                    Loading...
-                </div>
-            `;
+            renderSkeleton();
             fetchSheetData();
         }
 
@@ -806,16 +995,32 @@
             history.pushState(state, '', hash);
         }
 
+        // 현재 URL 해시를 읽어 화면 상태 객체로 변환
+        function stateFromHash() {
+            const hash = window.location.hash;
+
+            if (hash.startsWith('#detail-')) {
+                const id = Number(hash.replace('#detail-', ''));
+                if (!isNaN(id) && eduData.find(d => d.id === id)) {
+                    return { view: 'detail', id: id };
+                }
+            } else if (hash === '#completer' || hash === '#materials' || hash === '#photos') {
+                return { view: hash.replace('#', '') };
+            }
+
+            return { view: 'main' };
+        }
+
         // popstate(브라우저 뒤로/앞으로가기)나 초기 진입 시, 화면을 실제로 그려주는 공통 함수
         function renderState(state) {
-            if (!state) {
-                switchView('main', true);
-                return;
-            }
-            if (state.view === 'detail') {
-                showDetailPage(state.id, true);
+            // 저장된 상태가 없는 기록(주소창에서 해시를 직접 바꾼 경우 등)은
+            // 무조건 메인으로 보내지 말고 URL 해시를 보고 판단
+            const s = state || stateFromHash();
+
+            if (s.view === 'detail') {
+                showDetailPage(s.id, true);
             } else {
-                switchView(state.view || 'main', true);
+                switchView(s.view || 'main', true);
             }
         }
 
@@ -837,44 +1042,48 @@
 
         // 새로고침/최초 진입 시 URL 해시를 읽어 알맞은 화면으로 복원 + 히스토리 기준점 설정
         function restoreInitialRoute() {
-            const hash = window.location.hash;
-            let state = { view: 'main' };
-
-            if (hash.startsWith('#detail-')) {
-                const id = Number(hash.replace('#detail-', ''));
-                if (!isNaN(id) && eduData.find(d => d.id === id)) {
-                    state = { view: 'detail', id: id };
-                }
-            } else if (hash === '#completer') {
-                state = { view: 'completer' };
-            }
-
-            history.replaceState(state, '', hash || '#main');
+            const state = stateFromHash();
+            history.replaceState(state, '', window.location.hash || '#main');
             renderState(state);
         }
 
+        // 화면 이름 → 해당 페이지 요소 / 상단 메뉴 버튼 연결표
+        const VIEW_MAP = {
+            main:      { page: 'mainPage',      nav: 'btnNavMain' },
+            materials: { page: 'materialsPage', nav: 'btnNavMaterials' },
+            photos:    { page: 'photosPage',    nav: 'btnNavPhotos' },
+            completer: { page: 'completerPage', nav: 'btnNavCompleter' },
+            detail:    { page: 'detailPage',    nav: null }
+        };
+
         function switchView(viewName, fromPopState) {
-            const mainPage = document.getElementById('mainPage');
-            const completerPage = document.getElementById('completerPage');
-            const detailPage = document.getElementById('detailPage');
+            // 모든 페이지 숨기고 메뉴 활성 표시 해제
+            Object.keys(VIEW_MAP).forEach(key => {
+                const el = document.getElementById(VIEW_MAP[key].page);
+                if (el) el.style.display = 'none';
 
-            const btnNavMain = document.getElementById('btnNavMain');
-            const btnNavCompleter = document.getElementById('btnNavCompleter');
+                if (VIEW_MAP[key].nav) {
+                    const btn = document.getElementById(VIEW_MAP[key].nav);
+                    if (btn) btn.classList.remove('active');
+                }
+            });
 
-            mainPage.style.display = 'none';
-            completerPage.style.display = 'none';
-            detailPage.style.display = 'none';
+            const target = VIEW_MAP[viewName] || VIEW_MAP.main;
+            const targetPage = document.getElementById(target.page);
+            if (targetPage) targetPage.style.display = 'block';
 
-            btnNavMain.classList.remove('active');
-            btnNavCompleter.classList.remove('active');
+            if (target.nav) {
+                const btn = document.getElementById(target.nav);
+                if (btn) btn.classList.add('active');
+            }
 
-            if (viewName === 'main') {
-                mainPage.style.display = 'block';
-                btnNavMain.classList.add('active');
-            } else if (viewName === 'completer') {
-                completerPage.style.display = 'block';
-                btnNavCompleter.classList.add('active');
+            // 화면별 데이터 렌더링
+            if (viewName === 'completer') {
                 renderCompleterTable(totalCompleterData);
+            } else if (viewName === 'materials') {
+                renderMaterialsPage();
+            } else if (viewName === 'photos') {
+                renderPhotosPage();
             }
 
             // 뒤로가기로 인한 렌더링이 아니면, 현재 화면 상태를 히스토리에 기록
@@ -1100,7 +1309,7 @@
                 if (photos.length > 0) {
                     photoGallery.innerHTML = photos.map(url => `
                         <a href="${url}" target="_blank" title="원본 사진 보기">
-                            <img src="${url}" class="photo-card" alt="교육 현장 스케치" onerror="this.style.display='none'">
+                            <img src="${url}" class="photo-card" alt="교육 현장 스케치" loading="lazy" onerror="this.style.display='none'">
                         </a>
                     `).join('');
                     photoSection.style.display = 'block';
@@ -1111,8 +1320,17 @@
                 photoSection.style.display = 'none';
             }
 
-            document.getElementById('mainPage').style.display = 'none';
-            document.getElementById('completerPage').style.display = 'none';
+            // 상세 페이지를 열 때는 다른 모든 페이지를 확실히 숨김
+            // (메뉴가 늘어나도 빠짐없이 처리되도록 VIEW_MAP 기준으로 일괄 처리)
+            Object.keys(VIEW_MAP).forEach(key => {
+                const el = document.getElementById(VIEW_MAP[key].page);
+                if (el) el.style.display = 'none';
+
+                if (VIEW_MAP[key].nav) {
+                    const btn = document.getElementById(VIEW_MAP[key].nav);
+                    if (btn) btn.classList.remove('active');
+                }
+            });
             document.getElementById('detailPage').style.display = 'block';
 
             // 뒤로가기로 인한 렌더링이 아니면, 상세 페이지 상태를 히스토리에 기록
@@ -1223,6 +1441,178 @@
             if (container.innerHTML === '') {
                 container.innerHTML = `<div style="text-align:center; padding: 60px 0; color: #888; font-size: 13px;">조건에 맞는 교육 프로그램이 없습니다.</div>`;
             }
+        }
+
+        /* ============================================
+           📁 교육 자료 모아보기 / 📸 교육 후기 사진 모아보기
+           ============================================ */
+
+        // 쉼표 또는 줄바꿈으로 구분된 링크 문자열을 배열로 분리
+        function splitLinks(value) {
+            if (!value || value === '-') return [];
+            return String(value).split(/,|\n/).map(v => v.trim()).filter(v => v.length > 0);
+        }
+
+        // 교육 하나에서 '자료' 항목들을 뽑아 공통 형태로 정리
+        function collectMaterials(item) {
+            const list = [];
+
+            // 1) 회차별 강의 자료
+            (item.detailedCurriculum || []).forEach(row => {
+                const links = splitLinks(row.materialLink);
+                if (links.length === 0) return;
+
+                const sessionName = row.session || row.week || '';
+                const datePart = row.date ? String(row.date) : '';
+                const topic = row.topic || sessionName || '강의 자료';
+
+                links.forEach((url, idx) => {
+                    list.push({
+                        type: 'session',
+                        icon: 'fa-regular fa-file-pdf',
+                        label: links.length > 1 ? `${topic} (자료${idx + 1})` : topic,
+                        sub: [sessionName, datePart].filter(Boolean).join(' · '),
+                        url: url,
+                        search: `${topic} ${sessionName}`
+                    });
+                });
+            });
+
+            // 2) 모집 공고
+            if (item.recruitLink && item.recruitLink !== '-') {
+                list.push({
+                    type: 'recruit',
+                    icon: 'fa-regular fa-paper-plane',
+                    label: '모집 공고',
+                    sub: '모집 안내 페이지',
+                    url: item.recruitLink,
+                    search: '모집 공고'
+                });
+            }
+
+            // 3) 교육장 바로가기
+            if (item.landingLink && item.landingLink !== '-') {
+                list.push({
+                    type: 'landing',
+                    icon: 'fa-solid fa-school',
+                    label: '교육장 바로가기',
+                    sub: '교육 랜딩페이지',
+                    url: item.landingLink,
+                    search: '교육장 랜딩페이지'
+                });
+            }
+
+            return list;
+        }
+
+        // 교육별 그룹 카드의 공통 머리말
+        function archiveGroupHead(item, metaText) {
+            const meta = trackMeta[item.category];
+            return `
+                <div class="archive-group-head">
+                    <div class="archive-group-titlewrap">
+                        <div class="archive-group-track">${meta ? meta.sub : 'TRACK'}</div>
+                        <div class="archive-group-title" onclick="showDetailPage(${item.id})" title="교육 상세 페이지로 이동">
+                            ${item.name || '이름 없는 교육'} <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                    <div class="archive-group-meta">${metaText}</div>
+                </div>
+            `;
+        }
+
+        function renderMaterialsPage() {
+            const container = document.getElementById('materialsContainer');
+            const countEl = document.getElementById('materialsCount');
+            const searchEl = document.getElementById('materialsSearchInput');
+            const query = String(searchEl && searchEl.value || '').toLowerCase().trim();
+
+            let totalCount = 0;
+            let html = '';
+
+            eduData.forEach(item => {
+                let materials = collectMaterials(item);
+                if (materials.length === 0) return;
+
+                const courseName = String(item.name || '');
+
+                // 교육명이 검색어와 맞으면 그 교육의 자료 전체를 보여주고,
+                // 아니면 자료 제목 단위로 걸러서 보여줌
+                if (query && !courseName.toLowerCase().includes(query)) {
+                    materials = materials.filter(m => String(m.search || '').toLowerCase().includes(query));
+                    if (materials.length === 0) return;
+                }
+
+                totalCount += materials.length;
+
+                const metaText = [item.period, `자료 ${materials.length}개`].filter(Boolean).join(' · ');
+
+                html += `
+                    <div class="archive-group">
+                        ${archiveGroupHead(item, metaText)}
+                        <div class="material-list">
+                            ${materials.map(m => `
+                                <a href="${m.url}" target="_blank" class="material-item">
+                                    <span class="material-icon ${m.type}"><i class="${m.icon}"></i></span>
+                                    <span class="material-body">
+                                        <span class="material-label">${m.label}</span>
+                                        ${m.sub ? `<span class="material-sub">${m.sub}</span>` : ''}
+                                    </span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square go"></i>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            countEl.innerHTML = totalCount > 0 ? `총 <b>${totalCount}개</b>의 자료` : '';
+
+            container.innerHTML = html || `
+                <div class="archive-empty">
+                    <i class="fa-regular fa-folder-open"></i>
+                    ${query ? '검색 조건과 일치하는 자료가 없습니다.' : '아직 등록된 교육 자료가 없습니다.<br>커리큘럼 시트에 자료 링크를 추가하면 여기에 표시돼요.'}
+                </div>
+            `;
+        }
+
+        function renderPhotosPage() {
+            const container = document.getElementById('photosContainer');
+            const countEl = document.getElementById('photosCount');
+
+            let totalPhotos = 0;
+            let html = '';
+
+            eduData.forEach(item => {
+                const photos = splitLinks(item.photoLinks);
+                if (photos.length === 0) return;
+
+                totalPhotos += photos.length;
+
+                const metaText = [item.period, `사진 ${photos.length}장`].filter(Boolean).join(' · ');
+
+                html += `
+                    <div class="archive-group">
+                        ${archiveGroupHead(item, metaText)}
+                        <div class="archive-photo-grid">
+                            ${photos.map(url => `
+                                <a href="${url}" target="_blank" title="원본 사진 보기">
+                                    <img src="${url}" alt="${item.name || '교육'} 현장 스케치" loading="lazy" onerror="this.parentNode.style.display='none'">
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            countEl.innerHTML = totalPhotos > 0 ? `총 <b>${totalPhotos}장</b>의 사진` : '';
+
+            container.innerHTML = html || `
+                <div class="archive-empty">
+                    <i class="fa-regular fa-images"></i>
+                    아직 등록된 교육 후기 사진이 없습니다.<br>교육 시트의 사진 링크 항목을 채우면 여기에 표시돼요.
+                </div>
+            `;
         }
 
         function renderCompleterTable(list) {
