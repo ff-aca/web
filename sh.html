@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- STREAMING_CHUNK:Configuring meta tags and page title... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>상헌이 워라밸 절대 지켜 Visualizer</title>
+    <title>상헌이 워라밸 절대 지켜 MAP 🗺️</title>
+
+    <!-- Open Graph (OG) Meta Tags for KakaoTalk / Social Previews -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="상헌이 워라밸 절대 지켜 MAP 🗺️">
+    <meta property="og:description" content="🏠 출발 기준 수원·영통·용인·화성 5개 영업 권역 자차 동선 및 실시간 거리 분석 시각화 지도">
+    <meta property="og:image" content="https://placehold.co/1200x630/0f172a/38bdf8?text=%EC%83%81%ED%97%88%EC%9D%B4+%EC%9B%8C%EB%9D%BC%EB%B0%B8+%EC%A0%88%EB%8C%80+%EC%A7%80%EC%B0%B8+Visualizer">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Leaflet CSS & JS -->
@@ -12,6 +20,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- STREAMING_CHUNK:Styling layout and custom scrollbar... -->
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         * { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
@@ -58,6 +67,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 overflow-hidden flex flex-col h-screen">
 
+    <!-- STREAMING_CHUNK:Rendering navigation header bar... -->
     <!-- Navigation Bar (Responsive for PC & Mobile) -->
     <header class="bg-slate-900 border-b border-slate-800 px-3 sm:px-5 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between relative z-10 gap-2 shrink-0">
         <div class="flex items-center gap-2.5">
@@ -66,12 +76,12 @@
             </div>
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 class="text-xs sm:text-base font-bold text-white leading-tight">상헌이 워라밸 절대 지켜 Visualizer</h1>
+                    <h1 class="text-xs sm:text-base font-bold   text-white leading-tight">상헌이 워라밸 절대 지켜 MAP 🗺️</h1>
                     <span class="text-[9px] sm:text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-semibold flex items-center gap-1">
                         <i class="fa-solid fa-circle-check text-emerald-400"></i> GPS 검증
                     </span>
                 </div>
-                <p class="text-[10px] sm:text-xs text-slate-400 truncate max-w-[200px] sm:max-w-none">출발: 동탄초 (경기 화성시 동탄감배산로 26)</p>
+                <p class="text-[10px] sm:text-xs text-slate-400 truncate max-w-[200px] sm:max-w-none">📍 어느 땅을 먹어볼까 </p>
             </div>
         </div>
 
@@ -87,11 +97,12 @@
                 <i class="fa-solid fa-compress text-indigo-400"></i> <span class="hidden sm:inline">전체</span>
             </button>
             <button onclick="focusStartPoint()" class="p-1.5 sm:px-3 sm:py-1.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1">
-                <i class="fa-solid fa-school"></i> <span class="hidden sm:inline">동탄초</span>
+                <i class="fa-solid fa-house"></i> <span class="hidden sm:inline">집으로</span>
             </button>
         </div>
     </header>
 
+    <!-- STREAMING_CHUNK:Building map and interactive sidebar layout... -->
     <!-- Main Container -->
     <div class="flex-1 flex relative overflow-hidden">
         <!-- Interactive Map Container -->
@@ -129,7 +140,7 @@
             <div class="mb-3 sm:mb-4 p-2.5 sm:p-3 bg-slate-800/60 border border-slate-700/60 rounded-xl">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                        <i class="fa-solid fa-bullseye text-rose-400"></i> 동탄초 기준 반경 원
+                        <i class="fa-solid fa-bullseye text-rose-400"></i> 🏠우리집🏠 기준 반경
                     </span>
                     <button onclick="toggleDistanceRings()" id="btn-ring-toggle" class="text-[11px] px-2 py-0.5 bg-rose-500/20 text-rose-300 border border-rose-500/30 rounded hover:bg-rose-500/30 font-bold">ON</button>
                 </div>
@@ -141,6 +152,7 @@
                 </div>
             </div>
 
+            <!-- STREAMING_CHUNK:Structuring detail info card and accordion items... -->
             <!-- Selected Location Detail Info Card -->
             <div id="detail-info-card" class="mb-3 sm:mb-4 p-3 sm:p-3.5 bg-gradient-to-br from-indigo-950/80 to-slate-900 border border-indigo-500/40 rounded-xl hidden transition-all shadow-xl">
                 <div class="flex items-center justify-between mb-1.5">
@@ -182,7 +194,7 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">1지역: 화성 / 오산</span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">1지역: 화성 지역</span>
                                     <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 font-mono">(계정 19,326개)</span>
@@ -235,7 +247,7 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-emerald-300">2지역: 영통 / 화성동부 ⭐추천</span>
+                                    <span class="text-xs sm:text-sm font-bold text-emerald-300">2지역: 수원 영통 지역 🌟</span>
                                     <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 font-mono">(계정 14,186개)</span>
@@ -282,7 +294,7 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">3지역: 수원 (권선/장안/팔달 일부)</span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">3지역: 수원 지역</span>
                                     <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 font-mono">(계정 14,062개)</span>
@@ -320,7 +332,7 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">4지역: 용인 (기흥/처인)</span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">4지역: 용인 지역</span>
                                     <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 font-mono">(계정 16,795개)</span>
@@ -358,7 +370,7 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shrink-0"></span>
                             <div>
                                 <div class="flex items-center gap-1.5">
-                                    <span class="text-xs sm:text-sm font-bold text-slate-100">5지역: 수지 / 팔달잔여 / 흥덕</span>
+                                    <span class="text-xs sm:text-sm font-bold text-slate-100">5지역: 수지 지역</span>
                                     <span class="text-[9px] px-1.5 py-0.2 bg-slate-700/70 text-slate-300 rounded font-mono whitespace-nowrap shrink-0">지도보기 <i class="fa-solid fa-location-crosshairs text-[8px]"></i></span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 font-mono">(계정 13,490개)</span>
@@ -384,11 +396,12 @@
 
             </div>
 
-            <!-- Min/Max Driving Time Comparison Section (Dedicated Separate Block) -->
+            <!-- STREAMING_CHUNK:Adding Min/Max driving time comparison section... -->
+            <!-- Min/Max Driving Time Comparison Section -->
             <div class="mt-4 p-3.5 bg-slate-800/60 border border-slate-700/70 rounded-xl shadow-xl">
                 <div class="font-bold text-xs sm:text-sm text-slate-200 mb-3 flex items-center justify-between border-b border-slate-700 pb-2">
                     <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-stopwatch text-slate-400"></i> 권역별 동탄초 기준 차 이동시간 (극과 극)
+                        <i class="fa-solid fa-stopwatch text-slate-400"></i> 권역별 우리집 기준 이동시간 🚘
                     </span>
                     <span class="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-mono whitespace-nowrap shrink-0">자차 이동</span>
                 </div>
@@ -397,7 +410,7 @@
                     <!-- R1 -->
                     <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
                         <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>1지역 (화성 / 오산)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>1지역 (화성)</span>
                             <span class="text-slate-500 font-mono text-[10px]">계정 19,326개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
@@ -417,7 +430,7 @@
                     <!-- R2 -->
                     <div class="p-2.5 bg-slate-900/70 rounded-lg border border-emerald-500/30">
                         <div class="font-bold text-slate-200 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>2지역 (영통 / 화성동부) ⭐추천</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>2지역 (수원 영통) 🌟</span>
                             <span class="text-slate-500 font-mono text-[10px]">계정 14,186개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
@@ -477,7 +490,7 @@
                     <!-- R5 -->
                     <div class="p-2.5 bg-slate-900/70 rounded-lg border border-slate-700/60">
                         <div class="font-bold text-slate-300 text-[11px] mb-1.5 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400 shrink-0"></span>5지역 (수지 / 팔달잔여 / 흥덕)</span>
+                            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-purple-400 shrink-0"></span>5지역 (수지)</span>
                             <span class="text-slate-500 font-mono text-[10px]">계정 13,490개</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
@@ -510,6 +523,7 @@
         </aside>
     </div>
 
+    <!-- STREAMING_CHUNK:Initializing JavaScript logic and leaflet map... -->
     <script>
         function toggleMobilePanel() {
             const panel = document.getElementById('sidebar-panel');
@@ -534,12 +548,13 @@
             backdrop.classList.add('hidden');
         }
 
-        // Start point: Dongtan Elementary School (Corrected GPS: West of DongtanGiheung-ro)
+        /* STREAMING_CHUNK:Defining precise GPS coordinates for starting point... */
+        // Start point: 1623-dong area (GPS: 37.1905, 127.0918)
         const startPoint = {
-            lat: 37.1891,
-            lng: 127.0913,
-            title: "동탄초등학교",
-            address: "경기 화성시 동탄구 동탄감배산로 26"
+            lat: 37.1905,
+            lng: 127.0918,
+            title: "🏠",
+            address: "경기 화성시 동탄감배산로 30"
         };
 
         // Haversine formula
@@ -554,20 +569,21 @@
             return (R * c).toFixed(1);
         }
 
+        /* STREAMING_CHUNK:Populating territory dataset and marker coordinates... */
         const dongDataset = [
             // Region 1: Hwaseong & Osan (Accounts: 19,326)
-            { id: "r1_1", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 동탄2(청계/목/신/산척/송/장지/영천/중)", lat: 37.1950, lng: 127.1150, time: "5분", parking: "양호", density: "최상", desc: "동탄초 인근 동탄2 신도시 전체(청계·목·신·산척·송·장지·영천·중동)." },
+            { id: "r1_1", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 동탄2(청계/목/신/산척/송/장지/영천/중)", lat: 37.1950, lng: 127.1150, time: "5분", parking: "양호", density: "최상", desc: "🏠 인근 동탄2 신도시 전체(청계·목·신·산척·송·장지·영천·중동)." },
             { id: "r1_2", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 병점동/양산동", lat: 37.2070, lng: 127.0350, time: "11분", parking: "보통", density: "높음", desc: "병점역 및 양산동 일대 주택/아파트 단지." },
-            { id: "r1_3", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "오산시(오산동/원동/금암/신장)", lat: 37.1500, lng: 127.0700, time: "12분", parking: "보통", density: "높음", desc: "오산시 전 지역. 동탄초에서 직통 접근 최적." },
+            { id: "r1_3", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "오산시(오산동/원동/금암/신장)", lat: 37.1500, lng: 127.0700, time: "12분", parking: "보통", density: "높음", desc: "오산시 전 지역. 출발지에서 직통 접근 최적." },
             { id: "r1_4", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 향남읍", lat: 37.1330, lng: 126.9210, time: "32분", parking: "양호", density: "보통", desc: "향남1·2지구 신도시 구역." },
             { id: "r1_5", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 정남면/팔탄면/양감면", lat: 37.1600, lng: 126.9800, time: "22분", parking: "양호", density: "낮음", desc: "공장 및 주택 혼재 구역." },
             { id: "r1_6", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 우정읍(조암)/장안면", lat: 37.0810, lng: 126.8150, time: "48분", parking: "양호", density: "매우 낮음", desc: "화성 남서쪽 최외곽." },
             { id: "r1_7", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 서신면/마도면/송산면", lat: 37.1700, lng: 126.7300, time: "50분", parking: "양호", density: "매우 낮음", desc: "해안 외곽 구역." },
             { id: "r1_8", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 비봉면/매송면/새솔동", lat: 37.2400, lng: 126.8500, time: "38분", parking: "양호", density: "보통", desc: "화성 북서부 매송/비봉 및 송산그린시티 새솔동." },
-            { id: "r1_9", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 방교동/금곡동", lat: 37.1730, lng: 127.0980, time: "6분", parking: "양호", density: "보통", desc: "동탄초 바로 남측 인접 산단 및 주거지." },
+            { id: "r1_9", region: "r1", regionName: "1지역(화성/오산)", accounts: "19,326", name: "화성 방교동/금곡동", lat: 37.1730, lng: 127.0980, time: "6분", parking: "양호", density: "보통", desc: "출발지 바로 남측 인접 산단 및 주거지." },
 
             // Region 2: Yeongtong & East Hwaseong (Accounts: 14,186)
-            { id: "r2_1", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 영통동", lat: 37.2510, lng: 127.0710, time: "14분", parking: "양호", density: "최상", desc: "아파트 밀집지역. 동탄초 직통 도로 연결 최적." },
+            { id: "r2_1", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 영통동", lat: 37.2510, lng: 127.0710, time: "14분", parking: "양호", density: "최상", desc: "아파트 밀집지역. 직통 도로 연결 최적." },
             { id: "r2_2", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 망포동", lat: 37.2450, lng: 127.0580, time: "12분", parking: "양호", density: "최상", desc: "동탄 북단 접경. 차로 10~15분 도착." },
             { id: "r2_3", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 매탄동", lat: 37.2610, lng: 127.0420, time: "16분", parking: "보통", density: "높음", desc: "삼성전자 상가 및 대단지 아파트." },
             { id: "r2_4", region: "r2", regionName: "2지역(영통/화성동부)", accounts: "14,186", name: "영통구 이의동(광교)", lat: 37.2970, lng: 127.0480, time: "22분", parking: "양호", density: "높음", desc: "광교신도시 원천/하동 제외 구역." },
@@ -596,6 +612,7 @@
             { id: "r5_4", region: "r5", regionName: "5지역(수지/광교/흥덕)", accounts: "13,490", name: "수원 팔달구 잔여(인계/우만/지동/행궁 일부)", lat: 37.2780, lng: 127.0300, time: "22분", parking: "보통", density: "높음", desc: "인계동 중심 상권 및 우만동/지동 구역." }
         ];
 
+        /* STREAMING_CHUNK:Configuring Leaflet map tiles and layers... */
         const map = L.map('map', { zoomControl: false }).setView([startPoint.lat, startPoint.lng], 11);
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -644,6 +661,7 @@
             });
         }
 
+        /* STREAMING_CHUNK:Drawing territory polygon boundaries... */
         // 5 Region Polygon Boundaries
         const polygonData = {
             r1: [ [37.220, 126.980], [37.180, 127.010], [37.120, 127.080], [37.050, 127.050], [37.050, 126.750], [37.200, 126.650], [37.270, 126.800] ],
@@ -665,6 +683,7 @@
             polygonLayers[key] = poly;
         });
 
+        /* STREAMING_CHUNK:Rendering map pins and popups... */
         function renderDongMarkers() {
             dongDataset.forEach(item => {
                 const color = regionColors[item.region];
@@ -724,16 +743,17 @@
             });
         }
 
+        /* STREAMING_CHUNK:Creating starting point marker... */
         // Start Point Marker
         const startIcon = L.divIcon({
             className: 'custom-start-pin',
             html: `
                 <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
                     <div style="background-color: #ef4444; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(239,68,68,0.5); border: 3px solid white;">
-                        <i class="fa-solid fa-school" style="font-size: 18px;"></i>
+                        <i class="fa-solid fa-house" style="font-size: 18px;"></i>
                     </div>
                     <div style="background: rgba(15, 23, 42, 0.95); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 8px; margin-top: 4px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
-                        🚩 출발지: 동탄초
+                        🚘 출발
                     </div>
                 </div>
             `,
@@ -747,14 +767,13 @@
                 <span class="text-xs font-bold text-rose-600 bg-rose-100 px-2 py-0.5 rounded">출발점</span>
                 <h3 class="font-bold text-sm text-slate-800 mt-1">${startPoint.title}</h3>
                 <p class="text-xs text-slate-600 mt-0.5">${startPoint.address}</p>
-                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 정밀 GPS: 37.1891, 127.0913</div>
+                <div class="mt-2 text-[11px] text-indigo-600 font-semibold">📍 정밀 GPS: 37.1905, 127.0918</div>
             </div>
         `);
 
+        /* STREAMING_CHUNK:Defining event handlers and interactive functions... */
         function onRegionCardHeaderClick(rKey) {
-            // 1. Toggle collapse/expand of dong list
             toggleRegionCollapse(rKey);
-            // 2. Focus map view onto the selected region's polygon boundary
             focusRegionOnMap(rKey);
         }
 
@@ -884,6 +903,7 @@
             startMarker.openPopup();
         }
 
+        /* STREAMING_CHUNK:Starting application on load... */
         window.onload = function() {
             drawDistanceRings();
             renderDongMarkers();
