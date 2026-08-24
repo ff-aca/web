@@ -354,25 +354,194 @@
         .archive-group-title i { font-size: 11px; opacity: 0.6; }
         .archive-group-meta { font-size: 12px; color: #9ca3af; font-weight: 500; }
 
-        /* 자료 링크 목록 */
-        .material-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-        .material-item { display: flex; align-items: center; gap: 11px; padding: 12px 14px; border: 1px solid var(--border-color); border-radius: 11px; text-decoration: none; background: #fff; transition: 0.15s; }
-        .material-item:hover { border-color: var(--primary-vivid); background: #fffaf8; transform: translateY(-1px); }
-        .material-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
-        .material-icon.session { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
-        .material-icon.recruit { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
-        .material-icon.landing { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .material-body { display: block; min-width: 0; flex: 1; }
-        .material-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .material-sub { display: block; font-size: 11px; color: #9ca3af; font-weight: 500; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .material-item > i.go { font-size: 11px; color: #d1d5db; flex-shrink: 0; }
-        .material-item:hover > i.go { color: var(--primary-vivid); }
+        /* 📁 교육 자료 모아보기 — 교육명 토글 아코디언
+           (헤더 클릭 시 아래 표가 펼쳐지는 구조. 상세 페이지의 '교육 관련 자료' /
+           '상세 커리큘럼' 컴포넌트를 그대로 재사용해 두 페이지의 스타일을 통일함) */
+        .mat-card { padding: 0; overflow: hidden; }
+        .mat-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 20px 24px; cursor: pointer; user-select: none; }
+        .mat-header:hover { background: #fafafa; }
+        .mat-header-left { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+        .mat-title { font-size: 16px; font-weight: 700; color: #111827; letter-spacing: -0.3px; display: inline-flex; align-items: center; gap: 8px; }
+        .mat-goto { color: #d1d5db; font-size: 12px; text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; justify-content: center; padding: 4px 6px; min-width: 20px; min-height: 20px; }
+        .mat-goto:hover { color: var(--primary-vivid); }
+        .mat-header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+        .mat-count-badge { font-size: 12px; font-weight: 700; color: var(--primary-vivid); background: var(--primary-soft-bg); padding: 4px 11px; border-radius: 12px; white-space: nowrap; }
+
+        /* 교육 자료 모아보기 — 트랙별 묶음 (메인 페이지 track-header와 동일한 패턴을 재사용해
+           카드마다 트랙 라벨을 반복하지 않고 트랙당 헤더 하나만 보여줌) */
+        .mat-track-section { margin-bottom: 40px; }
+        .mat-track-section:last-child { margin-bottom: 0; }
+        .mat-track-section .track-header { margin: 36px 0 14px 0; }
+        .mat-track-section:first-child .track-header { margin-top: 0; }
+        .mat-track-section .archive-group { margin-bottom: 10px; }
+        .mat-track-section .archive-group:last-child { margin-bottom: 0; }
+        .mat-chevron { color: #9ca3af; font-size: 13px; transition: transform 0.2s ease; }
+        .mat-card.open .mat-chevron { transform: rotate(180deg); color: var(--primary-vivid); }
+
+        .mat-body { display: none; padding: 0 24px 24px 24px; border-top: 1px solid #f3f4f6; }
+        .mat-card.open .mat-body { display: block; padding-top: 20px; }
+
+        .mat-section { margin-bottom: 20px; }
+        .mat-section:last-child { margin-bottom: 0; }
+        .mat-section-label { font-size: 11px; font-weight: 800; color: #9ca3af; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .mat-section-label i { font-size: 10px; }
+
+        /* 회차별 자료 표 — 상세 페이지 커리큘럼 표와 동일한 톤 */
+        .mat-session-table th, .mat-session-table td { text-align: center; }
+        .mat-session-table td.mat-topic-cell { text-align: left; font-weight: 700; color: #111827; }
+
+        /* 공고·교육장 버튼 — 내용 길이에 맞춰 자연스럽게 크기가 잡히는 알약(pill) 형태.
+           예전에는 그리드 칸을 꽉 채우는 방식이라 버튼이 1개만 있을 때 가로로 기이하게 길어졌음 */
+        .mat-announce-row { display: flex; flex-wrap: wrap; gap: 10px; }
+        .mat-announce-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 18px; border-radius: 999px;
+            background: #fff; border: 1px solid var(--border-color);
+            color: var(--text-main); font-size: 13px; font-weight: 700;
+            text-decoration: none; white-space: nowrap; transition: 0.15s;
+        }
+        .mat-announce-btn:hover { border-color: var(--primary-vivid); background: var(--primary-soft-bg); color: var(--primary-vivid); }
+        .mat-announce-btn i.mat-announce-icon { color: var(--primary-vivid); font-size: 13px; }
+        .mat-announce-btn i.mat-announce-arrow { color: #b3b3b3; font-size: 10px; transition: color 0.15s; }
+        .mat-announce-btn:hover i.mat-announce-arrow { color: var(--primary-vivid); }
 
         /* 사진 그룹 갤러리 */
         .archive-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
         .archive-photo-grid a { display: block; line-height: 0; }
         .archive-photo-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 11px; border: 1px solid var(--border-color); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; background: #f3f4f6; }
         .archive-photo-grid img:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+
+        /* ============================================
+           📊 교육 운영 현황 대시보드 / 🎓 개인 학습 이력
+           색상: 브랜드 오렌지 톤은 유지하되 기존보다 약간 밝고 부드럽게 조정한 2단계.
+           색각 이상 검증 통과(ΔE 16.9) + 모든 막대에 숫자 직접 표기.
+           ============================================ */
+        :root {
+            --chart-done: #e14d28;   /* 수료 */
+            --chart-join: #f19a84;   /* 참여(미수료 포함) */
+            --chart-rail: #f3f4f6;   /* 배경 레일 */
+        }
+
+        #dashboardPage, #personPage { display: none; padding-top: 12px; }
+
+        /* 대시보드 KPI */
+        .dash-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 22px; }
+        .dash-kpi { background: #fff; border: 1px solid var(--border-color); border-radius: 14px; padding: 18px 16px; }
+        .dash-kpi-num { font-size: 25px; font-weight: 700; color: #1f2937; letter-spacing: -0.3px; }
+        .dash-kpi-num span { font-size: 13px; font-weight: 600; color: var(--chart-done); margin-left: 2px; }
+        .dash-kpi-label { font-size: 12px; color: #6b7280; font-weight: 500; margin-top: 4px; }
+
+        .chart-card { background: #fff; border: 1px solid var(--border-color); border-radius: 18px; padding: 24px; margin-bottom: 18px; }
+        .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+        .chart-title { font-size: 16px; font-weight: 600; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+        .chart-title i { color: var(--chart-done); font-size: 14px; }
+        .chart-note { font-size: 12px; color: #9ca3af; font-weight: 400; }
+
+        /* 범례 (2개 계열이므로 항상 표시) */
+        .chart-legend { display: flex; gap: 14px; align-items: center; margin: 12px 0 18px 0; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-sub); font-weight: 500; }
+        .legend-swatch { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+        /* 가로 막대 */
+        .bar-rows { display: flex; flex-direction: column; gap: 11px; }
+        .bar-row { display: grid; grid-template-columns: 150px 1fr 132px; align-items: center; gap: 12px; }
+        .bar-name { font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.3; word-break: keep-all; overflow-wrap: break-word; }
+        .bar-track { position: relative; height: 22px; background: var(--chart-rail); border-radius: 5px; overflow: hidden; }
+        .bar-join { position: absolute; left: 0; top: 0; height: 100%; background: var(--chart-join); border-radius: 0 4px 4px 0; }
+        .bar-done { position: absolute; left: 0; top: 0; height: 100%; background: var(--chart-done); border-radius: 0 4px 4px 0; box-shadow: 2px 0 0 0 #fff; }
+        .bar-value { font-size: 12px; color: var(--text-sub); font-weight: 500; text-align: right; white-space: nowrap; }
+        .bar-value b { color: var(--chart-done); font-weight: 600; }
+        .bar-row-chevron { font-size: 10px; color: #c1c5cb; margin-left: 4px; }
+
+        /* 부서별 차트: 막대를 눌러 해당 부서 참여자 목록으로 이동 */
+        .bar-row-clickable { cursor: pointer; border-radius: 8px; padding: 5px 6px; margin: -5px -6px; transition: background 0.15s ease; }
+        .bar-row-clickable:hover { background: #f9fafb; }
+        .bar-row-clickable:hover .bar-row-chevron { color: var(--chart-done); }
+        .bar-row-clickable:focus-visible { outline: 2px solid var(--chart-done); outline-offset: 2px; }
+
+        /* 세로 막대 (분기별) */
+        .col-chart { display: flex; align-items: flex-end; gap: 10px; height: 160px; padding-top: 8px; }
+        .col-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; min-width: 0; }
+        .col-bar { width: 100%; max-width: 52px; background: var(--chart-done); border-radius: 4px 4px 0 0; min-height: 3px; }
+        .col-val { font-size: 12px; font-weight: 600; color: #1f2937; }
+        .col-name { font-size: 11px; color: #6b7280; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+        .col-axis { border-top: 1px solid var(--border-color); margin-top: 4px; padding-top: 8px; }
+
+        .dash-two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        /* 📅 교육 캘린더 */
+        #calendarPage { display: none; padding-top: 12px; }
+        .cal-card { background: #fff; border: 1px solid var(--border-color); border-radius: 18px; padding: 22px; margin-bottom: 18px; }
+        .cal-toolbar { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 16px; position: relative; }
+        .cal-nav-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; color: #4b5563; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background 0.15s ease; }
+        .cal-nav-btn:hover { background: #f3f4f6; }
+        .cal-month-label { font-size: 17px; font-weight: 700; color: #1f2937; min-width: 120px; text-align: center; }
+        .cal-today-btn { position: absolute; right: 0; border: 1px solid var(--border-color); background: #f9fafb; color: #4b5563; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
+        .cal-today-btn:hover { background: #f3f4f6; }
+
+        .cal-legend { display: flex; gap: 14px; align-items: center; justify-content: center; margin-bottom: 18px; flex-wrap: wrap; }
+        .cal-legend-note { color: #9ca3af; font-weight: 500; }
+
+        /* 요일 헤더와 아래 주(週) 격자가 반드시 같은 gap을 써야 칸 너비가 서로 어긋나지 않는다 */
+        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px; font-weight: 600; color: #9ca3af; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 6px; }
+        .cal-weeks { display: flex; flex-direction: column; }
+        /* 항상 같은 줄 수(레인)를 확보해서, 달마다 겹치는 교육 수가 달라져도 한 주의 높이가 흔들리지 않게 함 */
+        .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 22px repeat(3, 22px) 14px; gap: 3px 4px; padding: 4px 0 8px; border-bottom: 1px solid #f3f4f6; }
+        .cal-week:last-child { border-bottom: none; }
+        .cal-daynum-cell { grid-row: 1; font-size: 12px; font-weight: 700; color: #6b7280; padding-left: 4px; }
+        .cal-daynum-cell.cal-out-month { color: #d1d5db; }
+        .cal-daynum-badge { display: inline-flex; align-items: center; justify-content: center; }
+        .cal-daynum-cell.cal-today .cal-daynum-badge { background: var(--chart-done); color: #fff; width: 20px; height: 20px; border-radius: 50%; }
+
+        /* 여러 날에 걸친 교육을 한 덩어리의 '블록'으로 이어서 보여준다 (구글 캘린더 스타일).
+           색은 진행상태가 아니라 '교육' 하나하나를 구분하는 용도라서, 부담스러운 원색 대신
+           교육마다 다른 색을 옅게 우려낸 톤을 쓰고, 진행상태는 이름 앞 아이콘(🌿🟡🔵🔴)으로 구분한다. */
+        .cal-bar {
+            align-self: center; font-size: 11px; font-weight: 700; padding: 3px 8px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+            background: color-mix(in srgb, var(--course-color) 18%, white);
+            color: color-mix(in srgb, var(--course-color) 62%, black);
+            border: 1px solid color-mix(in srgb, var(--course-color) 32%, white);
+        }
+        .cal-bar-start { border-top-left-radius: 6px; border-bottom-left-radius: 6px; margin-left: 3px; padding-left: 8px; }
+        .cal-bar-end { border-top-right-radius: 6px; border-bottom-right-radius: 6px; margin-right: 3px; }
+        .cal-overflow-cell { align-self: center; font-size: 10px; color: #9ca3af; font-weight: 600; padding-left: 8px; cursor: default; }
+
+        /* 모바일에서는 격자 대신 일정 있는 날짜만 나열 */
+        .cal-agenda { display: none; }
+        .cal-agenda-empty, .cal-page-empty { text-align: center; color: #9ca3af; font-size: 13px; font-weight: 500; padding: 40px 20px; }
+        .cal-page-empty { background: #fff; border: 1px solid var(--border-color); border-radius: 18px; }
+        .cal-page-empty i { display: block; font-size: 22px; margin-bottom: 10px; color: #d1d5db; }
+        .cal-agenda-row { display: flex; gap: 14px; padding: 12px 4px; border-bottom: 1px solid #f3f4f6; }
+        .cal-agenda-row:last-child { border-bottom: none; }
+        .cal-agenda-date { font-size: 13px; font-weight: 700; color: #374151; min-width: 62px; padding-top: 2px; }
+        .cal-agenda-date span { display: block; font-size: 11px; font-weight: 500; color: #9ca3af; }
+        .cal-agenda-today .cal-agenda-date { color: var(--chart-done); }
+        .cal-agenda-events { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        /* 모바일 목록형에서 쓰는 일정 칩. 데스크톱 .cal-bar와 같은 방식(교육별 색상)으로 통일 */
+        .cal-event {
+            display: block; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px; cursor: pointer;
+            background: color-mix(in srgb, var(--course-color) 15%, white);
+            color: color-mix(in srgb, var(--course-color) 58%, black);
+            border: 1px solid color-mix(in srgb, var(--course-color) 30%, white);
+        }
+
+        /* 개인 학습 이력 카드 */
+        .person-hero { background: #fff; border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; margin-bottom: 18px; }
+        .person-name { font-size: 26px; font-weight: 900; color: #111827; letter-spacing: -0.5px; }
+        .person-dept { font-size: 13px; color: var(--text-sub); font-weight: 600; margin-top: 4px; }
+        .person-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .person-stat { background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 12px; padding: 16px 12px; text-align: center; }
+        .person-stat-num { font-size: 21px; font-weight: 900; color: #111827; }
+        .person-stat-label { font-size: 11px; color: #6b7280; font-weight: 600; margin-top: 3px; }
+
+        .person-course { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: 11px; margin-bottom: 9px; cursor: pointer; transition: 0.15s; flex-wrap: wrap; }
+        .person-course:hover { border-color: var(--primary-vivid); background: #fffaf8; }
+        .person-course-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .person-course-meta { font-size: 11px; color: #9ca3af; font-weight: 500; margin-top: 3px; }
+
+        .completer-table tr.clickable-row { cursor: pointer; }
+        .completer-table tr.clickable-row:hover { background: #fff7f5; }
 
         /* 비어있을 때 */
         .archive-empty { text-align: center; padding: 70px 20px; color: #9ca3af; font-size: 13px; line-height: 1.7; }
@@ -430,13 +599,44 @@
             #detCurriculum table.completer-table th:nth-child(6),
             #detCurriculum table.completer-table td:nth-child(6) { width: 120px !important; }
 
+            /* 교육 자료 모아보기의 회차별 자료 표도 동일한 이유로 동일하게 처리 */
+            #materialsContainer table.mat-session-table {
+                table-layout: auto !important;
+                width: auto !important;
+                min-width: 480px;
+            }
+
             /* 자료/사진 모아보기 페이지 모바일 대응 */
             .archive-title { font-size: 20px; }
-            .archive-group { padding: 18px 16px; border-radius: 14px; }
+            .archive-group { border-radius: 14px; }
+            .archive-group:not(.mat-card) { padding: 18px 16px; }
             .archive-group-title { font-size: 15px; }
-            .material-list { grid-template-columns: 1fr; }
+            .mat-header { padding: 16px 16px; }
+            .mat-title { font-size: 15px; }
+            .mat-body { padding: 0 16px 18px 16px; }
+            .mat-card.open .mat-body { padding-top: 16px; }
             .archive-photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .archive-photo-grid img { height: 120px; }
+
+            /* 📅 교육 캘린더: 좁은 화면에서는 칸이 너무 작아져 글씨가 안 보이므로
+               격자 대신 일정이 있는 날짜만 나열하는 목록형으로 전환 */
+            .cal-grid-wrap { display: none; }
+            .cal-agenda { display: block; }
+            .cal-card { padding: 18px 16px; border-radius: 14px; }
+            .cal-month-label { font-size: 15px; min-width: 90px; }
+            .cal-today-btn { font-size: 11px; padding: 5px 10px; }
+            .cal-legend { gap: 10px; }
+
+            /* 대시보드 / 개인 이력 모바일 대응 */
+            .dash-two { grid-template-columns: 1fr; }
+            .chart-card { padding: 18px 16px; border-radius: 14px; }
+            .bar-row { grid-template-columns: 1fr; gap: 5px; }
+            .bar-name { font-size: 12px; }
+            .bar-value { text-align: left; font-size: 11px; }
+            .col-chart { height: 130px; gap: 6px; }
+            .col-name { font-size: 10px; }
+            .person-hero { padding: 20px 18px; }
+            .person-name { font-size: 21px; }
 
             /* 가로 스크롤이 필요한 표 위에 안내 문구 표시 */
             .mobile-scroll-hint {
@@ -472,6 +672,12 @@
                 </button>
                 <button class="nav-btn" id="btnNavCompleter" onclick="switchView('completer')">
                     <i class="fa-solid fa-award"></i> 교육 참여자 LIST
+                </button>
+                <button class="nav-btn" id="btnNavDashboard" onclick="switchView('dashboard')">
+                    <i class="fa-solid fa-chart-column"></i> 운영 현황
+                </button>
+                <button class="nav-btn" id="btnNavCalendar" onclick="switchView('calendar')">
+                    <i class="fa-solid fa-calendar-days"></i> 교육 캘린더
                 </button>
             </nav>
         </div>
@@ -574,6 +780,72 @@
             </div>
 
             <div id="photosContainer"></div>
+        </div>
+
+
+        <!-- 📊 교육 운영 현황 대시보드 -->
+        <div id="dashboardPage">
+            <div class="archive-head">
+                <div class="archive-sub">OPERATION DASHBOARD</div>
+                <h1 class="archive-title">📊 교육 운영 현황</h1>
+                <p class="archive-desc">
+                    패파아카데미의 누적 운영 성과를 한눈에 확인할 수 있습니다. 부서별·트랙별 학습 현황과 분기별 추이를 보여줍니다.
+                </p>
+            </div>
+            <div id="dashboardContainer"></div>
+        </div>
+
+
+        <!-- 📅 교육 캘린더 -->
+        <div id="calendarPage">
+            <div class="archive-head">
+                <div class="archive-sub">TRAINING CALENDAR</div>
+                <h1 class="archive-title">📅 교육 캘린더</h1>
+                <p class="archive-desc">
+                    교육별 진행 기간을 달력에서 한눈에 확인할 수 있습니다. 일정을 클릭하면 상세 페이지로 이동합니다.
+                </p>
+            </div>
+
+            <div class="cal-card">
+                <div class="cal-toolbar">
+                    <button class="cal-nav-btn" onclick="changeCalendarMonth(-1)" aria-label="이전 달"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="cal-month-label" id="calMonthLabel"></div>
+                    <button class="cal-nav-btn" onclick="changeCalendarMonth(1)" aria-label="다음 달"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="cal-today-btn" onclick="goToCalendarToday()">오늘</button>
+                </div>
+
+                <!-- 색은 교육을 구분하는 용도이고, 진행 상태는 이름 앞 아이콘으로 표시됩니다 -->
+                <div class="cal-legend">
+                    <span class="legend-item">🌿 완료</span>
+                    <span class="legend-item">🟡 모집중</span>
+                    <span class="legend-item">🔵 진행중</span>
+                    <span class="legend-item">🔴 준비중</span>
+                    <span class="legend-item cal-legend-note">· 색은 교육마다 다르게 구분돼요</span>
+                </div>
+
+                <!-- 데스크톱: 월간 격자 -->
+                <div class="cal-grid-wrap">
+                    <div class="cal-weekdays">
+                        <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
+                    </div>
+                    <div class="cal-weeks" id="calWeeks"></div>
+                </div>
+
+                <!-- 모바일: 일정 있는 날짜만 보여주는 목록형 -->
+                <div class="cal-agenda" id="calAgenda"></div>
+            </div>
+
+            <div class="cal-page-empty" id="calPageEmpty" style="display:none;">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                등록된 교육 일정을 찾을 수 없습니다. 시트에 기간 정보가 "26-03-12(목) ~ 26-03-26(목)" 형식으로 들어있는지 확인해 주세요.
+            </div>
+        </div>
+
+
+        <!-- 🎓 개인별 학습 이력 카드 -->
+        <div id="personPage">
+            <button class="back-btn" onclick="handleBackButtonClick()"><i class="fa-solid fa-arrow-left"></i> 참여자 목록으로 돌아가기</button>
+            <div id="personContainer"></div>
         </div>
 
 
@@ -717,7 +989,7 @@
            2순위: API_URL    — 위 파일이 아직 없거나 실패했을 때만 앱스 스크립트를 직접 호출.
            ────────────────────────────────────────────── */
         const STATIC_DATA_URL = "./data.json";
-        const API_URL = "https://script.google.com/macros/s/AKfycbxxwvxRZfVjchWAAVe6RBGI55TMbEAxW9iE28YPXCfATYMJtLDN6VnnBmQ7d1IB00i2/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxE8bjlHXE0bW0s6ibAX1RctRI1QrWGqvlZSqlkut7DWEgCFDNcg4t3WHIZSW6x6sE4/exec";
 
         // ⏳ 데이터가 오기 전에도 빈 화면이 보이지 않도록 실제 카드와 같은 모양의 자리표시를 그림
         function renderSkeleton() {
@@ -1004,7 +1276,14 @@
                 if (!isNaN(id) && eduData.find(d => d.id === id)) {
                     return { view: 'detail', id: id };
                 }
-            } else if (hash === '#completer' || hash === '#materials' || hash === '#photos') {
+            } else if (hash.startsWith('#person-')) {
+                try {
+                    const key = decodeURIComponent(hash.replace('#person-', ''));
+                    if (findPersonByKey(key)) {
+                        return { view: 'person', key: key };
+                    }
+                } catch (e) { /* 잘못된 주소는 메인으로 */ }
+            } else if (hash === '#completer' || hash === '#materials' || hash === '#photos' || hash === '#dashboard' || hash === '#calendar') {
                 return { view: hash.replace('#', '') };
             }
 
@@ -1019,6 +1298,8 @@
 
             if (s.view === 'detail') {
                 showDetailPage(s.id, true);
+            } else if (s.view === 'person') {
+                showPersonPage(s.key, true);
             } else {
                 switchView(s.view || 'main', true);
             }
@@ -1053,7 +1334,10 @@
             materials: { page: 'materialsPage', nav: 'btnNavMaterials' },
             photos:    { page: 'photosPage',    nav: 'btnNavPhotos' },
             completer: { page: 'completerPage', nav: 'btnNavCompleter' },
-            detail:    { page: 'detailPage',    nav: null }
+            dashboard: { page: 'dashboardPage', nav: 'btnNavDashboard' },
+            calendar:  { page: 'calendarPage',  nav: 'btnNavCalendar' },
+            detail:    { page: 'detailPage',    nav: null },
+            person:    { page: 'personPage',    nav: null }
         };
 
         function switchView(viewName, fromPopState) {
@@ -1084,6 +1368,10 @@
                 renderMaterialsPage();
             } else if (viewName === 'photos') {
                 renderPhotosPage();
+            } else if (viewName === 'dashboard') {
+                renderDashboard();
+            } else if (viewName === 'calendar') {
+                renderCalendar();
             }
 
             // 뒤로가기로 인한 렌더링이 아니면, 현재 화면 상태를 히스토리에 기록
@@ -1453,56 +1741,51 @@
             return String(value).split(/,|\n/).map(v => v.trim()).filter(v => v.length > 0);
         }
 
-        // 교육 하나에서 '자료' 항목들을 뽑아 공통 형태로 정리
-        function collectMaterials(item) {
-            const list = [];
+        // 교육 하나에서 '자료'를 유형별로 구분해 정리
+        // (공고·교육장 / 회차별 자료 두 그룹으로 나눠, 어떤 자료가 어떤 성격인지 한눈에 구분되게 함)
+        function collectCourseMaterials(item) {
+            const announcements = [];
 
-            // 1) 회차별 강의 자료
-            (item.detailedCurriculum || []).forEach(row => {
-                const links = splitLinks(row.materialLink);
-                if (links.length === 0) return;
-
-                const sessionName = row.session || row.week || '';
-                const datePart = row.date ? String(row.date) : '';
-                const topic = row.topic || sessionName || '강의 자료';
-
-                links.forEach((url, idx) => {
-                    list.push({
-                        type: 'session',
-                        icon: 'fa-regular fa-file-pdf',
-                        label: links.length > 1 ? `${topic} (자료${idx + 1})` : topic,
-                        sub: [sessionName, datePart].filter(Boolean).join(' · '),
-                        url: url,
-                        search: `${topic} ${sessionName}`
-                    });
-                });
-            });
-
-            // 2) 모집 공고
             if (item.recruitLink && item.recruitLink !== '-') {
-                list.push({
-                    type: 'recruit',
+                announcements.push({
                     icon: 'fa-regular fa-paper-plane',
                     label: '모집 공고',
-                    sub: '모집 안내 페이지',
                     url: item.recruitLink,
                     search: '모집 공고'
                 });
             }
 
-            // 3) 교육장 바로가기
             if (item.landingLink && item.landingLink !== '-') {
-                list.push({
-                    type: 'landing',
+                announcements.push({
                     icon: 'fa-solid fa-school',
                     label: '교육장 바로가기',
-                    sub: '교육 랜딩페이지',
                     url: item.landingLink,
                     search: '교육장 랜딩페이지'
                 });
             }
 
-            return list;
+            const sessionRows = [];
+            (item.detailedCurriculum || []).forEach(row => {
+                const links = splitLinks(row.materialLink);
+                if (links.length === 0) return;
+
+                const sessionName = row.session || row.week || '-';
+                sessionRows.push({
+                    sessionName: sessionName,
+                    date: row.date || '-',
+                    topic: row.topic || sessionName || '강의 자료',
+                    links: links.map((url, idx) => ({
+                        url: url,
+                        label: links.length > 1 ? `자료${idx + 1}` : '자료보기'
+                    })),
+                    search: `${row.topic || ''} ${sessionName}`
+                });
+            });
+
+            const materialCount = announcements.length +
+                sessionRows.reduce((sum, r) => sum + r.links.length, 0);
+
+            return { announcements, sessionRows, materialCount };
         }
 
         // 교육별 그룹 카드의 공통 머리말
@@ -1521,52 +1804,166 @@
             `;
         }
 
+        // 어떤 교육의 아코디언이 펼쳐져 있는지 기억해두는 상태 (재검색·재렌더링에도 유지)
+        const openMaterialGroups = new Set();
+
+        function toggleMaterialGroup(id) {
+            if (openMaterialGroups.has(id)) {
+                openMaterialGroups.delete(id);
+            } else {
+                openMaterialGroups.add(id);
+            }
+            renderMaterialsPage();
+        }
+
+        // 공고·교육장 링크 — 상세 페이지의 '교육 관련 자료' 카드와 동일한 컴포넌트 재사용
+        function renderAnnouncementLinks(announcements) {
+            if (announcements.length === 0) return '';
+
+            return `
+                <div class="mat-section">
+                    <div class="mat-section-label"><i class="fa-solid fa-bullhorn"></i> 공고 · 교육장</div>
+                    <div class="mat-announce-row">
+                        ${announcements.map(a => `
+                            <a href="${a.url}" target="_blank" class="mat-announce-btn" onclick="event.stopPropagation()">
+                                <i class="${a.icon} mat-announce-icon"></i>${a.label}
+                                <i class="fa-solid fa-arrow-up-right-from-square mat-announce-arrow"></i>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // 회차별 자료 표 — 상세 페이지의 '상세 커리큘럼' 표와 동일한 톤으로 재사용
+        function renderSessionTable(sessionRows) {
+            if (sessionRows.length === 0) return '';
+
+            return `
+                <div class="mat-section">
+                    <div class="mat-section-label"><i class="fa-solid fa-list-check"></i> 회차별 자료</div>
+                    <div class="mobile-scroll-hint"><i class="fa-solid fa-arrows-left-right"></i> 좌우로 스크롤하면 전체 항목을 볼 수 있어요</div>
+                    <div class="table-wrap">
+                        <table class="completer-table mat-session-table" style="table-layout: fixed; width: 100%;">
+                            <thead>
+                                <tr style="background:#f9fafb; color:#4b5563;">
+                                    <th style="width: 80px;">회차</th>
+                                    <th style="width: 90px;">날짜</th>
+                                    <th>주제</th>
+                                    <th style="width: 160px;">자료</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sessionRows.map(row => `
+                                    <tr onclick="event.stopPropagation()">
+                                        <td>
+                                            <span style="font-size:12px; font-weight:800; color:#c2410c; background:#fff7ed; padding:3px 8px; border-radius:6px; white-space:nowrap; border:1px solid #ffedd5;">${row.sessionName}</span>
+                                        </td>
+                                        <td style="color:#6b7280; font-weight:600; font-size:12px; white-space:nowrap;">${row.date}</td>
+                                        <td class="mat-topic-cell">${row.topic}</td>
+                                        <td>
+                                            <div style="display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:nowrap;">
+                                                ${row.links.map(l => `
+                                                    <a href="${l.url}" target="_blank" class="curr-link-btn">
+                                                        <i class="fa-regular fa-file-pdf" style="color:var(--primary-vivid);"></i> ${l.label}
+                                                    </a>
+                                                `).join('')}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderMaterialsPage() {
             const container = document.getElementById('materialsContainer');
             const countEl = document.getElementById('materialsCount');
             const searchEl = document.getElementById('materialsSearchInput');
             const query = String(searchEl && searchEl.value || '').toLowerCase().trim();
 
+            const categories = ["패파 이해하기", "직무 전문성 강화하기", "전문 기술 습득하기"];
             let totalCount = 0;
+            let groupCount = 0;
             let html = '';
 
-            eduData.forEach(item => {
-                let materials = collectMaterials(item);
-                if (materials.length === 0) return;
+            // 메인 페이지(renderSections)와 동일하게 트랙 단위로 묶어서, 트랙 라벨을 카드마다 반복하지 않고
+            // 트랙 헤더 하나만 보여줌 — 반복되는 라벨이 줄어드는 만큼 리스트가 한결 가벼워짐
+            categories.forEach(catKey => {
+                const meta = trackMeta[catKey];
+                let trackCardsHtml = '';
+                let trackGroupCount = 0;
 
-                const courseName = String(item.name || '');
+                eduData.filter(item => item.category === catKey).forEach(item => {
+                    let { announcements, sessionRows, materialCount } = collectCourseMaterials(item);
+                    if (materialCount === 0) return;
 
-                // 교육명이 검색어와 맞으면 그 교육의 자료 전체를 보여주고,
-                // 아니면 자료 제목 단위로 걸러서 보여줌
-                if (query && !courseName.toLowerCase().includes(query)) {
-                    materials = materials.filter(m => String(m.search || '').toLowerCase().includes(query));
-                    if (materials.length === 0) return;
-                }
+                    const courseName = String(item.name || '');
+                    const courseNameMatches = query && courseName.toLowerCase().includes(query);
 
-                totalCount += materials.length;
+                    // 교육명이 검색어와 맞으면 그 교육의 자료 전체를, 아니면 자료 제목 단위로 걸러서 보여줌
+                    if (query && !courseNameMatches) {
+                        announcements = announcements.filter(a => String(a.search || '').toLowerCase().includes(query));
+                        sessionRows = sessionRows.filter(r => String(r.search || '').toLowerCase().includes(query));
 
-                const metaText = [item.period, `자료 ${materials.length}개`].filter(Boolean).join(' · ');
+                        materialCount = announcements.length + sessionRows.reduce((sum, r) => sum + r.links.length, 0);
+                        if (materialCount === 0) return;
+                    }
 
-                html += `
-                    <div class="archive-group">
-                        ${archiveGroupHead(item, metaText)}
-                        <div class="material-list">
-                            ${materials.map(m => `
-                                <a href="${m.url}" target="_blank" class="material-item">
-                                    <span class="material-icon ${m.type}"><i class="${m.icon}"></i></span>
-                                    <span class="material-body">
-                                        <span class="material-label">${m.label}</span>
-                                        ${m.sub ? `<span class="material-sub">${m.sub}</span>` : ''}
-                                    </span>
-                                    <i class="fa-solid fa-arrow-up-right-from-square go"></i>
-                                </a>
-                            `).join('')}
+                    totalCount += materialCount;
+                    groupCount += 1;
+                    trackGroupCount += 1;
+
+                    // 검색 중에는 결과를 바로 볼 수 있도록 강제로 펼치고,
+                    // 검색어가 없을 때는 사용자가 직접 토글한 상태를 그대로 따름
+                    const isOpen = query ? true : openMaterialGroups.has(item.id);
+                    const metaText = [item.period].filter(Boolean).join(' · ');
+
+                    trackCardsHtml += `
+                        <div class="archive-group mat-card ${isOpen ? 'open' : ''}">
+                            <div class="mat-header" onclick="toggleMaterialGroup(${item.id})">
+                                <div class="mat-header-left">
+                                    <div class="mat-title">
+                                        ${item.name || '이름 없는 교육'}
+                                        <a href="#" class="mat-goto" onclick="event.preventDefault(); event.stopPropagation(); showDetailPage(${item.id});" title="교육 상세 페이지로 이동">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
+                                    </div>
+                                    ${metaText ? `<div class="archive-group-meta">${metaText}</div>` : ''}
+                                </div>
+                                <div class="mat-header-right">
+                                    <span class="mat-count-badge">자료 ${materialCount}개</span>
+                                    <i class="fa-solid fa-chevron-down mat-chevron"></i>
+                                </div>
+                            </div>
+                            <div class="mat-body">
+                                ${renderAnnouncementLinks(announcements)}
+                                ${renderSessionTable(sessionRows)}
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                });
+
+                if (trackGroupCount > 0) {
+                    html += `
+                        <section class="mat-track-section">
+                            <div class="track-header">
+                                <div class="track-sub">${meta ? meta.sub : 'TRACK'}</div>
+                                <div class="track-title-wrap">
+                                    <h2 class="track-main-title">${meta ? meta.main : catKey}</h2>
+                                    <span class="track-count-badge">${trackGroupCount}</span>
+                                </div>
+                            </div>
+                            ${trackCardsHtml}
+                        </section>
+                    `;
+                }
             });
 
-            countEl.innerHTML = totalCount > 0 ? `총 <b>${totalCount}개</b>의 자료` : '';
+            countEl.innerHTML = totalCount > 0 ? `교육 <b>${groupCount}개</b> · 자료 <b>${totalCount}개</b>` : '';
 
             container.innerHTML = html || `
                 <div class="archive-empty">
@@ -1615,6 +2012,703 @@
             `;
         }
 
+        /* ============================================
+           📊 교육 운영 현황 대시보드
+           ============================================ */
+
+        // 참여자 한 명의 상태가 '수료'로 인정되는지
+        function isCompletedStatus(status) {
+            return status === '수료' || status === '우수수료' || status === '우수 수료';
+        }
+
+        function isBestStatus(status) {
+            return status === '우수수료' || status === '우수 수료';
+        }
+
+        // 교육 한 건의 참여/수료 인원 집계 (students 우선, 없으면 시트의 숫자 사용)
+        function courseCounts(item) {
+            const students = item.students || [];
+
+            if (students.length > 0) {
+                return {
+                    joined: students.length,
+                    done: students.filter(s => isCompletedStatus(s.status)).length
+                };
+            }
+
+            const joined = Number(item.selected) || 0;
+            const done = Number(item.completed) || 0;
+            return { joined: joined, done: done };
+        }
+
+        // onclick 속성 안에 안전하게 넣기 위한 간단한 이스케이프 (역슬래시/작은따옴표)
+        function escAttr(str) {
+            return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        // 가로 막대 한 줄 만들기 (참여 = 연한색, 수료 = 진한색)
+        // clickableDept 를 전달하면(부서별 차트) 막대를 눌러 해당 부서 참여자 목록으로 이동할 수 있다
+        function barRow(name, joined, done, maxJoined, clickableDept) {
+            const joinPct = maxJoined > 0 ? (joined / maxJoined) * 100 : 0;
+            const donePct = maxJoined > 0 ? (done / maxJoined) * 100 : 0;
+            const rate = joined > 0 ? Math.round((done / joined) * 100) : 0;
+
+            const clickable = !!clickableDept;
+            const rowClass = clickable ? 'bar-row bar-row-clickable' : 'bar-row';
+            const interactiveAttrs = clickable
+                ? ` role="button" tabindex="0" onclick="showDeptDrilldown('${escAttr(name)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showDeptDrilldown('${escAttr(name)}');}"`
+                : '';
+            const chevron = clickable ? ' <i class="fa-solid fa-chevron-right bar-row-chevron"></i>' : '';
+
+            return `
+                <div class="${rowClass}"${interactiveAttrs} title="${name} · 참여 ${joined}건, 수료 ${done}건 (수료율 ${rate}%)${clickable ? ' · 클릭하면 참여자 목록을 볼 수 있어요' : ''}">
+                    <div class="bar-name">${name}</div>
+                    <div class="bar-track">
+                        <div class="bar-join" style="width:${joinPct}%"></div>
+                        <div class="bar-done" style="width:${donePct}%"></div>
+                    </div>
+                    <div class="bar-value">수료 <b>${done}</b> / 참여 ${joined} · ${rate}%${chevron}</div>
+                </div>
+            `;
+        }
+
+        // 부서별 차트의 막대를 클릭하면 참여자 LIST 화면으로 이동해 해당 부서로 자동 필터링한다
+        function showDeptDrilldown(deptName) {
+            switchView('completer');
+            const typeSelect = document.getElementById('completerFilterType');
+            const searchInput = document.getElementById('completerSearchInput');
+            if (typeSelect) typeSelect.value = 'dept';
+            if (searchInput) searchInput.value = deptName;
+            filterCompleterTable();
+        }
+
+        const CHART_LEGEND = `
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch" style="background:var(--chart-done);"></span> 수료</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:var(--chart-join);"></span> 참여(미수료 포함)</span>
+            </div>
+        `;
+
+        function renderDashboard() {
+            const container = document.getElementById('dashboardContainer');
+
+            if (!eduData || eduData.length === 0) {
+                container.innerHTML = `<div class="archive-empty"><i class="fa-solid fa-chart-column"></i>아직 집계할 교육 데이터가 없습니다.</div>`;
+                return;
+            }
+
+            // ── 전체 집계 ──────────────────────────────
+            let totalJoined = 0, totalDone = 0;
+            eduData.forEach(item => {
+                const c = courseCounts(item);
+                totalJoined += c.joined;
+                totalDone += c.done;
+            });
+
+            const avgRate = totalJoined > 0 ? Math.round((totalDone / totalJoined) * 100) : 0;
+            const completedCourses = eduData.filter(i => i.status === '완료').length;
+            const uniquePeople = totalCompleterData.length;
+
+            // ── 부서별 집계 (참여자 LIST 기준) ─────────
+            const deptMap = {};
+            totalCompleterData.forEach(p => {
+                const dept = String(p.dept || '미지정').trim() || '미지정';
+                if (!deptMap[dept]) deptMap[dept] = { joined: 0, done: 0, people: 0 };
+                deptMap[dept].joined += Number(p.joinedCount) || 0;
+                deptMap[dept].done += Number(p.completedCount) || 0;
+                deptMap[dept].people += 1;
+            });
+
+            const deptRows = Object.keys(deptMap)
+                .map(d => ({ name: d, ...deptMap[d] }))
+                .sort((a, b) => b.joined - a.joined);
+
+            // ── 트랙별 집계 ────────────────────────────
+            const trackOrder = ["패파 이해하기", "직무 전문성 강화하기", "전문 기술 습득하기"];
+            const trackRows = trackOrder.map(cat => {
+                let joined = 0, done = 0, courses = 0;
+                eduData.filter(i => i.category === cat).forEach(i => {
+                    const c = courseCounts(i);
+                    joined += c.joined;
+                    done += c.done;
+                    courses += 1;
+                });
+                const meta = trackMeta[cat];
+                return { name: meta ? meta.main : cat, joined, done, courses };
+            }).filter(t => t.courses > 0);
+
+            // ── 분기별 집계 ────────────────────────────
+            const quarterMap = {};
+            eduData.forEach(item => {
+                const q = String(item.quarter || '미지정').trim() || '미지정';
+                if (!quarterMap[q]) quarterMap[q] = { courses: 0, joined: 0 };
+                quarterMap[q].courses += 1;
+                quarterMap[q].joined += courseCounts(item).joined;
+            });
+            const quarters = Object.keys(quarterMap).sort();
+
+            // ── 화면 구성 ──────────────────────────────
+            let html = `
+                <div class="dash-kpi-grid">
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${eduData.length}<span>개</span></div>
+                        <div class="dash-kpi-label">전체 교육 과정</div>
+                    </div>
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${completedCourses}<span>개</span></div>
+                        <div class="dash-kpi-label">완료된 교육</div>
+                    </div>
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${totalJoined}<span>건</span></div>
+                        <div class="dash-kpi-label">누적 참여 (연인원)</div>
+                    </div>
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${totalDone}<span>건</span></div>
+                        <div class="dash-kpi-label">누적 수료 (연인원)</div>
+                    </div>
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${avgRate}<span>%</span></div>
+                        <div class="dash-kpi-label">평균 수료율</div>
+                    </div>
+                    <div class="dash-kpi">
+                        <div class="dash-kpi-num">${uniquePeople}<span>명</span></div>
+                        <div class="dash-kpi-label">참여 임직원 (고유)</div>
+                    </div>
+                </div>
+            `;
+
+            // 부서별
+            if (deptRows.length > 0) {
+                const maxJoined = Math.max.apply(null, deptRows.map(d => d.joined));
+                html += `
+                    <div class="chart-card">
+                        <div class="chart-head">
+                            <div class="chart-title"><i class="fa-solid fa-building"></i> 부서별 학습 현황</div>
+                            <div class="chart-note">참여 건수 많은 순 · 총 ${deptRows.length}개 부서 · 부서를 클릭하면 참여자 목록을 볼 수 있어요</div>
+                        </div>
+                        ${CHART_LEGEND}
+                        <div class="bar-rows">
+                            ${deptRows.map(d => barRow(d.name, d.joined, d.done, maxJoined, true)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 트랙별
+            if (trackRows.length > 0) {
+                const maxTrack = Math.max.apply(null, trackRows.map(t => t.joined));
+                html += `
+                    <div class="chart-card">
+                        <div class="chart-head">
+                            <div class="chart-title"><i class="fa-solid fa-layer-group"></i> 트랙별 학습 현황</div>
+                            <div class="chart-note">트랙별 누적 참여·수료 건수</div>
+                        </div>
+                        ${CHART_LEGEND}
+                        <div class="bar-rows">
+                            ${trackRows.map(t => barRow(t.name, t.joined, t.done, maxTrack)).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 분기별 (측정 단위가 다르므로 축을 섞지 않고 차트를 둘로 분리)
+            if (quarters.length > 0) {
+                const maxCourses = Math.max.apply(null, quarters.map(q => quarterMap[q].courses));
+                const maxJoin = Math.max.apply(null, quarters.map(q => quarterMap[q].joined));
+
+                const colChart = (valueOf, maxVal, unit) => `
+                    <div class="col-chart">
+                        ${quarters.map(q => {
+                            const v = valueOf(q);
+                            const h = maxVal > 0 ? Math.round((v / maxVal) * 100) : 0;
+                            return `
+                                <div class="col-item" title="${q} · ${v}${unit}">
+                                    <div class="col-val">${v}</div>
+                                    <div class="col-bar" style="height:${h}%"></div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="col-axis">
+                        <div style="display:flex; gap:10px;">
+                            ${quarters.map(q => `<div class="col-name" style="flex:1; text-align:center;">${q}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+
+                html += `
+                    <div class="dash-two">
+                        <div class="chart-card" style="margin-bottom:0;">
+                            <div class="chart-head">
+                                <div class="chart-title"><i class="fa-solid fa-calendar-days"></i> 분기별 교육 수</div>
+                            </div>
+                            <div class="chart-note" style="margin-bottom:10px;">운영한 교육 과정 수(개)</div>
+                            ${colChart(q => quarterMap[q].courses, maxCourses, '개')}
+                        </div>
+                        <div class="chart-card" style="margin-bottom:0;">
+                            <div class="chart-head">
+                                <div class="chart-title"><i class="fa-solid fa-users"></i> 분기별 참여 인원</div>
+                            </div>
+                            <div class="chart-note" style="margin-bottom:10px;">누적 참여 연인원(건)</div>
+                            ${colChart(q => quarterMap[q].joined, maxJoin, '건')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+
+        /* ============================================
+           📅 교육 캘린더
+           시트의 기간 컬럼("26-03-12(목) ~ 26-03-26(목)" 형식)을 자동으로 찾아 파싱한다.
+           헤더 이름이 무엇이든 상관없이, 값이 이 패턴과 일치하는 첫 번째 컬럼을 사용한다.
+           ============================================ */
+        const SCHEDULE_REGEX = /(\d{2})-(\d{2})-(\d{2})\s*\([가-힣]\)\s*[~\-–]\s*(\d{2})-(\d{2})-(\d{2})\s*\([가-힣]\)/;
+
+        // 교육 하나의 기간을 시작일/종료일 Date 객체로 변환 (실패하면 null)
+        function parseSchedule(item) {
+            for (const key of Object.keys(item)) {
+                const val = item[key];
+                if (typeof val !== 'string') continue;
+                const m = val.match(SCHEDULE_REGEX);
+                if (!m) continue;
+                const startDate = new Date(2000 + Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+                const endDate = new Date(2000 + Number(m[4]), Number(m[5]) - 1, Number(m[6]));
+                if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                    return { startDate, endDate };
+                }
+            }
+            return null;
+        }
+
+        // 상세 커리큘럼(회차별 날짜) 문자열 하나를 Date로 변환. "2026.03.12" / "2026-03-12" /
+        // "26-03-12(목)" 등 시트에서 나올 수 있는 형태를 두루 시도하고, 못 읽으면 null
+        function parseSingleDate(str) {
+            if (!str || typeof str !== 'string') return null;
+            let m = str.match(/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})/);
+            if (m) {
+                const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+                return isNaN(d.getTime()) ? null : d;
+            }
+            m = str.match(/(\d{2})-(\d{2})-(\d{2})\s*\([가-힣]\)/);
+            if (m) {
+                const d = new Date(2000 + Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+                return isNaN(d.getTime()) ? null : d;
+            }
+            return null;
+        }
+
+        // 상세 커리큘럼에 회차별 날짜가 있으면, 그 날짜들만 뽑아서 반환한다 (없으면 빈 배열).
+        // 이게 있으면 "긴 기간 막대" 대신 실제 수업이 있는 날짜에만 표시할 수 있다.
+        function getCourseSessionDates(item) {
+            if (!item.detailedCurriculum || item.detailedCurriculum.length === 0) return [];
+            const out = [];
+            item.detailedCurriculum.forEach(row => {
+                const d = parseSingleDate(row.date);
+                if (d) out.push({ date: d, sessionLabel: row.session || row.week || '' });
+            });
+            return out;
+        }
+
+        // 진행 상태는 색이 아니라 아이콘으로 구분 (색은 교육 구분용으로 따로 씀)
+        function calStatusIcon(status) {
+            if (status === '완료') return '🌿';
+            if (status === '모집중') return '🟡';
+            if (status === '진행중') return '🔵';
+            return '🔴';
+        }
+        function calStatusLabel(status) {
+            if (status === '완료') return '🌿 완료';
+            if (status === '모집중') return '🟡 모집중';
+            if (status === '진행중') return '🔵 진행중';
+            return '🔴 준비중';
+        }
+
+        // 교육(코스)마다 다른 색을 배정한다. 색각 이상 검증을 통과한 8색 팔레트를
+        // id 오름차순으로 순서대로 배정해, 새로고침해도 항상 같은 교육은 같은 색이 되게 한다.
+        const CAL_COURSE_PALETTE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948'];
+        const calCourseColorMap = new Map(); // item.id -> hex
+
+        function ensureCourseColors() {
+            const sorted = [...(eduData || [])].sort((a, b) => a.id - b.id);
+            sorted.forEach(item => {
+                if (!calCourseColorMap.has(item.id)) {
+                    calCourseColorMap.set(item.id, CAL_COURSE_PALETTE[calCourseColorMap.size % CAL_COURSE_PALETTE.length]);
+                }
+            });
+        }
+        function getCourseColor(item) {
+            return calCourseColorMap.get(item.id) || CAL_COURSE_PALETTE[0];
+        }
+
+        function calSameDay(a, b) {
+            return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+        }
+        function calIsInRange(day, start, end) {
+            const d = new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime();
+            const s = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+            const e = new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime();
+            return d >= s && d <= e;
+        }
+        function calFmtMD(d) {
+            return `${d.getMonth() + 1}.${d.getDate()}`;
+        }
+
+        // 현재 캘린더가 보여주고 있는 달(항상 1일로 정규화)
+        let calendarCursor = new Date();
+        calendarCursor.setDate(1);
+
+        function changeCalendarMonth(delta) {
+            calendarCursor.setMonth(calendarCursor.getMonth() + delta);
+            renderCalendar();
+        }
+        function goToCalendarToday() {
+            calendarCursor = new Date();
+            calendarCursor.setDate(1);
+            renderCalendar();
+        }
+
+        // eduData 각 항목을 캘린더에 찍을 이벤트로 바꾼다.
+        // 커리큘럼 탭처럼 회차별 날짜가 있으면 그 날짜들 각각을(하루짜리 이벤트로), 없으면
+        // 기존처럼 전체 기간을 하나의 이어진 막대로 표시한다.
+        function getCalendarEvents() {
+            ensureCourseColors();
+            const events = [];
+
+            (eduData || []).forEach(item => {
+                if (item._sessionDates === undefined) {
+                    item._sessionDates = getCourseSessionDates(item);
+                }
+
+                if (item._sessionDates.length > 0) {
+                    item._sessionDates.forEach(s => {
+                        events.push({ item, startDate: s.date, endDate: s.date, sessionLabel: s.sessionLabel });
+                    });
+                    return;
+                }
+
+                // 회차별 날짜가 없으면 기간(H열) 정보로 대체
+                if (item._schedule === undefined) {
+                    item._schedule = parseSchedule(item);
+                }
+                if (item._schedule) {
+                    events.push({ item, startDate: item._schedule.startDate, endDate: item._schedule.endDate });
+                }
+            });
+
+            return events;
+        }
+
+        // 이번 달(+앞뒤로 삐져나온 날짜 포함)을 주(週) 단위로 쪼갠다. 각 주는 7개의 날짜를 가짐
+        function buildCalendarWeeks(year, month) {
+            const firstDay = new Date(year, month, 1);
+            const startWeekday = firstDay.getDay(); // 0=일
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthDays = new Date(year, month, 0).getDate();
+
+            const days = [];
+            for (let i = startWeekday - 1; i >= 0; i--) {
+                days.push({ date: new Date(year, month - 1, prevMonthDays - i), inMonth: false });
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                days.push({ date: new Date(year, month, d), inMonth: true });
+            }
+            let nextD = 1;
+            while (days.length % 7 !== 0) {
+                days.push({ date: new Date(year, month + 1, nextD++), inMonth: false });
+            }
+
+            const weeks = [];
+            for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+            return weeks;
+        }
+
+        // 하루 단위 차이 (day2 - day1, 일 수). 시간대를 정오로 맞춰 서머타임 등 계산 오차 방지
+        function calDayDiff(day1, day2) {
+            const a = new Date(day1.getFullYear(), day1.getMonth(), day1.getDate(), 12);
+            const b = new Date(day2.getFullYear(), day2.getMonth(), day2.getDate(), 12);
+            return Math.round((b - a) / 86400000);
+        }
+
+        // 한 주(週) 안에서 겹치는 교육들을 '레인(줄)'에 배치한다.
+        // laneHints: 같은 교육이 여러 주에 걸쳐 있을 때 가능하면 같은 레인을 유지해 시각적으로 이어져 보이게 함
+        // 주(週)마다 항상 이 줄 수만큼만 표시 (CSS의 grid-template-rows와 값을 맞춰야 함) — 높이를 일정하게 유지하기 위함
+        const MAX_CAL_LANES = 3;
+        function layoutWeekEvents(week, events, laneHints) {
+            const weekStart = week[0].date;
+            const weekEnd = week[6].date;
+
+            const items = events
+                .filter(ev => ev.endDate >= weekStart && ev.startDate <= weekEnd)
+                .map(ev => {
+                    const startCol = Math.max(0, calDayDiff(weekStart, ev.startDate));
+                    const endCol = Math.min(6, calDayDiff(weekStart, ev.endDate));
+                    return {
+                        ev, startCol, endCol,
+                        continuesFromPrev: ev.startDate < weekStart,
+                        continuesToNext: ev.endDate > weekEnd
+                    };
+                })
+                .sort((a, b) => a.startCol - b.startCol || (b.endCol - b.startCol) - (a.endCol - a.startCol));
+
+            const laneEnd = []; // laneEnd[i] = 그 레인에 마지막으로 배치된 항목의 endCol
+            const placed = [];
+            const overflow = [];
+
+            // 1단계: 힌트에 있는 레인을 먼저 시도해 최대한 이전 주와 같은 줄에 배치
+            for (const it of items) {
+                const hint = laneHints.get(it.ev.item.id);
+                if (hint === undefined) continue;
+                if (laneEnd[hint] === undefined || laneEnd[hint] < it.startCol) {
+                    laneEnd[hint] = it.endCol;
+                    placed.push({ ...it, lane: hint });
+                    it._done = true;
+                }
+            }
+            // 2단계: 나머지는 비어있는 가장 앞 레인부터 채움
+            for (const it of items) {
+                if (it._done) continue;
+                let lane = -1;
+                for (let i = 0; i < MAX_CAL_LANES; i++) {
+                    if (laneEnd[i] === undefined || laneEnd[i] < it.startCol) { lane = i; break; }
+                }
+                if (lane === -1) { overflow.push(it); continue; }
+                laneEnd[lane] = it.endCol;
+                placed.push({ ...it, lane });
+                laneHints.set(it.ev.item.id, lane);
+            }
+
+            const laneCount = laneEnd.filter(v => v !== undefined).length;
+
+            // 레인에 못 들어간 항목은 해당 날짜들에 '+N개' 표시로 요약
+            const overflowPerDay = new Array(7).fill(0);
+            overflow.forEach(it => {
+                for (let c = it.startCol; c <= it.endCol; c++) overflowPerDay[c]++;
+            });
+
+            return { placed, laneCount, overflowPerDay };
+        }
+
+        function renderCalendar() {
+            if (!calendarCursor) { calendarCursor = new Date(); calendarCursor.setDate(1); }
+
+            const year = calendarCursor.getFullYear();
+            const month = calendarCursor.getMonth(); // 0-indexed
+            document.getElementById('calMonthLabel').innerText = `${year}년 ${month + 1}월`;
+
+            const events = getCalendarEvents();
+            const pageEmpty = document.getElementById('calPageEmpty');
+            const calCard = document.querySelector('#calendarPage .cal-card');
+
+            if (events.length === 0) {
+                if (pageEmpty) pageEmpty.style.display = 'block';
+                if (calCard) calCard.style.display = 'none';
+                return;
+            }
+            if (pageEmpty) pageEmpty.style.display = 'none';
+            if (calCard) calCard.style.display = 'block';
+
+            const today = new Date();
+            const weeks = buildCalendarWeeks(year, month);
+            const laneHints = new Map(); // 주 사이에서 유지되는 교육별 선호 레인
+            const agendaDays = [];
+
+            const weeksHtml = weeks.map(week => {
+                const { placed, laneCount, overflowPerDay } = layoutWeekEvents(week, events, laneHints);
+
+                const daynumsHtml = week.map((d, col) => {
+                    const isToday = calSameDay(d.date, today);
+                    const numHtml = isToday
+                        ? `<span class="cal-daynum-badge">${d.date.getDate()}</span>`
+                        : `${d.date.getDate()}`;
+                    return `<div class="cal-daynum-cell ${d.inMonth ? '' : 'cal-out-month'} ${isToday ? 'cal-today' : ''}" style="grid-column:${col + 1};">${numHtml}</div>`;
+                }).join('');
+
+                const barsHtml = placed.map(it => {
+                    const classes = ['cal-bar'];
+                    if (!it.continuesFromPrev) classes.push('cal-bar-start');
+                    if (!it.continuesToNext) classes.push('cal-bar-end');
+                    const label = (it.continuesFromPrev ? '◂ ' : '') + calStatusIcon(it.ev.item.status) + ' ' +
+                        (it.ev.item.name || '이름 없는 교육') + (it.continuesToNext ? ' ▸' : '');
+                    const isSingleDay = calSameDay(it.ev.startDate, it.ev.endDate);
+                    const dateRangeText = isSingleDay ? calFmtMD(it.ev.startDate) : `${calFmtMD(it.ev.startDate)}~${calFmtMD(it.ev.endDate)}`;
+                    const sessionText = it.ev.sessionLabel ? ` (${it.ev.sessionLabel})` : '';
+                    return `
+                        <div class="${classes.join(' ')}"
+                             style="grid-column:${it.startCol + 1} / ${it.endCol + 2}; grid-row:${it.lane + 2}; --course-color:${getCourseColor(it.ev.item)};"
+                             title="${it.ev.item.name || '이름 없는 교육'}${sessionText} · ${calStatusLabel(it.ev.item.status)} · ${dateRangeText}"
+                             onclick="showDetailPage(${it.ev.item.id})">${label}</div>
+                    `;
+                }).join('');
+
+                const overflowHtml = overflowPerDay.map((cnt, col) => cnt > 0
+                    ? `<div class="cal-overflow-cell" style="grid-column:${col + 1}; grid-row:${MAX_CAL_LANES + 2};">+${cnt}개 더</div>`
+                    : ''
+                ).join('');
+
+                // 목록형(모바일)에 쓸 데이터도 같은 주 계산에서 함께 모아둔다
+                week.forEach((d, col) => {
+                    const dayEvents = events.filter(ev => calIsInRange(d.date, ev.startDate, ev.endDate));
+                    if (dayEvents.length > 0) {
+                        agendaDays.push({ date: d.date, dayEvents, isToday: calSameDay(d.date, today), inMonth: d.inMonth });
+                    }
+                });
+
+                return `<div class="cal-week">${daynumsHtml}${barsHtml}${overflowHtml}</div>`;
+            }).join('');
+
+            document.getElementById('calWeeks').innerHTML = weeksHtml;
+
+            // ── 모바일: 일정 있는 날짜만 나열 (이번 달 안의 날짜만) ──────────────
+            const weekdayNames = ['일', '월', '화', '수', '목', '금', '토'];
+            const inMonthAgendaDays = agendaDays.filter(d => d.inMonth);
+            let agendaHtml;
+            if (inMonthAgendaDays.length === 0) {
+                agendaHtml = `<div class="cal-agenda-empty">이번 달에는 일정이 등록된 교육이 없습니다.</div>`;
+            } else {
+                agendaHtml = inMonthAgendaDays.map(({ date, dayEvents, isToday }) => {
+                    const chips = dayEvents.map(ev => `
+                        <div class="cal-event" style="--course-color:${getCourseColor(ev.item)};" onclick="showDetailPage(${ev.item.id})">
+                            ${calStatusIcon(ev.item.status)} ${ev.item.name || '이름 없는 교육'}
+                        </div>
+                    `).join('');
+                    return `
+                        <div class="cal-agenda-row ${isToday ? 'cal-agenda-today' : ''}">
+                            <div class="cal-agenda-date">${date.getMonth() + 1}.${date.getDate()}<span>(${weekdayNames[date.getDay()]})</span></div>
+                            <div class="cal-agenda-events">${chips}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            document.getElementById('calAgenda').innerHTML = agendaHtml;
+        }
+
+
+        /* ============================================
+           🎓 개인별 학습 이력 카드
+           ============================================ */
+
+        // 동명이인 구분을 위해 '이름|소속'을 열쇠로 사용
+        function personKey(name, dept) {
+            return String(name || '') + '|' + String(dept || '');
+        }
+
+        function findPersonByKey(key) {
+            return totalCompleterData.find(p => personKey(p.name, p.dept) === key) || null;
+        }
+
+        function showPersonPage(key, fromPopState) {
+            const person = findPersonByKey(key);
+            if (!person) return;
+
+            // 이 사람이 참여한 교육을 전체 교육 데이터에서 찾아 상태까지 가져옴
+            const history = [];
+            eduData.forEach(item => {
+                (item.students || []).forEach(s => {
+                    if (personKey(s.name, s.dept) === key) {
+                        history.push({ course: item, status: s.status });
+                    }
+                });
+            });
+
+            const doneCount = history.filter(h => isCompletedStatus(h.status)).length;
+            const bestCount = history.filter(h => isBestStatus(h.status)).length;
+
+            // students 데이터가 비어 있는 경우 통합 명단의 숫자로 대체
+            const joined = history.length > 0 ? history.length : (Number(person.joinedCount) || 0);
+            const done = history.length > 0 ? doneCount : (Number(person.completedCount) || 0);
+            const best = history.length > 0 ? bestCount : (Number(person.bestAward) || 0);
+            const rate = joined > 0 ? Math.round((done / joined) * 100) : 0;
+
+            let historyHtml;
+
+            if (history.length > 0) {
+                historyHtml = history.map(h => {
+                    const item = h.course;
+                    const meta = trackMeta[item.category];
+
+                    let pill = 'pass', text = '✅ 수료';
+                    if (isBestStatus(h.status)) { pill = 'best'; text = '🥇 우수 수료'; }
+                    else if (h.status === '미수료') { pill = 'fail'; text = '❌ 미수료'; }
+                    else if (h.status === '진행중' || h.status === '수강중' || h.status === '수료예정') { pill = 'ongoing'; text = '🔵 진행중'; }
+                    else if (!h.status || h.status === '-') { pill = 'fail'; text = '-'; }
+
+                    return `
+                        <div class="person-course" onclick="showDetailPage(${item.id})">
+                            <div>
+                                <div class="person-course-name">${item.name || ''}</div>
+                                <div class="person-course-meta">${meta ? meta.sub : ''} · ${item.period || ''}</div>
+                            </div>
+                            <span class="status-pill ${pill}">${text}</span>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                // 참여 교육명만 있고 상세 상태가 없는 경우
+                const courses = person.courses || [];
+                historyHtml = courses.length > 0
+                    ? courses.map(c => `
+                        <div class="person-course" style="cursor:default;">
+                            <div><div class="person-course-name">${c}</div></div>
+                        </div>
+                    `).join('')
+                    : `<div class="archive-empty" style="padding:40px 20px;">참여 교육 상세 내역이 없습니다.</div>`;
+            }
+
+            document.getElementById('personContainer').innerHTML = `
+                <div class="person-hero">
+                    <div class="person-name">${person.name || ''}</div>
+                    <div class="person-dept"><i class="fa-solid fa-building" style="color:var(--primary-vivid); margin-right:5px;"></i>${person.dept || '소속 미지정'}</div>
+                    <div class="person-stat-grid">
+                        <div class="person-stat">
+                            <div class="person-stat-num">${joined}</div>
+                            <div class="person-stat-label">참여 교육</div>
+                        </div>
+                        <div class="person-stat">
+                            <div class="person-stat-num">${done}</div>
+                            <div class="person-stat-label">수료</div>
+                        </div>
+                        <div class="person-stat">
+                            <div class="person-stat-num">${best}</div>
+                            <div class="person-stat-label">우수 수료</div>
+                        </div>
+                        <div class="person-stat">
+                            <div class="person-stat-num">${rate}<span style="font-size:14px;">%</span></div>
+                            <div class="person-stat-label">수료율</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-head" style="margin-bottom:16px;">
+                        <div class="chart-title"><i class="fa-solid fa-clock-rotate-left"></i> 참여 교육 이력</div>
+                        <div class="chart-note">교육을 누르면 상세 페이지로 이동합니다</div>
+                    </div>
+                    ${historyHtml}
+                </div>
+            `;
+
+            // 다른 페이지는 모두 숨김
+            Object.keys(VIEW_MAP).forEach(k => {
+                const el = document.getElementById(VIEW_MAP[k].page);
+                if (el) el.style.display = 'none';
+                if (VIEW_MAP[k].nav) {
+                    const btn = document.getElementById(VIEW_MAP[k].nav);
+                    if (btn) btn.classList.remove('active');
+                }
+            });
+            document.getElementById('personPage').style.display = 'block';
+
+            if (!fromPopState) {
+                pushAppState({ view: 'person', key: key }, '#person-' + encodeURIComponent(key));
+            }
+
+            window.scrollTo(0, 0);
+        }
+
+
         function renderCompleterTable(list) {
             const tbody = document.getElementById('completerTableBody');
             
@@ -1645,8 +2739,10 @@
                     bestBadgeHtml = `<span class="status-pill best">${c.bestAward}</span>`;
                 }
 
+                const key = personKey(c.name, c.dept).replace(/'/g, "\\'");
+
                 return `
-                    <tr>
+                    <tr class="clickable-row" onclick="showPersonPage('${key}')" title="${c.name}님의 학습 이력 보기">
                         <td style="text-align:center;">${c.name}</td>
                         <td class="col-dept" style="color:#555;">${c.dept}</td>
                         <td style="text-align:center; font-weight:600;">${c.joinedCount}개</td>
