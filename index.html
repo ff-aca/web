@@ -1123,7 +1123,7 @@
             const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
             try {
-                const response = await fetch(url, { signal: controller.signal });
+                const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
 
                 // 404/403 등은 fetch가 성공으로 처리하므로 직접 확인해야 함
                 if (!response.ok) {
@@ -1141,8 +1141,10 @@
             let lastError = null;
 
             // 1순위: GitHub에 올려둔 정적 데이터 (CDN에서 즉시 응답)
+            // ⚠️ 매번 다른 주소로 요청해야 브라우저·GitHub Pages CDN 캐시를 모두 우회해서
+            //    publishToGitHub 직후에도 옛날 데이터가 계속 보이는 문제를 막을 수 있음
             try {
-                data = await fetchJsonWithTimeout(STATIC_DATA_URL, 8000);
+                data = await fetchJsonWithTimeout(STATIC_DATA_URL + '?t=' + Date.now(), 8000);
             } catch (error) {
                 lastError = error;
                 console.warn('data.json을 불러오지 못해 앱스 스크립트로 대체합니다.', error);
