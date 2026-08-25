@@ -361,13 +361,6 @@
         .mat-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 20px 24px; cursor: pointer; user-select: none; }
         .mat-header:hover { background: #fafafa; }
         .mat-header-left { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-<<<<<<< HEAD
-        .mat-title { font-size: 17px; font-weight: 800; color: #111827; letter-spacing: -0.3px; display: inline-flex; align-items: center; gap: 8px; }
-        .mat-goto { color: #d1d5db; font-size: 12px; text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; justify-content: center; padding: 4px 6px; min-width: 20px; min-height: 20px; }
-        .mat-goto:hover { color: var(--primary-vivid); }
-        .mat-header-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
-        .mat-count-badge { font-size: 12px; font-weight: 800; color: var(--primary-vivid); background: var(--primary-soft-bg); padding: 4px 11px; border-radius: 12px; white-space: nowrap; }
-=======
         .mat-title { font-size: 16px; font-weight: 700; color: #111827; letter-spacing: -0.3px; display: inline-flex; align-items: center; gap: 8px; }
         .mat-goto { color: #d1d5db; font-size: 12px; text-decoration: none; transition: color 0.15s; display: inline-flex; align-items: center; justify-content: center; padding: 4px 6px; min-width: 20px; min-height: 20px; }
         .mat-goto:hover { color: var(--primary-vivid); }
@@ -382,7 +375,6 @@
         .mat-track-section:first-child .track-header { margin-top: 0; }
         .mat-track-section .archive-group { margin-bottom: 10px; }
         .mat-track-section .archive-group:last-child { margin-bottom: 0; }
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         .mat-chevron { color: #9ca3af; font-size: 13px; transition: transform 0.2s ease; }
         .mat-card.open .mat-chevron { transform: rotate(180deg); color: var(--primary-vivid); }
 
@@ -398,8 +390,6 @@
         .mat-session-table th, .mat-session-table td { text-align: center; }
         .mat-session-table td.mat-topic-cell { text-align: left; font-weight: 700; color: #111827; }
 
-<<<<<<< HEAD
-=======
         /* 공고·교육장 버튼 — 내용 길이에 맞춰 자연스럽게 크기가 잡히는 알약(pill) 형태.
            예전에는 그리드 칸을 꽉 채우는 방식이라 버튼이 1개만 있을 때 가로로 기이하게 길어졌음 */
         .mat-announce-row { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -415,7 +405,6 @@
         .mat-announce-btn i.mat-announce-arrow { color: #b3b3b3; font-size: 10px; transition: color 0.15s; }
         .mat-announce-btn:hover i.mat-announce-arrow { color: var(--primary-vivid); }
 
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         /* 사진 그룹 갤러리 */
         .archive-photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
         .archive-photo-grid a { display: block; line-height: 0; }
@@ -495,16 +484,18 @@
 
         /* 요일 헤더와 아래 주(週) 격자가 반드시 같은 gap을 써야 칸 너비가 서로 어긋나지 않는다 */
         .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 12px; font-weight: 600; color: #9ca3af; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 6px; }
+        .cal-weekdays > div:nth-child(1) { color: var(--primary-vivid); }
+        .cal-weekdays > div:nth-child(7) { color: #2563eb; }
         .cal-weeks { display: flex; flex-direction: column; }
-<<<<<<< HEAD
-        .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); grid-auto-rows: 22px; gap: 3px 4px; padding: 4px 0 8px; border-bottom: 1px solid #f3f4f6; }
-=======
         /* 항상 같은 줄 수(레인)를 확보해서, 달마다 겹치는 교육 수가 달라져도 한 주의 높이가 흔들리지 않게 함 */
         .cal-week { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 22px repeat(3, 22px) 14px; gap: 3px 4px; padding: 4px 0 8px; border-bottom: 1px solid #f3f4f6; }
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         .cal-week:last-child { border-bottom: none; }
-        .cal-daynum-cell { grid-row: 1; font-size: 12px; font-weight: 700; color: #6b7280; padding-left: 4px; }
+        .cal-daynum-cell { grid-row: 1; display: flex; align-items: baseline; gap: 4px; overflow: hidden; font-size: 12px; font-weight: 700; color: #6b7280; padding-left: 4px; }
+        .cal-daynum-num { flex-shrink: 0; }
         .cal-daynum-cell.cal-out-month { color: #d1d5db; }
+        .cal-daynum-cell.cal-sunday, .cal-daynum-cell.cal-holiday { color: var(--primary-vivid); }
+        .cal-daynum-cell.cal-saturday { color: #2563eb; }
+        .cal-holiday-label { font-size: 9px; font-weight: 700; color: var(--primary-vivid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .cal-daynum-badge { display: inline-flex; align-items: center; justify-content: center; }
         .cal-daynum-cell.cal-today .cal-daynum-badge { background: var(--chart-done); color: #fff; width: 20px; height: 20px; border-radius: 50%; }
 
@@ -532,6 +523,9 @@
         .cal-agenda-date { font-size: 13px; font-weight: 700; color: #374151; min-width: 62px; padding-top: 2px; }
         .cal-agenda-date span { display: block; font-size: 11px; font-weight: 500; color: #9ca3af; }
         .cal-agenda-today .cal-agenda-date { color: var(--chart-done); }
+        .cal-agenda-date.cal-sunday, .cal-agenda-date.cal-holiday { color: var(--primary-vivid); }
+        .cal-agenda-date.cal-saturday { color: #2563eb; }
+        .cal-agenda-holiday-tag { display: block; font-size: 10px; font-weight: 700; color: var(--primary-vivid); }
         .cal-agenda-events { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         /* 모바일 목록형에서 쓰는 일정 칩. 데스크톱 .cal-bar와 같은 방식(교육별 색상)으로 통일 */
         .cal-event {
@@ -689,11 +683,7 @@
                     <i class="fa-solid fa-award"></i> 교육 참여자 LIST
                 </button>
                 <button class="nav-btn" id="btnNavDashboard" onclick="switchView('dashboard')">
-<<<<<<< HEAD
-                    <i class="fa-solid fa-chart-simple"></i> 운영 현황
-=======
                     <i class="fa-solid fa-chart-column"></i> 운영 현황
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
                 </button>
                 <button class="nav-btn" id="btnNavCalendar" onclick="switchView('calendar')">
                     <i class="fa-solid fa-calendar-days"></i> 교육 캘린더
@@ -839,7 +829,7 @@
                     <span class="legend-item">🟡 모집중</span>
                     <span class="legend-item">🔵 진행중</span>
                     <span class="legend-item">🔴 준비중</span>
-                    <span class="legend-item cal-legend-note">· 색은 교육마다 다르게 구분돼요</span>
+                    <span class="legend-item cal-legend-note">· 색은 교육마다 다르게 구분돼요 · 토·일·공휴일은 날짜가 파랑·빨강으로 표시돼요</span>
                 </div>
 
                 <!-- 데스크톱: 월간 격자 -->
@@ -1008,11 +998,7 @@
            2순위: API_URL    — 위 파일이 아직 없거나 실패했을 때만 앱스 스크립트를 직접 호출.
            ────────────────────────────────────────────── */
         const STATIC_DATA_URL = "./data.json";
-<<<<<<< HEAD
         const API_URL = "https://script.google.com/macros/s/AKfycbxE8bjlHXE0bW0s6ibAX1RctRI1QrWGqvlZSqlkut7DWEgCFDNcg4t3WHIZSW6x6sE4/exec";
-=======
-        const API_URL = "https://script.google.com/macros/s/AKfycbxxwvxRZfVjchWAAVe6RBGI55TMbEAxW9iE28YPXCfATYMJtLDN6VnnBmQ7d1IB00i2/exec";
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
 
         // ⏳ 데이터가 오기 전에도 빈 화면이 보이지 않도록 실제 카드와 같은 모양의 자리표시를 그림
         function renderSkeleton() {
@@ -1146,11 +1132,7 @@
             const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
             try {
-<<<<<<< HEAD
-                const response = await fetch(url, { signal: controller.signal });
-=======
                 const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
 
                 // 404/403 등은 fetch가 성공으로 처리하므로 직접 확인해야 함
                 if (!response.ok) {
@@ -1168,15 +1150,10 @@
             let lastError = null;
 
             // 1순위: GitHub에 올려둔 정적 데이터 (CDN에서 즉시 응답)
-<<<<<<< HEAD
-            try {
-                data = await fetchJsonWithTimeout(STATIC_DATA_URL, 8000);
-=======
             // ⚠️ 매번 다른 주소로 요청해야 브라우저·GitHub Pages CDN 캐시를 모두 우회해서
             //    publishToGitHub 직후에도 옛날 데이터가 계속 보이는 문제를 막을 수 있음
             try {
                 data = await fetchJsonWithTimeout(STATIC_DATA_URL + '?t=' + Date.now(), 8000);
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
             } catch (error) {
                 lastError = error;
                 console.warn('data.json을 불러오지 못해 앱스 스크립트로 대체합니다.', error);
@@ -1857,19 +1834,11 @@
             return `
                 <div class="mat-section">
                     <div class="mat-section-label"><i class="fa-solid fa-bullhorn"></i> 공고 · 교육장</div>
-<<<<<<< HEAD
-                    <div class="resource-grid">
-                        ${announcements.map(a => `
-                            <a href="${a.url}" target="_blank" class="resource-btn" onclick="event.stopPropagation()">
-                                <span><i class="${a.icon}" style="margin-right:8px; color:var(--primary-vivid);"></i>${a.label}</span>
-                                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; color:#aaa;"></i>
-=======
                     <div class="mat-announce-row">
                         ${announcements.map(a => `
                             <a href="${a.url}" target="_blank" class="mat-announce-btn" onclick="event.stopPropagation()">
                                 <i class="${a.icon} mat-announce-icon"></i>${a.label}
                                 <i class="fa-solid fa-arrow-up-right-from-square mat-announce-arrow"></i>
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
                             </a>
                         `).join('')}
                     </div>
@@ -1927,65 +1896,11 @@
             const searchEl = document.getElementById('materialsSearchInput');
             const query = String(searchEl && searchEl.value || '').toLowerCase().trim();
 
-<<<<<<< HEAD
-=======
             const categories = ["패파 이해하기", "직무 전문성 강화하기", "전문 기술 습득하기"];
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
             let totalCount = 0;
             let groupCount = 0;
             let html = '';
 
-<<<<<<< HEAD
-            eduData.forEach(item => {
-                let { announcements, sessionRows, materialCount } = collectCourseMaterials(item);
-                if (materialCount === 0) return;
-
-                const courseName = String(item.name || '');
-                const courseNameMatches = query && courseName.toLowerCase().includes(query);
-
-                // 교육명이 검색어와 맞으면 그 교육의 자료 전체를, 아니면 자료 제목 단위로 걸러서 보여줌
-                if (query && !courseNameMatches) {
-                    announcements = announcements.filter(a => String(a.search || '').toLowerCase().includes(query));
-                    sessionRows = sessionRows.filter(r => String(r.search || '').toLowerCase().includes(query));
-
-                    materialCount = announcements.length + sessionRows.reduce((sum, r) => sum + r.links.length, 0);
-                    if (materialCount === 0) return;
-                }
-
-                totalCount += materialCount;
-                groupCount += 1;
-
-                // 검색 중에는 결과를 바로 볼 수 있도록 강제로 펼치고,
-                // 검색어가 없을 때는 사용자가 직접 토글한 상태를 그대로 따름
-                const isOpen = query ? true : openMaterialGroups.has(item.id);
-                const meta = trackMeta[item.category];
-                const metaText = [item.period].filter(Boolean).join(' · ');
-
-                html += `
-                    <div class="archive-group mat-card ${isOpen ? 'open' : ''}">
-                        <div class="mat-header" onclick="toggleMaterialGroup(${item.id})">
-                            <div class="mat-header-left">
-                                <div class="archive-group-track">${meta ? meta.sub : 'TRACK'}</div>
-                                <div class="mat-title">
-                                    ${item.name || '이름 없는 교육'}
-                                    <a href="#" class="mat-goto" onclick="event.preventDefault(); event.stopPropagation(); showDetailPage(${item.id});" title="교육 상세 페이지로 이동">
-                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    </a>
-                                </div>
-                                ${metaText ? `<div class="archive-group-meta">${metaText}</div>` : ''}
-                            </div>
-                            <div class="mat-header-right">
-                                <span class="mat-count-badge">자료 ${materialCount}개</span>
-                                <i class="fa-solid fa-chevron-down mat-chevron"></i>
-                            </div>
-                        </div>
-                        <div class="mat-body">
-                            ${renderAnnouncementLinks(announcements)}
-                            ${renderSessionTable(sessionRows)}
-                        </div>
-                    </div>
-                `;
-=======
             // 메인 페이지(renderSections)와 동일하게 트랙 단위로 묶어서, 트랙 라벨을 카드마다 반복하지 않고
             // 트랙 헤더 하나만 보여줌 — 반복되는 라벨이 줄어드는 만큼 리스트가 한결 가벼워짐
             categories.forEach(catKey => {
@@ -2057,7 +1972,6 @@
                         </section>
                     `;
                 }
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
             });
 
             countEl.innerHTML = totalCount > 0 ? `교육 <b>${groupCount}개</b> · 자료 <b>${totalCount}개</b>` : '';
@@ -2190,11 +2104,7 @@
             const container = document.getElementById('dashboardContainer');
 
             if (!eduData || eduData.length === 0) {
-<<<<<<< HEAD
-                container.innerHTML = `<div class="archive-empty"><i class="fa-solid fa-chart-simple"></i>아직 집계할 교육 데이터가 없습니다.</div>`;
-=======
                 container.innerHTML = `<div class="archive-empty"><i class="fa-solid fa-chart-column"></i>아직 집계할 교육 데이터가 없습니다.</div>`;
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
                 return;
             }
 
@@ -2384,8 +2294,6 @@
             return null;
         }
 
-<<<<<<< HEAD
-=======
         // 상세 커리큘럼(회차별 날짜) 문자열 하나를 Date로 변환. "2026.03.12" / "2026-03-12" /
         // "26-03-12(목)" 등 시트에서 나올 수 있는 형태를 두루 시도하고, 못 읽으면 null
         function parseSingleDate(str) {
@@ -2415,7 +2323,6 @@
             return out;
         }
 
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         // 진행 상태는 색이 아니라 아이콘으로 구분 (색은 교육 구분용으로 따로 씀)
         function calStatusIcon(status) {
             if (status === '완료') return '🌿';
@@ -2460,6 +2367,37 @@
             return `${d.getMonth() + 1}.${d.getDate()}`;
         }
 
+        // 대한민국 공휴일 — 설날·추석·부처님오신날은 음력 기준이라 공식으로 계산할 수 없어
+        // 해마다 직접 채워넣어야 함(대체공휴일 포함). 아래는 2026년 기준(정부 발표 기준 확인 완료).
+        // ⚠️ 2027년 이후 날짜는 아직 없음 — 새해가 되면 이 표에 그 해 공휴일을 추가해주세요.
+        const KR_HOLIDAYS = {
+            '2026-01-01': { name: '신정' },
+            '2026-02-16': { name: '설날 연휴', short: '연휴' },
+            '2026-02-17': { name: '설날' },
+            '2026-02-18': { name: '설날 연휴', short: '연휴' },
+            '2026-03-01': { name: '삼일절' },
+            '2026-03-02': { name: '삼일절 대체공휴일', short: '대체' },
+            '2026-05-05': { name: '어린이날' },
+            '2026-05-24': { name: '부처님오신날' },
+            '2026-05-25': { name: '부처님오신날 대체공휴일', short: '대체' },
+            '2026-06-06': { name: '현충일' },
+            '2026-08-15': { name: '광복절' },
+            '2026-08-17': { name: '광복절 대체공휴일', short: '대체' },
+            '2026-09-24': { name: '추석 연휴', short: '연휴' },
+            '2026-09-25': { name: '추석' },
+            '2026-09-26': { name: '추석 연휴', short: '연휴' },
+            '2026-10-03': { name: '개천절' },
+            '2026-10-05': { name: '개천절 대체공휴일', short: '대체' },
+            '2026-10-09': { name: '한글날' },
+            '2026-12-25': { name: '크리스마스' }
+        };
+        function calDateKey(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function getHoliday(d) {
+            return KR_HOLIDAYS[calDateKey(d)] || null;
+        }
+
         // 현재 캘린더가 보여주고 있는 달(항상 1일로 정규화)
         let calendarCursor = new Date();
         calendarCursor.setDate(1);
@@ -2474,17 +2412,6 @@
             renderCalendar();
         }
 
-<<<<<<< HEAD
-        // eduData 각 항목의 기간을 파싱해 캐시해두고, {item, startDate, endDate} 목록으로 반환
-        function getCalendarEvents() {
-            ensureCourseColors();
-            return (eduData || []).map(item => {
-                if (item._schedule === undefined) {
-                    item._schedule = parseSchedule(item);
-                }
-                return item._schedule ? { item, startDate: item._schedule.startDate, endDate: item._schedule.endDate } : null;
-            }).filter(Boolean);
-=======
         // eduData 각 항목을 캘린더에 찍을 이벤트로 바꾼다.
         // 커리큘럼 탭처럼 회차별 날짜가 있으면 그 날짜들 각각을(하루짜리 이벤트로), 없으면
         // 기존처럼 전체 기간을 하나의 이어진 막대로 표시한다.
@@ -2514,7 +2441,6 @@
             });
 
             return events;
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         }
 
         // 이번 달(+앞뒤로 삐져나온 날짜 포함)을 주(週) 단위로 쪼갠다. 각 주는 7개의 날짜를 가짐
@@ -2550,12 +2476,8 @@
 
         // 한 주(週) 안에서 겹치는 교육들을 '레인(줄)'에 배치한다.
         // laneHints: 같은 교육이 여러 주에 걸쳐 있을 때 가능하면 같은 레인을 유지해 시각적으로 이어져 보이게 함
-<<<<<<< HEAD
-        const MAX_CAL_LANES = 4;
-=======
         // 주(週)마다 항상 이 줄 수만큼만 표시 (CSS의 grid-template-rows와 값을 맞춰야 함) — 높이를 일정하게 유지하기 위함
         const MAX_CAL_LANES = 3;
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
         function layoutWeekEvents(week, events, laneHints) {
             const weekStart = week[0].date;
             const weekEnd = week[6].date;
@@ -2640,10 +2562,25 @@
 
                 const daynumsHtml = week.map((d, col) => {
                     const isToday = calSameDay(d.date, today);
+                    const dow = d.date.getDay(); // 0=일, 6=토
+                    const holiday = d.inMonth ? getHoliday(d.date) : null;
+
+                    const dayClasses = ['cal-daynum-cell'];
+                    if (!d.inMonth) dayClasses.push('cal-out-month');
+                    if (isToday) dayClasses.push('cal-today');
+                    if (d.inMonth) {
+                        if (holiday) dayClasses.push('cal-holiday');
+                        else if (dow === 0) dayClasses.push('cal-sunday');
+                        else if (dow === 6) dayClasses.push('cal-saturday');
+                    }
+
                     const numHtml = isToday
                         ? `<span class="cal-daynum-badge">${d.date.getDate()}</span>`
                         : `${d.date.getDate()}`;
-                    return `<div class="cal-daynum-cell ${d.inMonth ? '' : 'cal-out-month'} ${isToday ? 'cal-today' : ''}" style="grid-column:${col + 1};">${numHtml}</div>`;
+                    const holidayLabelHtml = holiday ? `<span class="cal-holiday-label">${holiday.short || holiday.name}</span>` : '';
+                    const titleAttr = holiday ? ` title="${holiday.name}"` : '';
+
+                    return `<div class="${dayClasses.join(' ')}" style="grid-column:${col + 1};"${titleAttr}><span class="cal-daynum-num">${numHtml}</span>${holidayLabelHtml}</div>`;
                 }).join('');
 
                 const barsHtml = placed.map(it => {
@@ -2652,12 +2589,6 @@
                     if (!it.continuesToNext) classes.push('cal-bar-end');
                     const label = (it.continuesFromPrev ? '◂ ' : '') + calStatusIcon(it.ev.item.status) + ' ' +
                         (it.ev.item.name || '이름 없는 교육') + (it.continuesToNext ? ' ▸' : '');
-<<<<<<< HEAD
-                    return `
-                        <div class="${classes.join(' ')}"
-                             style="grid-column:${it.startCol + 1} / ${it.endCol + 2}; grid-row:${it.lane + 2}; --course-color:${getCourseColor(it.ev.item)};"
-                             title="${it.ev.item.name || '이름 없는 교육'} · ${calStatusLabel(it.ev.item.status)} · ${calFmtMD(it.ev.startDate)}~${calFmtMD(it.ev.endDate)}"
-=======
                     const isSingleDay = calSameDay(it.ev.startDate, it.ev.endDate);
                     const dateRangeText = isSingleDay ? calFmtMD(it.ev.startDate) : `${calFmtMD(it.ev.startDate)}~${calFmtMD(it.ev.endDate)}`;
                     const sessionText = it.ev.sessionLabel ? ` (${it.ev.sessionLabel})` : '';
@@ -2665,17 +2596,12 @@
                         <div class="${classes.join(' ')}"
                              style="grid-column:${it.startCol + 1} / ${it.endCol + 2}; grid-row:${it.lane + 2}; --course-color:${getCourseColor(it.ev.item)};"
                              title="${it.ev.item.name || '이름 없는 교육'}${sessionText} · ${calStatusLabel(it.ev.item.status)} · ${dateRangeText}"
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
                              onclick="showDetailPage(${it.ev.item.id})">${label}</div>
                     `;
                 }).join('');
 
                 const overflowHtml = overflowPerDay.map((cnt, col) => cnt > 0
-<<<<<<< HEAD
-                    ? `<div class="cal-overflow-cell" style="grid-column:${col + 1}; grid-row:${laneCount + 2};">+${cnt}개 더</div>`
-=======
                     ? `<div class="cal-overflow-cell" style="grid-column:${col + 1}; grid-row:${MAX_CAL_LANES + 2};">+${cnt}개 더</div>`
->>>>>>> cbbe79ca44a6d6f0129302e24682a39b4085a1bf
                     : ''
                 ).join('');
 
@@ -2705,9 +2631,16 @@
                             ${calStatusIcon(ev.item.status)} ${ev.item.name || '이름 없는 교육'}
                         </div>
                     `).join('');
+                    const dow = date.getDay();
+                    const holiday = getHoliday(date);
+                    const dateClasses = ['cal-agenda-date'];
+                    if (holiday) dateClasses.push('cal-holiday');
+                    else if (dow === 0) dateClasses.push('cal-sunday');
+                    else if (dow === 6) dateClasses.push('cal-saturday');
+                    const holidayTag = holiday ? `<span class="cal-agenda-holiday-tag">${holiday.short || holiday.name}</span>` : '';
                     return `
                         <div class="cal-agenda-row ${isToday ? 'cal-agenda-today' : ''}">
-                            <div class="cal-agenda-date">${date.getMonth() + 1}.${date.getDate()}<span>(${weekdayNames[date.getDay()]})</span></div>
+                            <div class="${dateClasses.join(' ')}">${date.getMonth() + 1}.${date.getDate()}<span>(${weekdayNames[dow]})</span>${holidayTag}</div>
                             <div class="cal-agenda-events">${chips}</div>
                         </div>
                     `;
