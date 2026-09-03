@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FASTFIVE AI 빌더스 성과 공유</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .badge-dot { width: 7px; height: 7px; border-radius: 9999px; }
+    .preview-canvas {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .preview-canvas:hover {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 font-sans antialiased selection:bg-orange-100 selection:text-orange-900">
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5">
+    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span id="toast-message">클립보드에 복사되었습니다!</span>
+  </div>
+
+  <!-- Image Modal (Lightbox for full view - 대형 뷰어 확대 지원) -->
+  <div id="image-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 md:p-6" onclick="closeModal(event)">
+    <div class="bg-white rounded-2xl w-full max-w-[96vw] xl:max-w-7xl max-h-[96vh] overflow-hidden flex flex-col shadow-2xl border border-slate-700/40" onclick="event.stopPropagation()">
+      <div class="px-4 sm:px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-2 h-2 rounded-full bg-orange-600 shrink-0"></span>
+          <span id="modal-title" class="font-extrabold text-slate-900 text-xs sm:text-sm truncate">화면 크게 보기</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="modal-external-link" href="#" target="_blank" class="hidden text-xs font-semibold text-slate-600 hover:text-orange-600 bg-white border border-slate-200 px-2.5 py-1 rounded-lg transition items-center gap-1">
+            <span>원본 새 창 보기</span> ↗
+          </a>
+          <button onclick="closeModal()" class="text-slate-400 hover:text-slate-800 text-base sm:text-lg font-bold px-2 py-1 rounded-lg hover:bg-slate-200/60 transition">
+            ✕
+          </button>
+        </div>
+      </div>
+      <div id="modal-content" class="p-2 sm:p-4 overflow-y-auto max-h-[88vh] flex items-center justify-center bg-slate-950/5">
+        <!-- Content injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <span class="bg-slate-950 text-white text-xs font-black px-2 py-0.5 rounded tracking-wide">FASTFIVE</span>
+        <span class="text-slate-300 font-light">|</span>
+        <span class="text-xs sm:text-sm font-semibold text-slate-700">패파 아카데미 · <strong class="text-slate-950">AI 빌더스</strong></span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden sm:inline-block text-xs text-slate-500 font-medium mr-2">2026.08.06 — 09.01 (4주간)</span>
+        <a href="#projects" class="text-xs font-bold px-3.5 py-1.5 rounded-lg bg-orange-50 text-orange-700 hover:bg-orange-100 transition">
+          7개 조 결과물 보기 ↓
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="bg-white border-b border-slate-200 pt-10 pb-12 sm:pt-14 sm:pb-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-medium mb-4">
+        <span class="w-2 h-2 rounded-full bg-orange-600"></span>
+        패파 아카데미 &lt;AI 빌더스&gt; 1기 (2026.08.06 ~ 09.01)
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 tracking-tight leading-snug mb-3.5 break-keep">
+        반복되던 실무 업무를 직접 자동화한,<br class="hidden sm:inline">
+        <span class="text-orange-600">AI 빌더스 7개 조의 프로젝트 결과물</span>을 공유합니다.
+      </h1>
+      
+      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep mb-8">
+        지난 3주간 패파 아카데미 AI 빌더스 과정을 통해 현업 비효율을 정의하고 직접 개발한 실무 프로덕트 모음입니다.<br class="hidden sm:inline">
+      </p>
+
+      <!-- 3 Quick Highlight Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-6 border-t border-slate-100">
+        <div class="p-4 bg-slate-50 border border-slate-200/80 rounded-xl">
+          <div class="text-[11px] font-semibold text-slate-500 mb-0.5">완성 프로젝트👨🏻‍💻</div>
+          <div class="text-xl sm:text-2xl font-black text-slate-900">7개 조 <span class="text-xs font-medium text-slate-500">개발 완료</span></div>
+        </div>
+        <div class="p-4 bg-orange-50/60 border border-orange-200/70 rounded-xl">
+          <div class="text-[11px] font-semibold text-orange-700 mb-0.5">웹 배포 완료🌐</div>
+          <div class="text-xl sm:text-2xl font-black text-orange-600">5개 솔루션 <span class="text-xs font-medium text-orange-700">라이브 배포</span></div>
+        </div>
+        <div class="p-4 bg-amber-50/80 border border-amber-300 rounded-xl">
+          <div class="text-[11px] font-semibold text-amber-800 mb-0.5">최우수 조🏆</div>
+          <div class="text-xl sm:text-2xl font-black text-amber-700">7조 <span class="text-xs font-medium text-amber-900">FastFix 시설 아카이버</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Filter & Project List -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10" id="projects">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-950">조별 프로젝트 상세 보기</h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+          우측 화면을 클릭하면 크게 확대되며, 배포된 프로젝트는 링크를 통해 직접 테스트하실 수 있습니다.
+        </p>
+      </div>
+ 
+    </div>
+
+    <!-- CARDS CONTAINER -->
+    <div class="space-y-10" id="projects-container">
+
+      <!-- ================= CARD 1 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="live ops" id="card-team1">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">1조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">스마트 작업허가서 발급 시스템</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+            <span class="badge-dot bg-emerald-500"></span> 웹 브라우저 접속 가능
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <!-- Left: Information (7 cols) -->
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>서면 누락 원천 차단:</strong> 위험요인·안전조치 미기입 시 제출 자체가 불가능하도록 통제</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>대면 결재 지연 해소:</strong> 담당자를 찾아다니지 않고 메일 링크로 즉시 결재 및 단계 이관</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>감사 대응 데이터 축적:</strong> 신청부터 종료 보고까지 구글 시트에 1건당 1줄로 자동 아카이빙</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 빈칸 방지 10개 섹션
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    미기입 필수 항목 수 실시간 표시, 위험요인 체크 시 안전대책 입력란 강제 활성화
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 안전기준 자동 판정 & 경고
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    가스 농도 수치 입력 시 적합 여부 자동 판정, 화기·밀폐 등 특별작업 선택 시 경고 표출
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 비대면 링크 결재 & 이력 추적
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    안전관리자 검토 링크 발송, 수정 이력 보존, 모바일 화면 직접 전자서명 및 사유 입력 반려
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 작업 종료 보고 & A4/시트 연동
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    동일 링크로 현장 종료 보고 시 자동 종결, A4/PDF 출력 지원 및 전 이력 구글 시트 저장
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>안전보건파트 실무 적용:</strong> 기존 종이 서식을 대체하고 화기·밀폐·고소 등 특별작업 허가서 연계 확장<br>
+                • 부서별·장소별 발행 건수, 반려 사유, 평균 결재 소요시간 자동 통계 집계 구축
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Preview (5 cols) -->
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [1조 이미지: 1.jpg] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('1조: 스마트 작업허가서 발급', this)">
+                <div class="h-7 bg-slate-100 border-b border-slate-200 px-3 flex items-center justify-between text-xs text-slate-500 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="font-mono text-[10px] text-slate-500 ml-2">work-permit-app.vercel.app</span>
+                  </div>
+                  <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">ONLINE</span>
+                </div>
+                
+                <!-- 실제 캡처 이미지 태그 -->
+                <img src="1.jpg" alt="1조 작업허가서 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-slate-50 text-[11px]">
+                  <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                      <span class="font-bold text-slate-900 text-xs">일반 작업허가서 (#2026-0902)</span>
+                      <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded border border-emerald-200">미기입 0개 (검증완료)</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-[10px]">
+                      <div><span class="text-slate-400">작업장소:</span> <strong class="text-slate-700">강남 2호점 8F 공용부</strong></div>
+                      <div><span class="text-slate-400">작업유형:</span> <strong class="text-slate-700">천장 배선 수리</strong></div>
+                    </div>
+                    <div class="bg-slate-50 p-1.5 rounded border border-slate-200 text-[10px] flex items-center justify-between">
+                      <span class="text-slate-600 font-medium">가스 농도 (산소 20.9% · 유해가스 0%)</span>
+                      <span class="text-emerald-700 font-bold">✓ 적합 판정 완료</span>
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2 rounded-lg border border-dashed border-slate-300 flex items-center justify-between">
+                    <div>
+                      <div class="text-[10px] font-bold text-slate-700">✍️ 관리감독자 모바일 서명</div>
+                      <div class="text-[9px] text-slate-400">링크 수신 후 모바일에서 원클릭 서명 승인</div>
+                    </div>
+                    <div class="font-serif italic font-black text-orange-600 text-xs border border-orange-200 bg-orange-50 px-2 py-1 rounded">
+                      Approved
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Experience & Link Box -->
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="w-full sm:w-auto text-center sm:text-left">
+                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">체험 링크</div>
+                <button onclick="copyToClipboard('https://work-permit-app-dusky.vercel.app/')" class="text-xs text-orange-600 hover:text-orange-700 font-bold underline">
+                  URL 클립보드 복사하기
+                </button>
+              </div>
+              <a href="https://work-permit-app-dusky.vercel.app/" target="_blank" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs">
+                작업허가서 직접 써보기 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 2 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="live biz" id="card-team2">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">2조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">GRIFFIN PMS 랜딩페이지</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-orange-700 bg-orange-50 border border-orange-200 px-3 py-1 rounded-full">
+            <span class="badge-dot bg-orange-600"></span> 실제 서비스 메인 도입 확정 (대표님 컨펌)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>공실 원인 분석 막막함 해소:</strong> '건물도 정기 건강검진이 필요하다'는 인식 전환으로 건물주 설득</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>간편 가입 및 전문 부서 연결:</strong> 복잡한 절차 없이 간편 가입을 받고 패파 3-Track 솔루션으로 브릿지 역할 수행</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 10초 간편 가입 & 고효율 CTA
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    건물주 이탈 방지를 위한 명확한 상단 헤드라인 카피와 즉각적인 액션 유도 버튼 배치
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 5단계 헬스체크 & 1장 리포트
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    진단 신청부터 전문가 상담까지 5단계 투명 안내, 시각화된 진단 리포트 예시로 신뢰도 확보
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 3-Track 맞춤 솔루션 라우팅
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    진단 결과별 공실/시스템(GRIFFIN), 신축/리모델링(VC), 자산운영(PM/FM)으로 동선 최적화
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 모바일/PC 반응형 UI/UX
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    스마트폰 환경에서도 텍스트 가독성과 터치 버튼 클릭률을 극대화한 인터페이스 구축
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>실제 GRIFFIN 메인 도입 확정:</strong> 공식 서비스 초기 진입 및 로그인 화면으로 즉시 적용<br>
+                • 사내 인쿼리 수집 기준 및 실무 부서 배정 SOP를 백엔드에 연동해 실매출 전환 자동화
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [2조 이미지: 2.jpg] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-slate-950 rounded-xl border border-slate-800 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('2조: GRIFFIN PMS 랜딩페이지', this)">
+                <div class="h-7 bg-slate-900 border-b border-slate-800 px-3 flex items-center justify-between text-xs text-slate-400 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+                    <span class="font-mono text-[10px] text-slate-400 ml-2">griffin-landing-eta.vercel.app</span>
+                  </div>
+                  <span class="text-[10px] text-orange-400 font-bold">GRIFFIN PMS</span>
+                </div>
+                
+                <img src="2.jpg" alt="2조 랜딩페이지 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-4 flex-1 flex flex-col justify-between bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+                  <div class="text-center space-y-1.5 pt-1">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-orange-500 bg-orange-950/70 border border-orange-800/80 px-2 py-0.5 rounded-full">건물 종합 진단 솔루션</span>
+                    <h4 class="text-sm font-extrabold text-white tracking-tight">"건물도 사람처럼 정기 건강검진이 필요합니다"</h4>
+                    <p class="text-[10px] text-slate-300">내 건물의 공실 원인 분석부터 예상 임대 수익까지 1장 리포트 제공</p>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-1.5 text-[9px] text-center my-2">
+                    <div class="bg-slate-800/80 border border-slate-700 p-1.5 rounded text-slate-200">
+                      <span class="block font-bold text-orange-400">Track 1</span> 공실 해소
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700 p-1.5 rounded text-slate-200">
+                      <span class="block font-bold text-orange-400">Track 2</span> 리모델링
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700 p-1.5 rounded text-slate-200">
+                      <span class="block font-bold text-orange-400">Track 3</span> 자산 운영
+                    </div>
+                  </div>
+
+                  <div class="bg-orange-600 text-white text-center py-2 rounded-lg font-bold text-xs shadow-md">
+                    10초 만에 건물 헬스체크 신청하기 →
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="w-full sm:w-auto text-center sm:text-left">
+                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">체험 링크</div>
+                <button onclick="copyToClipboard('https://griffin-landing-eta.vercel.app/')" class="text-xs text-orange-600 hover:text-orange-700 font-bold underline">
+                  URL 클립보드 복사하기
+                </button>
+              </div>
+              <a href="https://griffin-landing-eta.vercel.app/" target="_blank" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs">
+                랜딩페이지 둘러보기 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 3 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="live biz" id="card-team3">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">3조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">FINDER, FIND ME! 오피스 추천 엔진</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+            <span class="badge-dot bg-emerald-500"></span> 슬라이더 추천 체험 가능
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>단순 필터의 딜레마 극복:</strong> 예산을 살짝만 넘겨도 조건이 탁월한 알짜 호실이 검색에서 사라지던 문제 해결</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>다속성 점수 모델 적용:</strong> 조건으로 자르는 대신 피쉬바인 모형으로 가중치를 매겨 최적의 호실을 순위화하고 숫자로 추천 근거 제시</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 슬라이더 & 4대 프리셋
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    위치·예산·공간감 등 조작 시 1위 즉시 재계산 (자동 정규화), 위치우선/예산절약 등 프리셋 지원
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 항목별 기여도 시각화
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    호실 카드별 점수 막대그래프 노출, 마우스 호버 시 세부 산출식(가중치×적합도)을 고객과 함께 검토
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 유연한 예산 감점 로직
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    예산 +10% 이내 초과 호실은 지우지 않고 감점 처리, 초과 배지와 함께 상쇄 근거 자동 제안
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 원클릭 A4 제안서 자동 생성
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    추천 3개 비교표, 기여도 표뿐 아니라 강점과 약점까지 자동으로 문장화되는 PDF 출력 서식 제공
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>강남권 대면 파일럿:</strong> 고객과 화면을 보며 슬라이더 조작 상담 및 경계값 현장 검증<br>
+                • 전 직영지점 확대 및 BigQuery 일 단위 공실 자동 연동, 기존 공실 도구(스팟파인더) 연계
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [3조 이미지: 3.png] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('3조: FINDER, FIND ME! 오피스 추천 엔진', this)">
+                <div class="h-7 bg-slate-100 border-b border-slate-200 px-3 flex items-center justify-between text-xs text-slate-500 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="font-mono text-[10px] text-slate-500 ml-2">finder-find.vercel.app</span>
+                  </div>
+                  <span class="text-[10px] text-orange-600 font-bold">다속성 엔진</span>
+                </div>
+                
+                <img src="3.png" alt="3조 오피스 추천 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-slate-50 text-[11px]">
+                  <div class="bg-white p-2.5 rounded-lg border border-slate-200 space-y-1.5 shadow-xs">
+                    <div class="flex justify-between text-[10px] font-bold text-slate-700">
+                      <span>위치 우선도</span> <span class="text-orange-600 font-black">40%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-orange-500 w-2/5"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] font-bold text-slate-700 pt-1">
+                      <span>예산 민감도</span> <span class="text-slate-900 font-black">25%</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div class="h-full bg-slate-800 w-1/4"></div>
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2.5 rounded-lg border-2 border-orange-400 shadow-xs">
+                    <div class="flex items-center justify-between mb-1">
+                      <div class="flex items-center gap-1.5">
+                        <span class="bg-orange-600 text-white font-black text-[9px] px-1.5 py-0.5 rounded">1위</span>
+                        <span class="font-bold text-slate-900 text-xs">강남 2호점 401호 (4인실)</span>
+                      </div>
+                      <span class="font-black text-orange-600 text-xs">91.2점</span>
+                    </div>
+                    <div class="h-2 w-full bg-slate-100 rounded flex overflow-hidden my-1">
+                      <div class="bg-orange-500 w-[40%]" title="위치 기여도 36.8점"></div>
+                      <div class="bg-amber-400 w-[30%]" title="공간감 기여도 28.0점"></div>
+                      <div class="bg-slate-700 w-[20%]" title="예산 기여도 18.4점"></div>
+                      <div class="bg-slate-300 w-[10%]"></div>
+                    </div>
+                    <div class="text-[9px] text-slate-500 flex justify-between">
+                      <span>위치 적합도 압도적 1위</span>
+                      <span class="text-orange-700 font-semibold">예산 +6% 상쇄 추천</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="w-full sm:w-auto text-center sm:text-left">
+                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">체험 링크</div>
+                <button onclick="copyToClipboard('https://finder-find-76mei3ytu-fivespot.vercel.app/')" class="text-xs text-orange-600 hover:text-orange-700 font-bold underline">
+                  URL 클립보드 복사하기
+                </button>
+              </div>
+              <a href="https://finder-find-76mei3ytu-fivespot.vercel.app/" target="_blank" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs">
+                추천 엔진 실행하기 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 4 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="live biz" id="card-team4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">4조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">뉴스레터 Admin (FASTFIVE for Startups)</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full">
+            <span class="badge-dot bg-amber-500"></span> 웹 가동 중 (초기 로딩 약 30초)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>반복 리서치 업무 자동화:</strong> 매주 발행하는 뉴스레터의 AI 툴 발굴 및 정부지원사업 일정 수집 시간을 단축</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>검증 및 원고 품질 유지:</strong> 필터링과 링크 팩트체크를 AI로 자동화해 원고 품질을 고르게 유지</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> AI 툴 100점 채점
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    툴 이름 입력 시 AI가 무료플랜·한국어 지원 여부를 판정하고 100점 만점으로 자동 평가
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 스티비(Stibee) 내보내기
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    초안 작성 및 링크 팩트체크 후, 승인 건을 메일 템플릿에 바로 붙여넣는 텍스트로 추출
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 마감 지원사업 자동 수집
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    K-startup 공고를 자동 스크래핑해 마감 요일별 일정표 형태로 일목요연하게 정렬
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>BX팀 파일럿 운영:</strong> 실제 뉴스레터 제작 실무에 직접 활용하며 제작 리드타임 단축 효과 측정<br>
+                • 단순 작성을 넘어 배포 툴과의 API 연동 등 더 높은 수준의 자동화로 고도화
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [4조 이미지: 4.jpg] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('4조: 뉴스레터 Admin', this)">
+                <div class="h-7 bg-slate-100 border-b border-slate-200 px-3 flex items-center justify-between text-xs text-slate-500 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="font-mono text-[10px] text-slate-500 ml-2">newsletter-admin.onrender.com</span>
+                  </div>
+                  <span class="text-[10px] bg-orange-100 text-orange-800 font-bold px-1.5 py-0.5 rounded">Render Admin</span>
+                </div>
+                
+                <img src="4.jpg" alt="4조 뉴스레터 어드민 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-slate-50 text-[11px]">
+                  <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-xs space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-slate-900 text-xs">블록 A: Cursor AI / Claude 3.5</span>
+                      <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.5 rounded">94점 채점 (승인)</span>
+                    </div>
+                    <div class="text-[10px] text-slate-500 flex gap-2">
+                      <span>✓ 무료 플랜 지원</span>
+                      <span>✓ 한국어 지원</span>
+                      <span>✓ 공식 링크 검증</span>
+                    </div>
+                    <div class="text-[9px] bg-slate-100 text-slate-600 p-1.5 rounded font-mono">
+                      [스티비 복사용] 🚀 이번 주 주목할 AI 생산성 툴: 코딩부터 문서 작성까지...
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2.5 rounded-lg border border-slate-200 shadow-xs flex items-center justify-between">
+                    <div>
+                      <div class="font-bold text-slate-800 text-[10px]">블록 B: K-Startup 마감 공고 수집</div>
+                      <div class="text-[9px] text-slate-400">월(2건) · 수(3건) · 금(4건) 일정표 정렬 완료</div>
+                    </div>
+                    <span class="text-[10px] bg-orange-600 text-white font-bold px-2 py-1 rounded">
+                      본문 복사
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="w-full sm:w-auto text-center sm:text-left">
+                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">체험 링크</div>
+                <button onclick="copyToClipboard('https://forstartups-newsletter-admin.onrender.com')" class="text-xs text-orange-600 hover:text-orange-700 font-bold underline">
+                  URL 클립보드 복사하기
+                </button>
+              </div>
+              <a href="https://forstartups-newsletter-admin.onrender.com" target="_blank" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs">
+                어드민 접속하기 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 5 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="ops" id="card-team5">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">5조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">지점운영그룹 대시보드</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1 rounded-full">
+            🔒 사내 데이터 보호 (미배포)
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>데이터 활용 장벽 해소:</strong> 소수 인원만 보던 운영 데이터를 매니저·파트장·팀장 누구나 확인하도록 지원</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>역할별 실시간 지표 공유:</strong> 티켓 추이 및 계약 달성률을 한 화면에 엮어 신속한 현업 판단 도모</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> VOC 티켓 다각도 분석
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    지점별 티켓 발생 추이 및 카테고리별 문의 빈도 분석, 지점간 평균 처리시간 비교
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 매니저 담당 계약 관리
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    현장 매니저가 본인 담당 계약의 실적과 타임라인별 진행 현황을 즉시 확인
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 파트/팀 통합 매출 관리
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    파트장·팀장 단위의 매출 추이, 통합 계약 현황 및 목표 대비 진행률 실시간 파악
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>분석 고도화:</strong> 지점별 장기공실 호실 분석 및 인입 리드(투어 기준) 전환 데이터 연동<br>
+                • 파트원·팀원 관리 전용 페이지 신설 및 확정/예정 매출 실시간 업데이트 반영
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [5조 지점운영 대시보드 이미지: 5.png] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('5조: 지점운영 종합 대시보드', this)">
+                <div class="h-7 bg-slate-100 border-b border-slate-200 px-3 flex items-center justify-between text-xs text-slate-500 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                    <span class="font-mono text-[10px] text-slate-500 ml-2">internal.ops/dashboard</span>
+                  </div>
+                  <span class="text-[10px] text-slate-500 font-semibold">내부 대시보드</span>
+                </div>
+                
+                <img src="5.png" alt="5조 지점운영 대시보드 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-slate-50 text-[11px]">
+                  <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-white p-2 rounded border border-slate-200 text-center">
+                      <div class="text-[9px] text-slate-400">이번 달 VOC 티켓</div>
+                      <div class="text-xs font-black text-slate-900">184건</div>
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200 text-center">
+                      <div class="text-[9px] text-slate-400">평균 해결 시간</div>
+                      <div class="text-xs font-black text-emerald-600">1.4시간</div>
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200 text-center">
+                      <div class="text-[9px] text-slate-400">계약 갱신율</div>
+                      <div class="text-xs font-black text-orange-600">89.4%</div>
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                    <div class="flex justify-between text-[10px] font-bold text-slate-700 mb-2">
+                      <span>권역별 티켓 처리 추이 (강남 / 여의도 / 을지로)</span>
+                      <span class="text-slate-400 font-normal">실시간</span>
+                    </div>
+                    <div class="flex items-end gap-2 h-14 pt-2">
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-slate-200 rounded-t h-8"></div>
+                        <span class="text-[8px] text-slate-400">역삼</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-orange-400 rounded-t h-12"></div>
+                        <span class="text-[8px] text-slate-400">강남</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-slate-300 rounded-t h-6"></div>
+                        <span class="text-[8px] text-slate-400">여의도</span>
+                      </div>
+                      <div class="flex-1 flex flex-col items-center gap-1">
+                        <div class="w-full bg-orange-600 rounded-t h-10"></div>
+                        <span class="text-[8px] text-slate-400">을지로</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-700">지점 실데이터 보안 보호</span>
+              <span class="text-xs font-bold text-slate-500 bg-slate-200/80 px-3 py-1 rounded-lg">
+                민감 데이터 포함으로 미배포
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 6 ================= -->
+      <article class="project-card bg-white border border-slate-200 rounded-2xl p-6 sm:p-7 shadow-sm hover:border-slate-300 transition" data-category="live biz" id="card-team6">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-slate-100">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-slate-900 text-white text-xs font-black">6조</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-950">재계약 제안 워크벤치 (Renewal-Fit)</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+            <span class="badge-dot bg-blue-600"></span> 패파 구글 계정 로그인 후 접속
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium space-y-1 break-keep bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>수기 계산 누락 및 품질 편차 해결:</strong> 담당자마다 기준이 달라 발생하는 계산 오류와 들쭉날쭉한 제안서 품질 개선</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-orange-500 font-bold">•</span><span><strong>입력 공수 절감:</strong> 세일즈포스 화면 텍스트를 복사-붙여넣기만 하면 계약 정보가 자동 완성되도록 설계</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> CRM 화면 복사-붙여넣기 자동 인식
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    화면 텍스트를 그대로 붙여넣으면 현재 계약조건과 호실 정보를 자동으로 파싱해 필드에 반영
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 다각도 제안안 & 적정성 분석표
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    유지/확장/타지점 이동 등 복수 제안안의 적정성을 비교 분석하고 예외 사유 기록
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> 조건별 추천 순위 & 매력 포인트
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    고객 우선순위 기반 추천 순위와 소구점을 자동 산출하며 제안 금액 즉시 미세 조정 가능
+                  </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span> Gmail 메일 초안 & A4 PDF 생성
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    원클릭 Gmail 발송용 본문 복사 지원 및 인쇄/PDF 저장이 가능한 표준 A4 제안서 출력
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-slate-50/90 border border-slate-200/80 rounded-xl p-3.5 text-xs text-slate-700 leading-relaxed break-keep">
+                • <strong>실무 파일럿 검증:</strong> 실제 재계약 건에 투입하여 텍스트 인식률과 이메일 초안 생성의 실효성 검증<br>
+                • 피드백 기반 파싱 규칙 개선 및 향후 세일즈포스 직접 API 연동 검토
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-slate-400 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [6조 Renewal-Fit 이미지: 6.png] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('6조: Renewal-Fit 워크벤치', this)">
+                <div class="h-7 bg-slate-100 border-b border-slate-200 px-3 flex items-center justify-between text-xs text-slate-500 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                    <span class="font-mono text-[10px] text-slate-500 ml-2">renewal-fit.vercel.app</span>
+                  </div>
+                  <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-1.5 py-0.5 rounded">Google SSO</span>
+                </div>
+                
+                <img src="6.png" alt="6조 재계약 워크벤치 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-slate-50 text-[11px]">
+                  <div class="bg-blue-50/70 border border-dashed border-blue-300 rounded-lg p-2 text-center">
+                    <span class="text-[10px] text-blue-800 font-bold">📋 세일즈포스 화면 텍스트 붙여넣기</span>
+                    <div class="text-[9px] text-blue-600 mt-0.5">강남 5호점 1202호 · 현재 회원료 420만 원 · 만기 10/31 인식 완료!</div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-white p-2 rounded border border-emerald-300 shadow-2xs">
+                      <div class="flex justify-between items-center mb-0.5">
+                        <span class="font-bold text-slate-800 text-[10px]">1안: 현 호실 유지</span>
+                        <span class="text-[8px] bg-emerald-100 text-emerald-800 font-black px-1 rounded">추천 1위</span>
+                      </div>
+                      <div class="text-[9px] text-slate-500">할인율 10% · 월 378만 원</div>
+                    </div>
+                    <div class="bg-white p-2 rounded border border-slate-200 shadow-2xs">
+                      <div class="flex justify-between items-center mb-0.5">
+                        <span class="font-bold text-slate-800 text-[10px]">2안: 타 지점 이동</span>
+                        <span class="text-[8px] bg-slate-100 text-slate-600 font-bold px-1 rounded">2위</span>
+                      </div>
+                      <div class="text-[9px] text-slate-500">선릉 1호점 · 월 350만 원</div>
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2 rounded border border-slate-200 flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-slate-700">✉️ Gmail 본문 원클릭 생성</span>
+                    <span class="text-[9px] text-orange-600 font-bold underline">A4 PDF 출력</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="w-full sm:w-auto text-center sm:text-left">
+                <div class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">체험 링크</div>
+                <button onclick="copyToClipboard('https://renewal-fit.vercel.app/workbench.html')" class="text-xs text-orange-600 hover:text-orange-700 font-bold underline">
+                  URL 클립보드 복사하기
+                </button>
+              </div>
+              <a href="https://renewal-fit.vercel.app/workbench.html" target="_blank" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs">
+                사내 계정으로 열기 →
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- ================= CARD 7 (동료 투표 1위) ================= -->
+      <article class="project-card relative bg-gradient-to-br from-amber-50/50 via-white to-orange-50/40 border-2 border-amber-400 rounded-2xl p-6 sm:p-7 shadow-md hover:shadow-lg transition" data-category="ops" id="card-team7">
+        
+        <!-- 1등 배지 -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-black shadow-sm mb-3">
+          <span>동료들이 뽑은 최우수 프로젝트 1위</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 border-b border-amber-200">
+          <div class="flex items-center gap-2.5">
+            <span class="px-2.5 py-1 rounded bg-amber-600 text-white text-xs font-black">7조</span>
+            <h3 class="text-lg sm:text-xl font-black text-slate-950">FastFix · 시설 조치 가이드 & 아카이버</h3>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full">
+            2.3만 건 데이터 & 78개 도면 브라우저
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-5">
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <div class="text-xs font-extrabold text-amber-700 uppercase tracking-wider mb-1.5">1. 왜 만들었나요?</div>
+              <ul class="text-xs sm:text-sm text-slate-800 font-medium leading-relaxed space-y-1 break-keep bg-amber-50/60 p-3 rounded-xl border border-amber-200/80">
+                <li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">•</span><span><strong>파편화된 2.3만 건 시설 데이터 통합:</strong> 흩어져 있던 과거 해결 내역을 단일 대시보드로 집약</span></li>
+                <li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">•</span><span><strong>신입·현장 매니저 10초 대응 체계 구축:</strong> NLP 유연 검색 및 4층 구조 가이드로 초도조치와 과거 사례를 신속 탐색</span></li>
+              </ul>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-amber-700 uppercase tracking-wider mb-1.5">2. 핵심 기능</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="bg-white/90 border border-amber-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> NLP 검색 & 본문 하이라이트
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    사내 동의어 자동 확장 (천장↔천정, 누수↔물샘), 조사 무관 연관 이슈 누락 방지 및 검색 위치 가시화
+                  </div>
+                </div>
+                <div class="bg-white/90 border border-amber-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 4층 구조 초도조치 가이드
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    1층(긴급 차단 조치) → 2층(101장 교육 PPT) → 3층(2,300여 건 과거 유사 해결 사례 추천) 체계적 제공
+                  </div>
+                </div>
+                <div class="bg-white/90 border border-amber-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 고장 주기 & 히트맵 분석
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    계절성 히트맵 및 중앙값 재발 주기 분석을 통해 고장 발생 전 선제적 정기 점검 시점 예측
+                  </div>
+                </div>
+                <div class="bg-white/90 border border-amber-200 rounded-xl p-3 shadow-2xs">
+                  <div class="text-xs font-bold text-slate-900 mb-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> 78개 지점 4대 공종 도면 뷰
+                  </div>
+                  <div class="text-xs text-slate-600 leading-relaxed break-keep">
+                    전 지점 기계/소방/전기 등 최신 도면 파일 및 카테고리별 매트릭스 뷰 실시간 조회 지원
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="text-xs font-extrabold text-amber-700 uppercase tracking-wider mb-1">3. 이후 활용 계획</div>
+              <div class="bg-white/95 border border-amber-300 rounded-xl p-3.5 text-xs text-slate-800 font-medium leading-relaxed break-keep">
+                • <strong>신입 사원 온보딩 표준 도구:</strong> 전사 지점 매니저 필수 대응 가이드로 활용 및 선제적 점검 도입<br>
+                • NLP 분류 모델 고도화(정확도 85% 목표) 및 사내 지식 기반 <strong>FastFix 2.0 AI 에이전트</strong> 발전
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-extrabold text-amber-900 uppercase tracking-wider">화면 미리보기</span>
+                <span class="text-[11px] text-amber-800 font-medium">클릭 시 확대 🔍</span>
+              </div>
+
+              <!-- 💡 [7조 FastFix 이미지: 7.png] -->
+              <div class="preview-canvas w-full h-64 sm:h-72 bg-white rounded-xl border-2 border-amber-300 shadow-sm overflow-hidden flex flex-col cursor-pointer relative" onclick="openImageModal('7조: FastFix 시설 아카이버 (동료 투표 1위)', this)">
+                <div class="h-7 bg-amber-100/70 border-b border-amber-200 px-3 flex items-center justify-between text-xs text-amber-900 shrink-0 z-10">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                    <span class="font-mono text-[10px] text-amber-800 ml-2">fastfix.internal/guide</span>
+                  </div>
+                  <span class="text-[10px] bg-amber-500 text-white font-black px-1.5 py-0.5 rounded">최우수 프로젝트</span>
+                </div>
+                
+                <img src="7.png" alt="7조 FastFix 화면" class="preview-real-img w-full flex-1 object-cover object-top hidden" onload="showRealImage(this)">
+
+                <div class="preview-mock-body p-3.5 flex-1 flex flex-col justify-between bg-amber-50/20 text-[11px]">
+                  <div class="bg-white px-3 py-2 rounded-lg border border-amber-300 flex items-center justify-between shadow-2xs">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-amber-600 font-bold">🔍</span>
+                      <span class="font-bold text-slate-800 text-[11px]">"천정 물샘"</span>
+                    </div>
+                    <span class="text-[9px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold">'천장 누수' 242건 자동 매칭</span>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-1.5 text-center text-[9px] font-bold">
+                    <div class="bg-red-50 border border-red-200 text-red-700 p-1.5 rounded">
+                      <span class="block text-[8px] text-red-500 font-black">1층 긴급조치</span>
+                      메인 급수 밸브 잠금
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 text-amber-800 p-1.5 rounded">
+                      <span class="block text-[8px] text-amber-600 font-black">2층 교육PPT</span>
+                      누수 대응 SOP 42p
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 text-blue-700 p-1.5 rounded">
+                      <span class="block text-[8px] text-blue-600 font-black">3층 유사사례</span>
+                      강남 3호점 유사 건
+                    </div>
+                  </div>
+
+                  <div class="bg-white p-2 rounded border border-amber-200 flex items-center justify-between text-[10px]">
+                    <span class="text-slate-700 font-medium">🗺️ 78개 지점 설비 도면 즉시 조회</span>
+                    <span class="text-amber-700 font-bold underline">기계/소방/전기 도면</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-amber-100/60 border border-amber-200 rounded-xl p-3.5 flex items-center justify-between">
+              <div>
+                <div class="text-xs font-black text-amber-900">도면 & 긴급 설비 데이터 보안</div>
+                <div class="text-[11px] text-amber-700">전사 지점 도면 보호를 위해 보안 처리 (미배포)</div>
+              </div>
+              <span class="text-xs font-bold text-amber-900 bg-amber-200/90 px-3 py-1.5 rounded-lg shrink-0">
+                사내망 구축 중
+              </span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- Footer Encouragement -->
+  <section class="bg-white border-t border-slate-200 py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h4 class="text-base font-bold text-slate-900">직접 사용해보시고 동료들에게 따뜻한 피드백을 건네주세요!</h4>
+        <p class="text-xs text-slate-500 mt-0.5">개선 의견이나 협업 제안은 언제든 해당 조 담당자에게 슬랙으로 편하게 보내주세요.</p>
+      </div>
+      <button onclick="sendApplause()" class="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 font-bold text-xs sm:text-sm text-white transition shadow-sm">
+        <span>동료들에게 박수 보내기 👏</span>
+        <span id="applause-counter" class="bg-orange-800/80 px-2 py-0.5 rounded-full text-xs">158</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Clean Minimal Footer -->
+  <footer class="border-t border-slate-100 bg-slate-50 py-6 text-center text-xs text-slate-400">
+    <span>FASTFIVE 사내 실무 프로젝트 성과 공유 TFT</span>
+  </footer>
+
+  <!-- Script logic -->
+  <script>
+    function showRealImage(imgElement) {
+      if (imgElement && imgElement.getAttribute('src') && imgElement.getAttribute('src').trim() !== '') {
+        imgElement.classList.remove('hidden');
+        const mockBody = imgElement.parentElement.querySelector('.preview-mock-body');
+        if (mockBody) {
+          mockBody.classList.add('hidden');
+        }
+      }
+    }
+
+    function copyToClipboard(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        document.execCommand('copy');
+        showToast('링크가 복사되었습니다!');
+      } catch (err) {
+        showToast('복사에 실패했습니다.');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2200);
+    }
+
+    function filterProjects(category, btnElement) {
+      const cards = document.querySelectorAll('.project-card');
+      const buttons = document.querySelectorAll('#filter-buttons .filter-btn');
+
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+        btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+      });
+      btnElement.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-200');
+      btnElement.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+
+      cards.forEach(card => {
+        const cardCategories = card.getAttribute('data-category') || '';
+        if (category === 'all' || cardCategories.includes(category)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    let applauseCount = 158;
+    function sendApplause() {
+      applauseCount += 1;
+      document.getElementById('applause-counter').innerText = applauseCount;
+      showToast(`박수를 보냈습니다! (총 ${applauseCount}회)`);
+    }
+
+    function openImageModal(title, containerElement) {
+      const modal = document.getElementById('image-modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalContent = document.getElementById('modal-content');
+      const externalLink = document.getElementById('modal-external-link');
+
+      modalTitle.innerText = title;
+      modalContent.innerHTML = '';
+
+      const realImg = containerElement.querySelector('.preview-real-img');
+      if (realImg && realImg.getAttribute('src') && realImg.getAttribute('src').trim() !== '') {
+        const fullImg = document.createElement('img');
+        fullImg.src = realImg.src;
+        fullImg.alt = title;
+        // 최대 화면 비율을 84vh로 대폭 확장하여 디테일까지 한눈에 보이도록 설정
+        fullImg.className = 'max-w-full max-h-[85vh] w-auto h-auto object-contain rounded-lg shadow-xl';
+        modalContent.appendChild(fullImg);
+
+        // 원본 새 창 보기 링크 활성화
+        if (externalLink) {
+          externalLink.href = realImg.src;
+          externalLink.classList.remove('hidden');
+          externalLink.classList.add('inline-flex');
+        }
+      } else {
+        const clone = containerElement.cloneNode(true);
+        clone.classList.remove('h-64', 'sm:h-72', 'cursor-pointer');
+        clone.classList.add('w-full', 'min-h-[520px]', 'shadow-none');
+        clone.onclick = null;
+        modalContent.appendChild(clone);
+
+        if (externalLink) {
+          externalLink.classList.add('hidden');
+          externalLink.classList.remove('inline-flex');
+        }
+      }
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('image-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // ESC 키 입력 시 모달 닫기 지원
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
