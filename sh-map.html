@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>코웨이 9월 화성지역 고객 관리 지도</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body, html { width: 100%; height: 100%; overflow: hidden; }
+    #map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
+    
+    /* 상단 컨트롤 패널 */
+    .filter-panel {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .filter-btn {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #f1f3f5;
+      color: #495057;
+    }
+    .filter-btn.active {
+      background: #03cf5d; /* 네이버 그린 */
+      color: #fff;
+    }
+
+    /* 네이버 지도 팝업 카드 스타일 */
+    .naver-info-window {
+      padding: 14px;
+      width: 270px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 7px;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      background: #e6fcf5;
+      color: #0ca678;
+    }
+
+    .customer-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #212529;
+      margin-bottom: 2px;
+    }
+    .customer-phone {
+      font-size: 14px;
+      color: #03cf5d;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+    .info-text {
+      font-size: 12px;
+      color: #495057;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+  </style>
+
+  <!-- 네이버 지도 API (ncpClientId에 발급받은 Client ID를 입력하세요) -->
+  <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=m5h0cyk5b4&submodules=geocoder"></script>
+</head>
+<body>
+
+  <div class="filter-panel">
+    <button class="filter-btn active" onclick="filterArea('ALL')">화성시 전체</button>
+    <button class="filter-btn" onclick="filterArea('동탄')">동탄권</button>
+    <button class="filter-btn" onclick="filterArea('병점/봉담')">병점/봉담</button>
+    <button class="filter-btn" onclick="filterArea('향남/남양')">향남/남양</button>
+  </div>
+
+  <div id="map"></div>
+
+  <script>
+    // 9월 탭 화성시 주요 고객 리스트 예시 데이터 구조
+    const hwaseongCustomers = [
+      { name: "김*철", phone: "010-1234-5678", address: "경기도 화성시 동탄대로 100", product: "아이콘 정수기 2", area: "동탄", note: "오늘 방문 예정" },
+      { name: "이*순", phone: "010-2345-6789", address: "경기도 화성시 동탄순환대로 12길", product: "BEREX 매트리스", area: "동탄", note: "오후 케어 요청" },
+      { name: "박*수", phone: "010-3456-7890", address: "경기도 화성시 병점동 345", product: "스퀘어핏 공기청정기", area: "병점/봉담", note: "신규 설치건" },
+      { name: "최*영", phone: "010-4567-8901", address: "경기도 화성시 봉담읍 와우자리", product: "스타일케어 비데", area: "병점/봉담", note: "기존 고객" },
+      { name: "정*우", phone: "010-5678-9012", address: "경기도 화성시 향남읍 행정리", product: "BEREX 안마의자", area: "향남/남양", note: "상담 희망" },
+      { name: "한*희", phone: "010-6789-0123", address: "경기도 화성시 남양읍 남양리", product: "노블 공기청정기", area: "향남/남양", note: "필터 교체" }
+    ];
+
+    let map;
+    let markers = [];
+    let currentInfoWindow = null;
+
+    function initMap() {
+      // 경기도 화성시 중심 좌표 (화성시청 근처 기준)
+      map = new naver.maps.Map('map', {
+        center: new naver.maps.LatLng(37.1995, 126.8313),
+        zoom: 11
+      });
+
+      renderMarkers('ALL');
+    }
+
+    function renderMarkers(areaFilter) {
+      // 기존 마커 제거
+      markers.forEach(m => m.setMap(null));
+      markers = [];
+
+      hwaseongCustomers.forEach((customer) => {
+        if (areaFilter !== 'ALL' && customer.area !== areaFilter) return;
+
+        // 주소를 좌표로 변환 (Naver Geocoder)
+        naver.maps.Service.geocode({ query: customer.address }, function(status, response) {
+          if (status === naver.maps.Service.Status.ERROR) return;
+
+          const item = response.v2.addresses[0];
+          if (!item) return;
+
+          const coords = new naver.maps.LatLng(item.y, item.x);
+
+          const marker = new naver.maps.Marker({
+            position: coords,
+            map: map,
+            title: customer.name
+          });
+
+          const contentString = `
+            <div class="naver-info-window">
+              <span class="badge">9월 담당 고객</span>
+              <div class="customer-name">${customer.name} 고객님</div>
+              <a href="tel:${customer.phone}" class="customer-phone">📞 ${customer.phone}</a>
+              <div class="info-text"><b>📍 주소:</b> ${customer.address}</div>
+              <div class="info-text"><b>📦 사용제품:</b> ${customer.product}</div>
+              <div class="info-text"><b>📝 메모:</b> ${customer.note}</div>
+            </div>
+          `;
+
+          const infoWindow = new naver.maps.InfoWindow({
+            content: contentString,
+            borderWidth: 0,
+            backgroundColor: "transparent",
+            anchorSize: new naver.maps.Size(10, 10)
+          });
+
+          naver.maps.Event.addListener(marker, "click", function() {
+            if (currentInfoWindow) currentInfoWindow.close();
+            infoWindow.open(map, marker);
+            currentInfoWindow = infoWindow;
+          });
+
+          markers.push(marker);
+        });
+      });
+    }
+
+    function filterArea(area) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderMarkers(area);
+    }
+
+    window.onload = initMap;
+  </script>
+</body>
+</html>
