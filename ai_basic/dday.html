@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI교육 데모데이</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #F6F4FB;
+    --surface: #FFFFFF;
+    --surface-soft: #FBFAFE;
+    --ink: #221C35;
+    --ink-soft: #5B5570;
+    --ink-faint: #8D86A3;
+    --accent: #FF5A36;
+    --on-accent: #241A33;
+    --accent-2: #00B8A9;
+    --line: #E3DEF0;
+    --warn: #D6274B;
+    --shadow: rgba(34, 28, 53, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16121F;
+      --surface: #201A30;
+      --surface-soft: #251E38;
+      --ink: #F3F0FA;
+      --ink-soft: #B8AFCB;
+      --ink-faint: #7D7495;
+      --accent: #FF6F47;
+      --on-accent: #1B1226;
+      --accent-2: #2DD4C4;
+      --line: #362C4C;
+      --warn: #FF5C7A;
+      --shadow: rgba(0, 0, 0, 0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16121F;
+    --surface: #201A30;
+    --surface-soft: #251E38;
+    --ink: #F3F0FA;
+    --ink-soft: #B8AFCB;
+    --ink-faint: #7D7495;
+    --accent: #FF6F47;
+    --on-accent: #1B1226;
+    --accent-2: #2DD4C4;
+    --line: #362C4C;
+    --warn: #FF5C7A;
+    --shadow: rgba(0, 0, 0, 0.4);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans KR', 'Noto Sans KR', sans-serif;
+  }
+  .mono {
+    font-family: 'IBM Plex Mono', 'IBM Plex Sans KR', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .deck {
+    height: 100dvh;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(1rem, 3vw, 2rem);
+    height: 52px;
+    border-bottom: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .topbar-left { display: flex; align-items: center; gap: 0.55rem; text-transform: uppercase; }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+    flex: none;
+  }
+  .topbar-right { font-variant-numeric: tabular-nums; }
+  .topbar-right #slideTotal, .topbar-right #slideIndex { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Stage ---------- */
+  .stage {
+    flex: 1 1 auto;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    text-align: center;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .slide-inner { max-width: 900px; width: 100%; margin: 0 auto; }
+
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  /* ---------- Cover / closing ---------- */
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .cover-title {
+    font-size: clamp(2.4rem, 6vw, 4.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .cover-sub {
+    color: var(--ink-soft);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    margin-top: 0.9rem;
+  }
+  .cover-meta {
+    margin-top: 2rem;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+  }
+  .meta-sep { margin: 0 0.6em; opacity: 0.6; }
+  .closing-sub { color: var(--ink-soft); font-size: clamp(1rem, 2vw, 1.2rem); max-width: 32em; }
+
+  .section-title {
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .note {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin-top: 1.4rem;
+  }
+
+  /* ---------- Editable fields ---------- */
+  .editable {
+    border-bottom: 1.5px dashed var(--ink-faint);
+    padding: 0 0.15em;
+    cursor: text;
+    outline-offset: 3px;
+  }
+  .editable.is-placeholder { color: var(--ink-faint); font-style: italic; }
+  .editable:focus { outline: 2px solid var(--accent); border-bottom-style: solid; }
+
+  /* ---------- Agenda flow ---------- */
+  .flow-list { list-style: none; margin: 1.6rem 0 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 1.1rem; }
+  .flow-list li { display: flex; align-items: baseline; gap: 1.1rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--line); }
+  .flow-list li:last-child { border-bottom: none; }
+  .flow-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 1.3rem; color: var(--accent); width: 2.4rem; flex: none; }
+  .flow-list strong { font-size: 1.1rem; font-weight: 600; }
+  .flow-desc { display: block; color: var(--ink-soft); font-size: 0.92rem; margin-top: 0.2rem; }
+
+  /* ---------- Journey grid ---------- */
+  .journey-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-top: 1.6rem; text-align: left; }
+  .journey-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+  .journey-card.journey-today { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); border-color: var(--accent); }
+  .journey-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; color: var(--accent-2); letter-spacing: 0.05em; }
+  .journey-today .journey-tag { color: var(--accent); }
+  .journey-card h3 { font-size: 1.1rem; margin-top: 0.5rem; }
+  .journey-card p { color: var(--ink-soft); font-size: 0.9rem; margin-top: 0.5rem; line-height: 1.55; }
+  @media (max-width: 720px) { .journey-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Rule list ---------- */
+  .rule-list { list-style: none; margin: 1.6rem auto 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 1.2rem; max-width: 640px; }
+  .rule-list li { display: flex; align-items: flex-start; gap: 1rem; }
+  .rule-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 600;
+    background: var(--surface-soft); border: 1px solid var(--line); color: var(--ink-soft);
+    padding: 0.3em 0.6em; border-radius: 7px; letter-spacing: 0.05em; flex: none; margin-top: 0.15em;
+  }
+  .rule-list strong { font-size: 1.02rem; font-weight: 600; }
+  .rule-list p { color: var(--ink-soft); font-size: 0.92rem; margin: 0.25rem 0 0; }
+
+  /* ---------- Criteria grid ---------- */
+  .criteria-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.6rem; text-align: left; }
+  .criteria-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.3rem 1.1rem; }
+  .criteria-letter { font-family: 'IBM Plex Mono', monospace; color: var(--ink-faint); font-size: 0.85rem; }
+  .criteria-card h3 { font-size: 1.02rem; margin-top: 0.5rem; }
+  .criteria-card p { color: var(--ink-soft); font-size: 0.85rem; margin-top: 0.4rem; line-height: 1.5; }
+  @media (max-width: 720px) { .criteria-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ---------- Lineup ---------- */
+  .lineup-list { list-style: none; margin: 1.6rem auto 0; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 0.7rem; max-width: 640px; }
+  .lineup-list li {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 0.85rem 1.1rem;
+  }
+  .lineup-num {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 0.85rem;
+    width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--accent); color: var(--on-accent);
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+  .lineup-name { font-weight: 600; }
+  .lineup-topic { color: var(--ink-soft); font-size: 0.9rem; margin-left: auto; text-align: right; }
+
+  /* ---------- Team slide ---------- */
+  .team-badge { font-family: 'IBM Plex Mono', monospace; color: var(--ink-faint); font-size: 0.9rem; letter-spacing: 0.14em; }
+  .team-name { font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 700; margin-top: 0.3rem; }
+  .team-topic { color: var(--ink-soft); font-size: clamp(1.05rem, 2.2vw, 1.3rem); font-style: italic; margin-top: 0.4rem; }
+
+  .navbtn:focus-visible, .editable:focus-visible, .dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- Interlude ---------- */
+  .pulse-dots { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .pulse-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-2); animation: pulse 1.2s ease-in-out infinite; }
+  .pulse-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .pulse-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.25; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1.15); } }
+
+  /* ---------- Winner reveal ---------- */
+  .winner-card {
+    background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+    border: 1px solid var(--accent); border-radius: 18px;
+    padding: clamp(1.8rem, 5vw, 3rem) clamp(2rem, 6vw, 4rem);
+    display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
+    margin-top: 1.8rem;
+  }
+  .award-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--accent); letter-spacing: 0.08em; }
+  .winner-name { font-size: clamp(2rem, 6vw, 3.4rem); font-weight: 700; }
+
+  /* ---------- Bottom nav ---------- */
+  .navbar {
+    flex: 0 0 auto;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    border-top: 1px solid var(--line);
+    padding: 0 1rem;
+  }
+  .navbtn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--line); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; flex: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .navbtn:hover { border-color: var(--ink-faint); }
+  .navbtn svg { width: 15px; height: 15px; }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; max-width: 60vw; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; border: none; padding: 0; background: var(--line); cursor: pointer; flex: none; }
+  .dot.active { background: var(--accent); width: 20px; border-radius: 5px; }
+  .fsbtn { margin-left: 0.6rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <header class="topbar">
+    <div class="topbar-left"><span class="live-dot"></span>FF Academy_AI · 데모데이</div>
+    <div class="topbar-right"><span id="slideIndex">1</span> / <span id="slideTotal">14</span></div>
+  </header>
+
+  <main class="stage" id="stage">
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="eyebrow">Demo Day</div>
+        <h1 class="cover-title">AI교육 데모데이</h1>
+        <p class="cover-sub">바이브코딩으로 완성한 결과물을 소개합니다</p>
+        <div class="cover-meta">2026. 09. 01.<span class="meta-sep">·</span>FF Academy_AI</div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="section-title">그동안의 여정</h2>
+        <div class="journey-grid">
+          <div class="journey-card">
+            <span class="journey-tag">1–2회차</span>
+            <h3>바이브코딩 개념 이해</h3>
+            <p>AI와 함께 코딩하는 방식과 핵심 개념, 도구를 소개했습니다.</p>
+          </div>
+          <div class="journey-card">
+            <span class="journey-tag">3–4회차</span>
+            <h3>팀별 결과물 제작</h3>
+            <p>배운 개념을 바탕으로 각자, 혹은 팀별로 원하는 결과물을 직접 만들었습니다.</p>
+          </div>
+          <div class="journey-card journey-today">
+            <span class="journey-tag">오늘</span>
+            <h3>데모데이</h3>
+            <p>완성한 결과물을 발표하고 서로의 도전을 응원하는 시간입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="section-title">발표 순서</h2>
+        <ol class="lineup-list">
+          <li><span class="lineup-num mono">1</span><span class="lineup-name editable" contenteditable="true" data-key="lineup1-name">[6조] 서지은 이연주 조문정</span></li>
+          <li><span class="lineup-num mono">2</span><span class="lineup-name editable" contenteditable="true" data-key="lineup2-name">[5조] 박상현 이종민 정소영</span></li>
+          <li><span class="lineup-num mono">3</span><span class="lineup-name editable" contenteditable="true" data-key="lineup3-name">[3조] 강동우 강동호 이은교</span></li>
+          <li><span class="lineup-num mono">4</span><span class="lineup-name editable" contenteditable="true" data-key="lineup4-name">[7조] 성경식 최우혁</span></li>
+          <li><span class="lineup-num mono">5</span><span class="lineup-name editable" contenteditable="true" data-key="lineup5-name">[1조] 김기쁨 박은정 배은솔</span></li>
+          <li><span class="lineup-num mono">6</span><span class="lineup-name editable" contenteditable="true" data-key="lineup6-name">[2조] 민학의 박정용 백지호</span></li>
+          <li><span class="lineup-num mono">7</span><span class="lineup-name editable" contenteditable="true" data-key="lineup7-name">[4조] 정아현 정희경 한용희</span></li>
+        </ol>
+        
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="section-title">동료 투표 방법</h2>
+        <ul class="rule-list" style="margin-top: 1.6rem;">
+          <li><span class="rule-tag">2 VOTES</span><div><strong>1인 2표제 적용</strong><p>참가자 1인당 총 2표를 행사합니다. 가장 우수하다고 생각하는 2개 팀을 선택해 주세요.</p></div></li>
+          <li><span class="rule-tag">NO SELF</span><div><strong>본인 팀 투표 금지</strong><p>공정한 평가를 위해 본인(소속 팀)에게는 투표할 수 없으며, 적발 시 무효 처리됩니다.</p></div></li>
+        </ul>
+        <p class="note">투표 링크(슬랙): <span class="editable" contenteditable="true" data-key="slack-link">https://forms.gle/FizBxMRFyqPyris69</span></p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="section-title">투표 기준</h2>
+        <div class="criteria-grid">
+          <div class="criteria-card"><span class="criteria-letter mono">A</span><h3>창의성</h3><p>새로운 시각과 아이디어</p></div>
+          <div class="criteria-card"><span class="criteria-letter mono">B</span><h3>완성도</h3><p>기획한 결과물의 구현 수준</p></div>
+          <div class="criteria-card"><span class="criteria-letter mono">C</span><h3>실용성</h3><p>실제 업무·일상에 적용 가능한 정도</p></div>
+          <div class="criteria-card"><span class="criteria-letter mono">D</span><h3>발표력</h3><p>과정과 결과를 명확히 전달했는지</p></div>
+        </div>
+        <p class="note">동료 투표 합산 득표수가 가장 높은 팀이 최우수상을 받습니다.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <div class="pulse-dots"><span></span><span></span><span></span></div>
+        <h2 class="section-title">투표를 집계하고 있습니다</h2>
+        <p class="closing-sub">잠시 후 결과 발표가 이어집니다.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="section-title">투표 결과</h2>
+
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="slide-inner">
+        <h2 class="cover-title" style="font-size: clamp(2rem, 5vw, 3.2rem);">감사합니다</h2>
+        <p class="closing-sub" style="margin: 0.9rem auto 0;">오늘의 도전과 배움을 응원합니다 — 다음 여정에서 또 만나요.</p>
+        <p class="note">뒷풀이는 자율 참석입니다 — 편하게 참여해 주세요!</p>
+        <div class="cover-meta">FF Academy_AI</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="navbar">
+    <button class="navbtn" id="prevBtn" aria-label="이전 슬라이드">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="dots" id="dots"></div>
+    <button class="navbtn" id="nextBtn" aria-label="다음 슬라이드">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <button class="navbtn fsbtn" id="fsBtn" aria-label="전체화면 전환">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M15 21h6v-6M9 21H3v-6"/></svg>
+    </button>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function safeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function safeSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var dotsWrap = document.getElementById('dots');
+  var slideIndexEl = document.getElementById('slideIndex');
+  var slideTotalEl = document.getElementById('slideTotal');
+  var current = 0;
+
+  slideTotalEl.textContent = slides.length;
+  slides.forEach(function (s, i) {
+    var d = document.createElement('button');
+    d.className = 'dot';
+    d.setAttribute('aria-label', (i + 1) + '번 슬라이드로 이동');
+    d.addEventListener('click', function () { goTo(i); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function render() {
+    slides.forEach(function (s, i) {
+      var active = i === current;
+      s.classList.toggle('active', active);
+      s.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+    dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+    slideIndexEl.textContent = current + 1;
+  }
+  function goTo(i) {
+    if (i < 0 || i >= slides.length) return;
+    current = i;
+    render();
+  }
+  function next() { goTo(current + 1 >= slides.length ? current : current + 1); }
+  function prev() { goTo(current - 1 < 0 ? current : current - 1); }
+
+  document.getElementById('nextBtn').addEventListener('click', next);
+  document.getElementById('prevBtn').addEventListener('click', prev);
+
+  var fsBtn = document.getElementById('fsBtn');
+  fsBtn.addEventListener('click', function () {
+    try {
+      if (!document.fullscreenElement) { deck.requestFullscreen && deck.requestFullscreen(); }
+      else { document.exitFullscreen && document.exitFullscreen(); }
+    } catch (e) {}
+  });
+
+  window.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'ArrowLeft', 'ArrowUp', 'PageUp', 'Home', 'End'].indexOf(e.key) !== -1) {
+      e.preventDefault();
+    }
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown': next(); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': prev(); break;
+      case 'Home': goTo(0); break;
+      case 'End': goTo(slides.length - 1); break;
+      case 'f': case 'F': fsBtn.click(); break;
+    }
+  });
+
+  render();
+
+  // ---- Editable fields (per-browser autosave) ----
+  var editables = Array.prototype.slice.call(document.querySelectorAll('.editable'));
+  editables.forEach(function (el) {
+    var placeholder = el.textContent;
+    el.dataset.placeholder = placeholder;
+    var key = 'demoday_' + el.dataset.key;
+    var saved = safeGet(key);
+    if (saved) { el.textContent = saved; }
+    updatePlaceholderClass(el);
+    el.addEventListener('input', function () {
+      safeSet(key, el.textContent);
+      updatePlaceholderClass(el);
+    });
+    el.addEventListener('keydown', function (e) { e.stopPropagation(); });
+  });
+  function updatePlaceholderClass(el) {
+    el.classList.toggle('is-placeholder', el.textContent.trim() === el.dataset.placeholder.trim());
+  }
+
+})();
+</script>
+</body>
+</html>
