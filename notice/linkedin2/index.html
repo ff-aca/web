@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FF Academy — LinkedIn 클래스 2기 모집</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+  :root {
+    --paper: #F3EEE4;
+    --paper-2: #EAE3D6;
+    --ink: #1A1A1A;
+    --ink-2: #4D4A45;
+    --ink-3: #8C877E;
+    --orange: #E8572A;
+    --green: #24524A;
+    --line: #1A1A1A;
+    --soft-line: #D6CEBF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+
+  /* TOP */
+  .top { border-bottom: 1.5px solid var(--line); }
+  .top .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; font-size: 13px; font-weight: 700; }
+  .top a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--ink); }
+
+  /* HERO */
+  .hero { padding: 64px 0 0; }
+  .hero-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+  .chip {
+    font-size: 13px; font-weight: 700; padding: 6px 14px;
+    border: 1.5px solid var(--ink); border-radius: 999px;
+  }
+  .chip.fill { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .hero h1 {
+    font-size: clamp(32px, 5.6vw, 60px); font-weight: 700;
+    line-height: 1.3; letter-spacing: -0.03em;
+  }
+  .hero h1 .o { color: var(--orange); }
+  .hero h1 .u { text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.12em; text-decoration-color: var(--green); }
+  .hero-bottom {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px;
+    margin-top: 44px; padding: 32px 0 56px;
+    border-top: 1.5px solid var(--line);
+  }
+  .hero-lead { font-size: 17px; font-weight: 400; color: var(--ink-2); }
+  .hero-lead b { color: var(--ink); }
+  .ticket {
+    background: var(--ink); color: var(--paper);
+    border-radius: 18px; padding: 24px 26px; position: relative;
+  }
+  .ticket::before, .ticket::after {
+    content: ''; position: absolute; top: 50%; width: 22px; height: 22px;
+    background: var(--paper); border-radius: 50%; transform: translateY(-50%);
+  }
+  .ticket::before { left: -11px; } .ticket::after { right: -11px; }
+  .t-row { display: flex; justify-content: space-between; font-size: 14px; padding: 7px 0; border-bottom: 1px dashed rgba(243,238,228,.22); }
+  .t-row:last-of-type { border-bottom: none; }
+  .t-row span:first-child { color: rgba(243,238,228,.6); }
+  .t-row b { font-weight: 800; }
+  .t-row b.o { color: #FF8A5E; }
+  .t-btn {
+    display: block; text-align: center; margin-top: 16px;
+    background: var(--orange); color: #fff; text-decoration: none;
+    font-weight: 800; font-size: 15px; padding: 14px; border-radius: 12px;
+    transition: transform .15s;
+  }
+  .t-btn:hover { transform: translateY(-2px); }
+
+  /* MARQUEE */
+  .marquee { background: var(--green); color: var(--paper); overflow: hidden; white-space: nowrap; padding: 14px 0; }
+  .marquee-in { display: inline-block; animation: slide 28s linear infinite; font-size: 15px; font-weight: 800; letter-spacing: 0.02em; }
+  .marquee-in span { margin: 0 22px; }
+  .marquee-in i { font-style: normal; color: #FF8A5E; }
+  @keyframes slide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee-in { animation: none; } }
+
+  /* SECTION */
+  .sec { display: grid; grid-template-columns: 220px 1fr; gap: 40px; padding: 72px 0; border-bottom: 1.5px solid var(--line); }
+  .sec:last-of-type { border-bottom: none; }
+  .sec-side { position: relative; }
+  .sec-no { font-size: 13px; font-weight: 800; color: var(--orange); margin-bottom: 6px; }
+  .sec-name { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; position: sticky; top: 24px; }
+  .big { font-size: clamp(20px, 2.6vw, 26px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.4; margin-bottom: 24px; }
+  .big em { font-style: normal; background: linear-gradient(transparent 62%, rgba(232,87,42,.28) 62%); }
+  .p { font-size: 16px; color: var(--ink-2); margin-bottom: 14px; }
+  .p b { color: var(--ink); }
+
+  /* 3 values */
+  .vals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; margin-top: 32px; }
+  .val { padding: 24px 22px; border-right: 1.5px solid var(--line); background: var(--paper); }
+  .val:last-child { border-right: none; }
+  .val:nth-child(2) { background: var(--paper-2); }
+  .val-k { font-size: 12px; font-weight: 800; color: var(--green); margin-bottom: 10px; letter-spacing: .04em; }
+  .val-t { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .val-d { font-size: 14px; color: var(--ink-2); }
+
+  /* curriculum */
+  .prep { display: grid; grid-template-columns: 1fr 1.4fr; gap: 12px; margin-bottom: 28px; }
+  .prep-box { border: 1.5px dashed var(--ink); border-radius: 14px; padding: 18px 20px; }
+  .prep-k { font-size: 12px; font-weight: 800; color: var(--orange); margin-bottom: 4px; }
+  .prep-v { font-size: 15px; font-weight: 700; }
+  .prep-s { font-size: 13px; color: var(--ink-3); }
+  .rows { border-top: 1.5px solid var(--line); }
+  .row { display: grid; grid-template-columns: 90px 1fr auto; gap: 24px; padding: 26px 0; border-bottom: 1px solid var(--soft-line); align-items: start; }
+  .row:last-child { border-bottom: 1.5px solid var(--line); }
+  .row-no { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .row-no small { display: block; font-size: 13px; font-weight: 700; color: var(--ink-3); letter-spacing: 0; margin-top: 8px; }
+  .row-t { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .row ul { list-style: none; }
+  .row li { font-size: 15px; color: var(--ink-2); padding-left: 16px; position: relative; margin-bottom: 3px; }
+  .row li::before { content: ''; position: absolute; left: 0; top: 11px; width: 7px; height: 2px; background: var(--orange); }
+  .badge { font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; white-space: nowrap; border: 1.5px solid var(--ink); }
+  .badge.live { background: var(--ink); color: var(--paper); }
+  .row.live .row-no { color: var(--orange); }
+
+  /* outcome */
+  .outs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .out { background: var(--green); color: var(--paper); border-radius: 18px; padding: 26px 22px 24px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
+  .out:nth-child(2) { background: var(--orange); }
+  .out:nth-child(3) { background: var(--ink); }
+  .out-n { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+  .out-n small { font-size: 16px; margin-left: 2px; }
+  .out-t { font-size: 15px; font-weight: 600; opacity: .9; }
+
+  /* cohort 1 */
+  .c1 {
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    border: 1.5px solid var(--line); border-radius: 18px; padding: 26px 28px;
+    background: var(--paper-2); text-decoration: none; color: var(--ink);
+    transition: background .2s, transform .15s;
+  }
+  .c1:hover { background: #E2D9C9; transform: translateY(-2px); }
+  .c1-k { font-size: 12px; font-weight: 800; color: var(--green); margin-bottom: 6px; letter-spacing: .04em; }
+  .c1-t { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .c1-d { font-size: 14px; color: var(--ink-2); }
+  .c1-go {
+    flex-shrink: 0; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--ink); color: var(--paper);
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+
+  /* instructor */
+  .inst { display: block; }
+  .inst-name { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .inst-role { font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 14px; }
+  .inst-q { font-size: 16px; color: var(--ink-2); }
+  .inst-q::before { content: '“'; font-size: 36px; font-weight: 700; color: var(--orange); line-height: 0; vertical-align: -14px; margin-right: 4px; }
+
+  /* for you */
+  .fy { counter-reset: fy; }
+  .fy-i { display: flex; gap: 18px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--soft-line); font-size: 16px; font-weight: 500; letter-spacing: -0.01em; }
+  .fy-i:first-child { border-top: 1px solid var(--soft-line); }
+  .fy-i::before { counter-increment: fy; content: counter(fy, decimal-leading-zero); font-size: 13px; font-weight: 800; color: var(--orange); }
+
+  /* info table + faq */
+  .info { border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+  .info-r { display: grid; grid-template-columns: 120px 1fr; border-bottom: 1px solid var(--soft-line); }
+  .info-r:last-child { border-bottom: none; }
+  .info-k { padding: 16px 20px; font-size: 14px; font-weight: 800; background: var(--paper-2); }
+  .info-v { padding: 16px 20px; font-size: 15px; color: var(--ink-2); }
+  .info-v b { color: var(--ink); }
+  details { border-bottom: 1px solid var(--soft-line); }
+  details:first-of-type { border-top: 1px solid var(--soft-line); }
+  summary { list-style: none; cursor: pointer; padding: 18px 0; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '↓'; color: var(--orange); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(180deg); }
+  details p { padding: 0 0 20px; font-size: 15px; color: var(--ink-2); }
+
+  /* CTA */
+  .cta { background: var(--orange); color: #fff; padding: 72px 0; text-align: center; border-top: 1.5px solid var(--line); }
+  .cta-k { font-size: 14px; font-weight: 800; margin-bottom: 16px; }
+  .cta h2 { font-size: clamp(28px, 4.6vw, 44px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.3; margin-bottom: 32px; }
+  .cta-btn { display: inline-block; background: var(--ink); color: var(--paper); text-decoration: none; font-weight: 700; font-size: 16px; padding: 18px 44px; border-radius: 999px; transition: transform .15s; }
+  .cta-btn:hover { transform: translateY(-3px); }
+  .cta-n { font-size: 13px; margin-top: 18px; opacity: .85; }
+
+  footer { background: var(--ink); color: rgba(243,238,228,.55); font-size: 13px; padding: 26px 0 96px; text-align: center; }
+  .sticky { display: none; }
+  p, li, .val-d, .out-t, .fy-i, .info-v { text-wrap: pretty; }
+  h1, h2, .big, .row-t { text-wrap: balance; }
+
+  @media (max-width: 760px) {
+    br.pc { display: none; }
+    .wrap { padding: 0 18px; }
+    .hero { padding-top: 40px; }
+    .hero-bottom { grid-template-columns: 1fr; gap: 28px; padding-bottom: 44px; }
+    .sec { grid-template-columns: 1fr; gap: 18px; padding: 52px 0; }
+    .sec-name { position: static; }
+    .vals, .outs, .prep { grid-template-columns: 1fr; }
+    .val { border-right: none; border-bottom: 1.5px solid var(--line); }
+    .val:last-child { border-bottom: none; }
+    .row { grid-template-columns: 64px 1fr; gap: 16px; }
+    .row .badge { grid-column: 2; justify-self: start; grid-row: 1; margin-bottom: 4px; }
+    .row-no { font-size: 22px; grid-row: 1 / span 2; }
+    .out { min-height: 140px; }
+    .info-r { grid-template-columns: 1fr; }
+    .info-k { padding: 12px 18px 4px; background: transparent; color: var(--orange); font-size: 13px; }
+    .info-v { padding: 0 18px 14px; }
+    .fy-i { font-size: 15px; }
+    .top a { display: none; }
+    .sticky {
+      display: block; position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 20;
+      background: var(--ink); color: var(--paper); text-align: center; text-decoration: none;
+      font-weight: 800; font-size: 15px; padding: 16px; border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <span>FF ACADEMY ✦ LINKEDIN CLASS</span>
+    <a href="https://forms.gle/usskAQTToSidYbCt8" target="_blank">2기 신청하기</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-meta">
+      <span class="chip fill">2기 모집 중</span>
+      <span class="chip">10.20 — 11.10</span>
+      <span class="chip">전 임직원 대상</span>
+    </div>
+    <h1>이력서 말고,<br><span class="u">커리어가 보이는</span><br>링크드인<span class="o">.</span></h1>
+
+    <div class="hero-bottom">
+      <p class="hero-lead">
+        링크드인을 <b>이력서 올려두는 곳</b>이 아니라,<br class="pc">
+        내 일과 전문성을 꾸준히 보여주고<br class="pc">
+        <b>새로운 연결과 기회를 만드는 채널</b>로 써보는 교육입니다.<br><br>
+        처음이라면 <b>첫 포스팅</b>부터,<br class="pc">
+        이미 하고 있다면 <b>더 꾸준하고 선명하게.</b>
+      </p>
+      <div class="ticket">
+        <div class="t-row"><span>기간</span><b>10/20(화) – 11/10(화)</b></div>
+        <div class="t-row"><span>구성</span><b>총 5회차 · 대면 2회</b></div>
+        <div class="t-row"><span>대면 장소</span><b>선릉센트럴점 L3 컨퍼런스홀</b></div>
+        <div class="t-row"><span>정원</span><b>15-20명</b></div>
+        <div class="t-row"><span>신청 마감</span><b class="o">10/13(화)</b></div>
+        <a class="t-btn" href="https://forms.gle/usskAQTToSidYbCt8" target="_blank">지금 신청하기</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-in">
+    <span>계정 만들기</span><i>✦</i><span>프로필 세팅</span><i>✦</i><span>포스팅 시작</span><i>✦</i><span>꾸준한 포스팅</span><i>✦</i><span>성과 공유</span><i>✦</i><span>나만의 습관 만들기</span><i>✦</i>
+    <span>계정 만들기</span><i>✦</i><span>프로필 세팅</span><i>✦</i><span>포스팅 시작</span><i>✦</i><span>꾸준한 포스팅</span><i>✦</i><span>성과 공유</span><i>✦</i><span>나만의 습관 만들기</span><i>✦</i>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- 01 WHY -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">01</div><div class="sec-name">왜<br>링크드인인가요?</div></div>
+    <div>
+      <p class="big">전 세계 기업과 전문가들이 <em>일 이야기</em>를 나누는 곳</p>
+      <p class="p">
+        링크드인은 전 세계 기업과 전문가들이 쓰는 커리어 중심 SNS예요.<br class="pc">
+        특히 글로벌 기업과 <b>B2B 업계</b>에서는 실무자와 의사결정권자가<br class="pc">
+        직접 사람을 찾고 네트워크를 넓히는 주요 채널로 자리 잡았어요.<br class="pc">
+        최근에는 한국에서도 쓰는 사람이 빠르게 늘고 있고요.
+      </p>
+      <p class="p">
+        패스트파이브는 기업 고객과 함께 일하는 회사예요.<br class="pc">
+        구성원 한 명 한 명이 링크드인에서 자신의 일과 생각을 꾸준히 나누면,<br class="pc">
+        그게 곧 <b>나의 커리어 자산</b>이 되고,<br class="pc">
+        동시에 <b>패스트파이브를 가장 믿음직하게 알리는 방법</b>이 됩니다.
+      </p>
+      <div class="vals">
+        <div class="val"><div class="val-k">FOR ME</div><div class="val-t">커리어 브랜딩</div><div class="val-d">내 전문성과 일하는 방식을<br>보여주는 살아있는 포트폴리오</div></div>
+        <div class="val"><div class="val-k">FOR US</div><div class="val-t">사람이 전하는 브랜드</div><div class="val-d">공식 계정보다 더 가깝고<br>믿음직하게 닿는 패스트파이브 이야기</div></div>
+        <div class="val"><div class="val-k">FOR BUSINESS</div><div class="val-t">새로운 연결</div><div class="val-d">콘텐츠로 먼저 신뢰를 쌓고<br>고객·파트너와 만나는 접점 확대</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 CURRICULUM -->
+  <section class="sec" id="curriculum">
+    <div class="sec-side"><div class="sec-no">02</div><div class="sec-name">5회차<br>커리큘럼</div></div>
+    <div>
+      <p class="big">처음과 끝은 함께, 중간은 <em>각자의 속도로</em></p>
+      <p class="p">포스팅 주제는 자유예요. 내가 편한 이야기부터 시작하면 됩니다.</p>
+      <div class="prep">
+        <div class="prep-box"><div class="prep-k">사전 과제</div><div class="prep-v">링크드인 계정 만들기</div><div class="prep-s">계정이 없어도 괜찮아요.<br>여기서부터 시작합니다.</div></div>
+        <div class="prep-box"><div class="prep-k">대면 장소</div><div class="prep-v">선릉센트럴점 L3 컨퍼런스홀</div><div class="prep-s">1회차·5회차 모두 오후 7시에 만나요.</div></div>
+      </div>
+      <div class="rows">
+        <div class="row live">
+          <div class="row-no">01<small>10/20 (화)</small></div>
+          <div>
+            <div class="row-t">링크드인 이해하기</div>
+            <ul>
+              <li>왜 링크드인인가? B2B 채널로서의 링크드인</li>
+              <li>커리어 브랜딩 관리가 중요한 이유</li>
+              <li>혜리님의 실제 경험으로 보는 링크드인 활용법</li>
+            </ul>
+          </div>
+          <span class="badge live">대면 · 오후 7시</span>
+        </div>
+        <div class="row">
+          <div class="row-no">02<small>개별 과제</small></div>
+          <div>
+            <div class="row-t">프로필 점검 + 포스팅 시작</div>
+            <ul>
+              <li>사진·배경·요약·키워드까지 내 프로필 다듬기</li>
+              <li>자유 주제 포스팅 (처음이라면 자기소개 글 추천)</li>
+            </ul>
+          </div>
+          <span class="badge">과제</span>
+        </div>
+        <div class="row">
+          <div class="row-no">03<small>개별 과제</small></div>
+          <div>
+            <div class="row-t">자유 주제 포스팅</div>
+            <ul>
+              <li>내 링크드인의 방향을 생각하며 한 편 더 올리기</li>
+            </ul>
+          </div>
+          <span class="badge">과제</span>
+        </div>
+        <div class="row">
+          <div class="row-no">04<small>개별 과제</small></div>
+          <div>
+            <div class="row-t">자유 주제 포스팅</div>
+            <ul>
+              <li>동료들의 글에 반응하며 함께 네트워크 넓히기</li>
+            </ul>
+          </div>
+          <span class="badge">과제</span>
+        </div>
+        <div class="row live">
+          <div class="row-no">05<small>11/10 (화)</small></div>
+          <div>
+            <div class="row-t">성과 공유 + 습관 만들기</div>
+            <ul>
+              <li>각자의 3주 성과와 우수 사례 나누기</li>
+              <li>교육이 끝나도 꾸준히 이어갈 나만의 습관 설계</li>
+            </ul>
+          </div>
+          <span class="badge live">대면 · 오후 7시</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 OUTCOME -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">03</div><div class="sec-name">3주 뒤<br>남는 것</div></div>
+    <div>
+      <p class="big">잘하는 것보다 <em>시작하고 이어가는 것</em>이 목표예요</p>
+      <div class="outs">
+        <div class="out"><div class="out-n">1<small>개</small></div><div class="out-t">전문성이 보이는 완성된 프로필</div></div>
+        <div class="out"><div class="out-n">3<small>편</small></div><div class="out-t">직접 쓰고 올린 포스팅</div></div>
+        <div class="out"><div class="out-n">∞</div><div class="out-t">교육 후에도 이어갈 나만의 루틴</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 COHORT 1 -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">04</div><div class="sec-name">1기는<br>이렇게 했어요</div></div>
+    <div>
+      <p class="big">먼저 해본 동료들의 <em>3주</em>가 궁금하다면</p>
+      <!-- ▼ 1기 성과 페이지 URL을 아래 href="#" 자리에 넣어주세요 -->
+      <a class="c1" href="https://ff-academy.github.io/linktoff/final.html" target="_blank">
+        <div>
+          <div class="c1-k">COHORT 01 · 5/20 – 6/11</div>
+          <div class="c1-t">1기 성과 보러 가기</div>
+          <div class="c1-d">참여자들의 프로필 변화와 포스팅 모아보기</div>
+        </div>
+        <span class="c1-go">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- 05 INSTRUCTOR -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">05</div><div class="sec-name">함께할<br>강사</div></div>
+    <div class="inst">
+      <div>
+        <div class="inst-name">원혜리 팀장님</div>
+        <div class="inst-role">LinkedIn Ambassador · 패스트파이브</div>
+        <p class="inst-q">
+          이전 회사 대표님의 권유로 시작한 링크드인에서<br class="pc">
+          생각보다 훨씬 많은 기회를 만났어요.<br>
+          패스트파이브가 기업들에게 줄 수 있는 가치에 비해<br class="pc">
+          링크드인이 너무 조용한 게 아쉬웠고,<br class="pc">
+          제 경험을 직접 나누고 싶어 이 강의를 열게 됐습니다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 FOR YOU -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">06</div><div class="sec-name">이런 분께<br>추천해요</div></div>
+    <div class="fy">
+      <div class="fy-i">링크드인을 시작하고 싶은데 어디서부터 해야 할지 모르겠는 분</div>
+      <div class="fy-i">계정은 있지만 이력서처럼 세워두기만 한 분</div>
+      <div class="fy-i">내 일과 경험을 글로 정리해보고 싶은 분</div>
+      <div class="fy-i">업무 밖에서도 업계 사람들과 연결되고 싶은 분</div>
+      <div class="fy-i">이미 하고 있지만 방향이나 꾸준함이 고민인 분</div>
+      <div class="fy-i">혼자서는 자꾸 미루게 돼서 함께할 동료가 필요한 분</div>
+    </div>
+  </section>
+
+  <!-- 06 INFO -->
+  <section class="sec">
+    <div class="sec-side"><div class="sec-no">07</div><div class="sec-name">신청 전<br>확인해주세요</div></div>
+    <div>
+      <div class="info">
+        <div class="info-r"><div class="info-k">대상</div><div class="info-v">패스트파이브 <b>전 임직원</b></div></div>
+        <div class="info-r"><div class="info-k">정원</div><div class="info-v"><b>15–20명</b> <br>신청자가 많으면 신청서를 바탕으로 선정해요.</div></div>
+        <div class="info-r"><div class="info-k">대면 장소</div><div class="info-v"><b>선릉센트럴점 컨퍼런스홀 / 오후 7시</b> - 10/20(화), 11/10(화)</div></div>
+        <div class="info-r"><div class="info-k">수료 조건</div><div class="info-v"><b>대면 2회 모두 참석</b> + <b>과제 80% 이상 제출</b></div></div>
+        <div class="info-r"><div class="info-k">신청 마감</div><div class="info-v"><b>10/13(화)</b><br>선정 결과는 별도 채널로 안내드릴 예정입니다.</div></div>
+      </div>
+
+      <details>
+        <summary>링크드인 계정이 아직 없어요. 괜찮을까요?</summary>
+        <p>네, 전혀 문제없어요.<br>킥오프 전 사전 과제로 계정을 만드는 것부터 시작합니다.</p>
+      </details>
+      <details>
+        <summary>이미 링크드인을 하고 있어도 괜찮나요?</summary>
+        <p>물론이에요.<br>목표를 다시 세우고, 동료들과 함께 꾸준히 올리는 루틴을 만드는 데 도움이 될 거예요.</p>
+      </details>
+      <details>
+        <summary>글을 써본 적이 거의 없어요.</summary>
+        <p>괜찮아요. 잘 쓴 글보다 나다운 글이 목표예요.<br>주제는 자유라 내가 편한 이야기부터 쓰면 되고,<br class="pc">동료들과 반응을 나누며 함께하니 부담 갖지 않으셔도 됩니다.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-k">⏰ 신청 마감 10/13(화) · 정원 최대 20명</div>
+    <h2>처음이어도, 다시 시작해도<br>2기에서 함께해요</h2>
+    <a class="cta-btn" href="https://forms.gle/usskAQTToSidYbCt8" target="_blank">2기 신청하기</a>
+    <div class="cta-n">선정되신 분들께는 별도 채널로 안내드립니다</div>
+  </div>
+</section>
+
+<footer>© 2026 FastFive · FF Academy · 문의: @구연정</footer>
+
+<a class="sticky" href="https://forms.gle/usskAQTToSidYbCt8" target="_blank">2기 신청하기 · ~10/13(화)</a>
+
+</body>
+</html>
