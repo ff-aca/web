@@ -152,11 +152,11 @@ th.sorted button.sort .ar{opacity:1;color:var(--accent)}
 <body>
 <header>
   <div class="wrap">
-    <p class="kicker">FF Academy · LinkedIn 활용 교육</p>
+    <p class="kicker">FF Academy · LinkedIn 활용 2기</p>
     <div class="top">
       <div>
-        <h1>함께 해요 LinkedIn 2기 </h1>
-        <p class="sub">[프로필]에서 1촌을 맺고, 포스팅도 바로 볼 수 있어요.<br>포스팅 칸의 [✓ 글 보기]를 눌러 읽고 나면 <b>좋아요와 댓글</b>로 응원해 주세요. 댓글 하나가 동료의 글을 더 멀리 보내 줘요.</p>
+        <h1>링크드인 함께 해요!</h1>
+        <p class="sub">[프로필]에서 1촌을 맺고, 동료의 포스팅도 바로 볼 수 있어요.<br>포스팅 칸의 [✓ 글 보기]를 눌러 읽고 나면 <b>좋아요와 댓글</b>로 응원해 주세요. 댓글 하나가 동료의 글을 더 멀리 보내 줘요.</p>
       </div>
       <div class="total" id="total"></div>
     </div>
@@ -187,7 +187,7 @@ th.sorted button.sort .ar{opacity:1;color:var(--accent)}
     </table>
   </div>
   </section>
-  <footer><span>패파아카데미 내부 공유용 페이지예요.</span><span id="updated"></span></footer>
+  <footer><span>패파아카데미 내부 공유용 페이지입니다.</span><span id="updated"></span></footer>
 </div>
 
 <!--
@@ -238,9 +238,9 @@ th.sorted button.sort .ar{opacity:1;color:var(--accent)}
 16	이강훈	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EA%B0%95%ED%9B%88-%EC%9D%B4-457254429/	O
 17	이예진	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%98%88%EC%A7%84-%EC%9D%B4-949166436/	O	O
 18	장은혜	HR그룹 / RBP팀	https://www.linkedin.com/in/grace-jang-eunhye/	O	O
-19	전현우	대표직속	https://www.linkedin.com/in/hyunwoojun/
-20	정채호	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%B1%84%ED%98%B8-%EC%A0%95-918738429/	O	O
-21	허종현	지점운영그룹 / 사업1팀	https://www.linkedin.com/in/jonghyun-heo/	O	O
+19	정채호	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%B1%84%ED%98%B8-%EC%A0%95-918738429/	O	O
+20	허종현	지점운영그룹 / 사업1팀	https://www.linkedin.com/in/jonghyun-heo/	O	O
+21	전현우	대표직속	https://www.linkedin.com/in/hyunwoojun/
 </script>
 
 <script>
@@ -276,8 +276,9 @@ th.sorted button.sort .ar{opacity:1;color:var(--accent)}
   function toPeople(rows){
     var out=[];
     rows.forEach(function(c){
-      var off=/^\s*\d+\s*$/.test(c[0]||'')?1:0;
-      if(!off&&/^\s*(no|이름|)\s*$/i.test(c[0]||'')) return;
+      var off=-1;
+      for(var k=0;k<Math.min(c.length,6);k++){ if(/^\s*\d+\s*$/.test(c[k]||'')&&(c[k+1]||'').trim()&&!/^\s*\d+\s*$/.test(c[k+1]||'')){off=k+1;break;} }
+      if(off<0){ if(/^\s*(no|이름|)\s*$/i.test(c[0]||'')) return; off=0; }
       var name=(c[off]||'').trim(); if(!name||name==='이름') return;
       if(!off&&!(c[off+1]||'').trim()) return;
       var dept=(c[off+1]||'').trim();
@@ -413,10 +414,14 @@ th.sorted button.sort .ar{opacity:1;color:var(--accent)}
   }
   if(window.SHEET_CSV_URL){
     count.textContent='불러오는 중…';
-    fetch(SHEET_CSV_URL,{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text();})
-      .then(function(t){var ps=toPeople(parseCSV(t));if(!ps.length)throw 0;people=ps;
+    var u=String(SHEET_CSV_URL).trim();
+    if(!/output=csv/i.test(u)){ fallback('시트 주소가 CSV 게시 주소가 아니에요 (주소에 output=csv 가 있어야 해요) · 저장된 데이터로 보여주는 중'); return; }
+    fetch(u,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();})
+      .then(function(t){
+        if(/^\s*<!doctype|^\s*<html/i.test(t)) throw new Error('게시되지 않았거나 공개 권한이 없어요');
+        var ps=toPeople(parseCSV(t));if(!ps.length)throw new Error('읽을 수 있는 행이 없어요 (No / 이름 / 부서 / 링크 열 순서 확인)');people=ps;
         var n=new Date();draw('구글 시트에서 불러옴 · '+(n.getMonth()+1)+'/'+n.getDate()+' '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));})
-      .catch(function(){fallback('시트를 불러오지 못해 저장된 데이터로 보여주고 있어요');});
+      .catch(function(e){console.warn('시트 불러오기 실패:',e);fallback('시트를 불러오지 못했어요 ('+(e&&e.message?e.message:'네트워크 오류')+') · 저장된 데이터로 보여주는 중');});
   }else fallback('2026. 10. 19 기준');
 })();
 </script>
