@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>LinkedIn 2기 교육 참여자 리스트 · FF Academy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --bg:#F5F7FA; --surface:#FFFFFE; --soft:#F1F3F6; --head:#F7F8FA;
+  --text:#141A24; --body:#4A5262; --muted:#7D8592; --line:#E5E8EE;
+  --navy:#13284A; --accent:#2F62D6; --accent-soft:#EAF0FC; --amber:#F2B544; --amber-soft:#FFF6E3;
+  --check:#1F9D63; --check-soft:#E5F5ED;
+  --hdr:#EEF0F3; --charcoal:#2B2F36;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0F1319; --surface:#161B23; --soft:#1D232D; --head:#1A2029;
+    --text:#E8EBF0; --body:#B7BDC8; --muted:#8890A0; --line:#28303C;
+    --navy:#0E1C36; --accent:#86A8F5; --accent-soft:#1D2A45; --amber:#F2C46A; --amber-soft:#2E2617;
+    --check:#5BD39A; --check-soft:#17302A;
+    --hdr:#141920; --charcoal:#E3E6EB;
+    color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  font-size:15px;line-height:1.55;letter-spacing:-0.01em;word-break:keep-all;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+header{background:var(--hdr);border-bottom:1px solid var(--line);padding:36px 0 28px}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);margin:0 0 8px}
+.kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber)}
+.top{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+h1{font-size:30px;font-weight:700;letter-spacing:-0.035em;margin:0 0 6px;line-height:1.25}
+.sub{margin:0;color:var(--body);font-size:15px;line-height:1.65}
+.sub b{color:var(--text);font-weight:600}
+.hint{font-size:13.5px;color:var(--body);display:inline-flex;align-items:center;gap:6px}
+.hint a.ok{height:22px;font-size:11.5px;pointer-events:none}
+.total{display:flex;gap:10px}
+.total div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-width:96px}
+.total span{display:block;font-size:12.5px;color:var(--muted)}
+.total b{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.02em}
+.total b small{font-size:13px;color:var(--muted);font-weight:500}
+
+.prog{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:22px}
+@media (max-width:760px){.prog{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.pc.now{border-color:var(--amber);box-shadow:0 0 0 2px var(--amber-soft)}
+.pc .l{font-size:13px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;gap:6px}
+.pc .l em{font-style:normal;font-size:11px;font-weight:700;color:#13284A;background:var(--amber);border-radius:999px;padding:0 7px}
+.pc .d{font-size:12px;color:var(--muted)}
+.pc .n{font-size:13px;color:var(--body);margin-top:6px;font-variant-numeric:tabular-nums}
+.pc .bar{height:5px;border-radius:3px;background:var(--soft);margin-top:4px;overflow:hidden}
+.pc .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 12px}
+.search{flex:1 1 220px;max-width:320px;font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text)}
+select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text)}
+.search:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.count{margin-left:auto;font-size:13.5px;color:var(--muted)}
+
+.tbl{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:calc(100vh - 120px);box-shadow:0 1px 2px rgba(20,26,36,.04),0 10px 30px -18px rgba(20,26,36,.18)}
+table{width:100%;border-collapse:separate;border-spacing:0;min-width:820px}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;white-space:nowrap}
+thead th{position:sticky;top:0;background:var(--head);font-size:12.5px;font-weight:600;color:var(--muted);z-index:2}
+th.c,td.c{text-align:center}
+th.s{min-width:84px;line-height:1.35}
+th.s .d{display:block;font-weight:500;font-size:11.5px}
+th.now,td.now{background:var(--amber-soft)}
+thead th.now{color:var(--text)}
+tbody tr:hover td{background:var(--head)}
+tbody tr:hover td.now{background:var(--amber-soft)}
+tbody tr:last-child td{border-bottom:0}
+td.no{color:var(--muted);font-variant-numeric:tabular-nums;width:44px}
+td.nm,th.nm{position:sticky;left:0;z-index:1;background:var(--surface)}
+thead th.nm{z-index:3;background:var(--head)}
+tbody tr:hover td.nm{background:var(--head)}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);flex:none}
+.who b{font-weight:650;font-size:15px}
+td.dp{font-size:14px;color:var(--body)}
+.gp{display:inline-block;font-size:12px;font-weight:600;color:var(--body);background:var(--soft);border-radius:6px;padding:1px 7px;margin-right:6px}
+.tm{color:var(--muted)}
+a.go{display:inline-block;font-size:13px;font-weight:600;color:#FBFCFE;background:var(--charcoal);text-decoration:none;padding:5px 12px;border-radius:7px}
+@media (prefers-color-scheme:dark){a.go{color:#0F1319}}
+a.go:hover{opacity:.85}
+a.go:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.na{font-size:12.5px;color:var(--muted)}
+.ok{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--muted);font-weight:700;font-size:13px;text-decoration:none}
+a.ok{background:var(--check-soft);color:var(--check);width:auto;height:26px;border-radius:999px;padding:0 10px;font-size:12.5px;gap:4px;display:inline-flex;align-items:center}
+.first-post{border-left:1px solid var(--line)}
+.grp-h{font-size:11.5px;font-weight:600;color:var(--muted)}
+a.ok:hover,a.ok:focus-visible{outline:2px solid var(--check);outline-offset:1px}
+.empty{padding:32px;text-align:center;color:var(--muted)}
+footer{padding:16px 0 40px;font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+
+.gsec{margin:28px 0 8px}
+.gsec h2{font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:0 0 4px}
+.gsub{margin:0 0 14px;font-size:14px;color:var(--body)}
+.guides{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.guides{grid-template-columns:1fr}}
+.gd{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;text-decoration:none;color:var(--text);min-height:92px}
+.gd .wk{display:inline-block;font-size:12px;font-weight:700;color:var(--body);background:var(--soft);border-radius:999px;padding:1px 9px;margin-bottom:6px}
+.gd b{display:block;font-size:18px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gd .dt{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.gd .t{min-width:0}
+.gd i{font-style:normal;font-size:13.5px;font-weight:600;white-space:nowrap;border-radius:9px;padding:8px 14px}
+a.gd i{color:#FBFCFE;background:var(--charcoal)}
+@media (prefers-color-scheme:dark){a.gd i{color:#0F1319}}
+a.gd{box-shadow:0 1px 2px rgba(20,26,36,.04),0 8px 22px -16px rgba(20,26,36,.25)}
+a.gd:hover{border-color:var(--charcoal)}
+a.gd:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a.gd.latest{border:2px solid var(--charcoal)}
+a.gd.latest .wk{background:var(--amber);color:#13284A}
+div.gd{background:transparent;border-style:dashed}
+div.gd b{color:var(--muted)}
+div.gd i{color:var(--muted);background:var(--soft)}
+.lsec{font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:36px 0 0}
+.tools{margin-top:12px!important}
+
+.lead{margin:36px 0 0}
+.lead h2{font-size:19px;font-weight:700;letter-spacing:-0.02em;margin:0 0 4px}
+.ld{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.ld .t{min-width:0}
+.ld .rl{display:inline-block;font-size:11.5px;font-weight:700;color:var(--body);background:var(--soft);border-radius:999px;padding:1px 8px;margin-bottom:4px}
+.ld .rl.host{background:var(--amber);color:#13284A}
+.ld b{display:block;font-size:16px;font-weight:650}
+.ld .dp{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+th button.sort{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:12.5px;font-weight:600;color:var(--muted);border-radius:6px;padding:2px 6px;margin:-2px -6px}
+th button.sort:hover{color:var(--text);background:var(--soft)}
+th button.sort:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+th button.sort .ar{font-size:9px;opacity:.55}
+th.sorted button.sort{color:var(--text)}
+th.sorted button.sort .ar{opacity:1;color:var(--accent)}
+
+.sec-h{font-size:21px!important;font-weight:700;letter-spacing:-0.03em;margin:0 0 4px!important;color:var(--text)}
+.lead{border-top:1px solid var(--line);padding-top:32px}
+.lead{margin:40px 0 0}
+.lead .tools{margin:14px 0 14px!important}
+.leaders{margin:0 0 14px}
+.leaders-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.leaders-in{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="kicker">FF Academy · LinkedIn 활용 교육</p>
+    <div class="top">
+      <div>
+        <h1>함께 해요 LinkedIn 2기 </h1>
+        <p class="sub">[프로필]에서 1촌을 맺고, 포스팅도 바로 볼 수 있어요.<br>포스팅 칸의 [✓ 글 보기]를 눌러 읽고 나면 <b>좋아요와 댓글</b>로 응원해 주세요. 댓글 하나가 동료의 글을 더 멀리 보내 줘요.</p>
+      </div>
+      <div class="total" id="total"></div>
+    </div>
+    <div class="prog" id="prog" aria-label="회차별 진행 현황"></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="gsec" id="gsec" aria-labelledby="gsec-h">
+    <h2 id="gsec-h" class="sec-h"><span aria-hidden="true">📝</span> 회차별 가이드</h2>
+    <p class="gsub">과제는 가이드를 보고 진행해 주세요. 매회 새 가이드가 열려요.</p>
+    <div class="guides" id="guides"></div>
+  </section>
+  <section class="lead" aria-labelledby="lead-h">
+    <h2 id="lead-h" class="sec-h"><span aria-hidden="true">🤝</span> 함께하는 분들</h2>
+    <p class="gsub">리더분들, 2기 동료들과 1촌을 맺고 서로의 글에 반응을 남겨 주세요.</p>
+  <div class="tools">
+    <input class="search" id="q" type="search" placeholder="이름이나 부서로 찾기" aria-label="이름이나 부서로 찾기">
+    <select id="grp" aria-label="그룹 선택"></select>
+    <span class="hint"><a class="ok" aria-hidden="true" tabindex="-1">✓ 글 보기</a> 누르면 동료 글로 이동 · 좋아요와 댓글 남기기</span>
+    <span class="count" id="count" aria-live="polite"></span>
+  </div>
+    <div class="leaders" id="lsec"><div class="leaders-in" id="leaders"></div></div>
+  <div class="tbl">
+    <table>
+      <thead><tr id="h1"></tr></thead>
+      <tbody id="body"></tbody>
+    </table>
+  </div>
+  </section>
+  <footer><span>패파아카데미 내부 공유용 페이지예요.</span><span id="updated"></span></footer>
+</div>
+
+<!--
+  ================================================================
+  [담당자용] 구글 시트 연동
+  1) 구글 시트 > 파일 > 공유 > 웹에 게시
+  2) '전체 문서' 대신 교육 현황 시트 탭 하나만 고르고, 형식은 '쉼표로 구분된 값(.csv)'
+  3) [게시]를 눌러 나온 주소를 아래 SHEET_CSV_URL 따옴표 안에 붙여넣기
+  → 이후에는 시트만 고치면 페이지를 새로 열 때 자동으로 반영돼요.
+  시트는 No / 이름 / 부서 / 프로필 링크 / 회차... 순서의 열을 읽어요.
+  회차 칸: O = 완료, 포스팅 링크를 넣으면 완료 + 그 글로 이동
+  대면(1회·5회) 열은 읽기만 하고 페이지에는 보여주지 않아요.
+  주소를 비워 두거나 불러오기에 실패하면 아래 roster 데이터로 보여줘요.
+  ================================================================
+-->
+<script>
+  var SHEET_CSV_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRZxVV889n6ROCYj1McIGLK6uJTK2TNVSdeCUoSeMeVsSoFXrw3NM0Mt-koMpu7MVzKS_Jj88m0UetP/pubhtml';
+  /* 함께하는 분들: 강사·리더·운영. 동료 리스트와 회차 집계에는 들어가지 않아요.
+     role: 강사 / 그룹 리더 / 교육 담당 등, url: 링크드인 프로필 주소 */
+  var LEADERS=[
+    {name:'김준수', role:'CHRO', dept:'', url:'https://www.linkedin.com/in/shurinke/'},
+    {name:'원혜리', role:'팀장', dept:'', url:'https://www.linkedin.com/in/lilianawon/'},
+    {name:'구연정', role:'', dept:'', url:'https://www.linkedin.com/in/%EC%97%B0%EC%A0%95-%EA%B5%AC-29341b271/'}
+  ];
+  /* 주차별 가이드: url 따옴표 안에 가이드 링크를 넣으면 버튼이 열려요. 비워 두면 '공개 예정'으로 보여요. */
+  var GUIDES=[
+    {title:'가이드 1', week:'1주차', open:'10/20', url:''},
+    {title:'가이드 2', week:'2주차', open:'10/23', url:''},
+    {title:'가이드 3', week:'3주차', open:'10/30', url:''}
+  ];
+</script>
+<script type="text/plain" id="roster">
+1	권나원	Powered by FF그룹 / 엔터프라이즈세일즈팀	https://www.linkedin.com/in/%EB%82%98%EC%9B%90-%EA%B6%8C-602041422/	O	O
+2	김경렴	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EA%B2%BD%EB%A0%B4-%EA%B9%80-b83548429/	O	O
+3	김우진	HR그룹 / People Partner팀	https://www.linkedin.com/in/%EC%9A%B0%EC%A7%84-%EA%B9%80-897582435/	O	O
+4	김윤재	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%9C%A4%EC%9E%AC-%EA%B9%80-139737429/	O	O
+5	김정환	HR그룹 / RBP팀	https://www.linkedin.com/in/jeonghwan-kim/	O
+6	김현중	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/as300b6b444555/	O	O
+7	김훈정	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%ED%9B%88%EC%A0%95-%EA%B9%80-813b7a275/	O	O
+8	문채민	지점운영그룹 / 사업2팀	https://www.linkedin.com/in/%EC%B1%84%EB%AF%BC-%EB%AC%B8-8361a6445/	O	O
+9	박산하	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%82%B0%ED%95%98-%EB%B0%95-5b1392318/	O	O
+10	박수빈	HR그룹 / RBP팀	https://www.linkedin.com/in/subin-park-646018254/	O	O
+11	박지형	인프라사업부 / 오피스인테리어그룹	https://www.linkedin.com/in/%EC%A7%80%ED%98%95-%EB%B0%95-03a977443/	O	O
+12	박한나	영업개발팀 & 사업관리팀	https://www.linkedin.com/in/%ED%95%9C%EB%82%98-%EB%B0%95-1a20bb243/	O	O
+13	신예원	HR그룹 / RBP팀	https://www.linkedin.com/in/yeawon-shin-hr/	O
+14	안윤서	HR그룹 / RBP팀	https://www.linkedin.com/in/%EC%9C%A4%EC%84%9C-%EC%95%88-860240392/	O	O
+15	안윤선	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%9C%A4%EC%84%A0-%EC%95%88-9200b7355/	O	O
+16	이강훈	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EA%B0%95%ED%9B%88-%EC%9D%B4-457254429/	O
+17	이예진	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%98%88%EC%A7%84-%EC%9D%B4-949166436/	O	O
+18	장은혜	HR그룹 / RBP팀	https://www.linkedin.com/in/grace-jang-eunhye/	O	O
+19	전현우	대표직속	https://www.linkedin.com/in/hyunwoojun/
+20	정채호	지점운영그룹 / 영업개발팀	https://www.linkedin.com/in/%EC%B1%84%ED%98%B8-%EC%A0%95-918738429/	O	O
+21	허종현	지점운영그룹 / 사업1팀	https://www.linkedin.com/in/jonghyun-heo/	O	O
+</script>
+
+<script>
+(function(){
+  var SESSIONS=[
+    {label:'자기소개', date:'2026-10-14'},
+    {label:'사전과제', date:'2026-10-19'},
+    {label:'1회 대면', date:'2026-10-20', hide:true},
+    {label:'포스팅 1', date:'2026-10-22', post:true},
+    {label:'포스팅 2', date:'2026-10-29', post:true},
+    {label:'포스팅 3', date:'2026-11-05', post:true},
+    {label:'5회 대면', date:'2026-11-10', hide:true}
+  ];
+  function md(d){var p=d.split('-');return (+p[1])+'/'+(+p[2]);}
+  var today=new Date();today.setHours(0,0,0,0);
+  var VIS=SESSIONS.map(function(s,i){return i}).filter(function(i){return !SESSIONS[i].hide});
+  var nowIdx=SESSIONS.findIndex(function(s){return !s.hide&&new Date(s.date+'T00:00:00')>=today});
+  var nextIdx=SESSIONS.findIndex(function(s){return new Date(s.date+'T00:00:00')>=today});
+
+  function parseCSV(t){
+    var rows=[],row=[],f='',q=false;
+    for(var i=0;i<t.length;i++){
+      var ch=t[i];
+      if(q){ if(ch==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+      else if(ch==='"') q=true;
+      else if(ch===','){row.push(f);f='';}
+      else if(ch==='\n'){row.push(f);rows.push(row);row=[];f='';}
+      else if(ch!=='\r') f+=ch;
+    }
+    if(f!==''||row.length){row.push(f);rows.push(row);}
+    return rows;
+  }
+  function toPeople(rows){
+    var out=[];
+    rows.forEach(function(c){
+      var off=/^\s*\d+\s*$/.test(c[0]||'')?1:0;
+      if(!off&&/^\s*(no|이름|)\s*$/i.test(c[0]||'')) return;
+      var name=(c[off]||'').trim(); if(!name||name==='이름') return;
+      if(!off&&!(c[off+1]||'').trim()) return;
+      var dept=(c[off+1]||'').trim();
+      var link=(c[off+2]||'').trim().split('?')[0];
+      var st=SESSIONS.map(function(_,i){
+        var v=(c[off+3+i]||'').trim();
+        if(/^https?:\/\//i.test(v)) return {done:true,url:v};
+        return {done:/^(o|ㅇ|y|v|✓|완료)$/i.test(v)};
+      });
+      out.push({name:name,dept:dept,link:/^https?:\/\//i.test(link)?link:'',st:st});
+    });
+    return out;
+  }
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+
+  var people=[];
+  function draw(src){
+    var total=people.length;
+    var counts=SESSIONS.map(function(_,i){return people.filter(function(p){return p.st[i].done}).length;});
+
+    var tot=document.getElementById('total');tot.innerHTML='';
+    var a=el('div');a.appendChild(el('span','','참여 인원'));var b=el('b');b.innerHTML=total+'<small>명</small>';a.appendChild(b);tot.appendChild(a);
+    if(nextIdx>-1){var c=el('div');c.appendChild(el('span','','이번 일정'));c.appendChild(el('b','',SESSIONS[nextIdx].label+' · '+md(SESSIONS[nextIdx].date)));c.lastChild.style.fontSize='17px';tot.appendChild(c);}
+
+    var pr=document.getElementById('prog');pr.innerHTML='';
+    VIS.forEach(function(i){var s=SESSIONS[i];
+      var d=el('div','pc'+(i===nowIdx?' now':''));
+      var l=el('div','l');l.appendChild(el('span','',s.label));if(i===nowIdx)l.appendChild(el('em','','이번'));d.appendChild(l);
+      d.appendChild(el('div','d',md(s.date)));
+      d.appendChild(el('div','n',counts[i]+' / '+total+'명'));
+      var bar=el('div','bar'),bi=el('i');bi.style.width=(total?Math.round(counts[i]/total*100):0)+'%';bar.appendChild(bi);d.appendChild(bar);
+      pr.appendChild(d);
+    });
+
+    var h1=document.getElementById('h1');h1.innerHTML='';
+    [['No',''],['이름','nm','name'],['부서','','dept'],['프로필','c','']].forEach(function(h){
+      var th=el('th',h[1]);
+      if(h[2]){
+        var bt=el('button','sort',h[0]);bt.type='button';bt.dataset.key=h[2];
+        bt.appendChild(el('span','ar',''));
+        bt.addEventListener('click',function(){if(sortKey!==h[2]){sortKey=h[2];sortDir=1;}else if(sortDir===1){sortDir=-1;}else{sortKey='no';sortDir=1;}render();});
+        th.appendChild(bt);th.dataset.key=h[2];
+      }else th.textContent=h[0];
+      h1.appendChild(th);});
+    var firstPost=SESSIONS.findIndex(function(x){return x.post});
+    VIS.forEach(function(i){var s=SESSIONS[i];var th=el('th','c s'+(i===nowIdx?' now':'')+(i===firstPost?' first-post':''));th.appendChild(document.createTextNode(s.label));th.appendChild(el('span','d',md(s.date)));h1.appendChild(th);});
+
+    var grp=document.getElementById('grp');grp.innerHTML='';
+    var groups=['전체 그룹'];people.forEach(function(p){var g=p.dept.split('/')[0].trim()||'기타';if(groups.indexOf(g)<0)groups.push(g);});
+    groups.forEach(function(g){var o=el('option','',g);o.value=g;grp.appendChild(o);});
+
+    document.getElementById('updated').textContent=src;
+    render();
+  }
+
+  var sortKey='no',sortDir=1;
+  var body=document.getElementById('body'),q=document.getElementById('q'),grpSel=document.getElementById('grp'),count=document.getElementById('count');
+  function render(){
+    var term=q.value.trim().toLowerCase(),g=grpSel.value||'전체 그룹';
+    var shown=people.filter(function(p){
+      var pg=p.dept.split('/')[0].trim()||'기타';
+      if(g!=='전체 그룹'&&pg!==g) return false;
+      if(term&&(p.name+' '+p.dept).toLowerCase().indexOf(term)<0) return false;
+      return true;
+    });
+    shown=shown.slice().sort(function(a,b){
+      var r;
+      if(sortKey==='name') r=a.name.localeCompare(b.name,'ko');
+      else if(sortKey==='dept') r=a.dept.localeCompare(b.dept,'ko')||a.name.localeCompare(b.name,'ko');
+      else r=people.indexOf(a)-people.indexOf(b);
+      return r*sortDir;
+    });
+    document.querySelectorAll('#h1 th[data-key]').forEach(function(th){
+      var on=th.dataset.key===sortKey, ar=th.querySelector('.ar');
+      th.setAttribute('aria-sort',on?(sortDir>0?'ascending':'descending'):'none');
+      th.classList.toggle('sorted',on);
+      ar.textContent=on?(sortDir>0?'▲':'▼'):'↕';
+    });
+    body.innerHTML='';count.textContent=shown.length+'명';
+    if(!shown.length){var tr=el('tr'),td=el('td','empty','조건에 맞는 동료가 없어요');td.colSpan=4+VIS.length;tr.appendChild(td);body.appendChild(tr);return;}
+    shown.forEach(function(p){
+      var tr=el('tr');
+      tr.appendChild(el('td','no',String(shown.indexOf(p)+1)));
+      var nm=el('td','nm'),w=el('div','who');w.appendChild(el('b','',p.name));nm.appendChild(w);tr.appendChild(nm);
+      var dp=el('td','dp',p.dept.split('/').map(function(x){return x.trim()}).filter(Boolean).join(' / '));
+      tr.appendChild(dp);
+      var tl=el('td','c');
+      if(p.link){var a=el('a','go','프로필');a.href=p.link;a.target='_blank';a.rel='noopener';a.setAttribute('aria-label',p.name+' 링크드인 프로필 열기');tl.appendChild(a);}
+      else tl.appendChild(el('span','na','준비 중'));
+      tr.appendChild(tl);
+      VIS.forEach(function(i){var s=SESSIONS[i];
+        var v=p.st[i],td=el('td','c'+(i===nowIdx?' now':'')+(i===SESSIONS.findIndex(function(x){return x.post})?' first-post':''));
+        if(v.url){var a2=el('a','ok','✓ 글 보기');a2.href=v.url;a2.target='_blank';a2.rel='noopener';a2.title=p.name+' · '+s.label+' 글 보러 가기 (좋아요와 댓글 남기기)';a2.setAttribute('aria-label',p.name+' '+s.label+' 글 보러 가기');td.appendChild(a2);}
+        else if(v.done){var sp=el('span','ok','✓');sp.setAttribute('aria-label',s.label+' 완료');td.appendChild(sp);}
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+  (function(){
+    var g=document.getElementById('guides');if(!window.GUIDES||!GUIDES.length){document.getElementById('gsec').remove();return;}
+    var last=-1;GUIDES.forEach(function(x,k){if(/^https?:\/\//i.test(x.url||''))last=k;});
+    GUIDES.forEach(function(x,k){
+      var on=/^https?:\/\//i.test(x.url||'');
+      var n=on?el('a','gd'+(k===last?' latest':'')):el('div','gd');
+      if(on){n.href=x.url;n.target='_blank';n.rel='noopener';}
+      var t=el('div','t');
+      t.appendChild(el('span','wk',k===last?x.week+' · 이번 주':x.week));
+      t.appendChild(el('b','',x.title));
+      t.appendChild(el('span','dt',on?x.open+' 공개':x.open+' 공개 예정'));
+      n.appendChild(t);n.appendChild(el('i','',on?'가이드 보기':'준비 중'));g.appendChild(n);
+    });
+  })();
+  (function(){
+    var box=document.getElementById('leaders');
+    if(!window.LEADERS||!LEADERS.length){document.getElementById('lsec').remove();return;}
+    LEADERS.forEach(function(x){
+      var c=el('div','ld'),t=el('div','t');
+      if(x.role)t.appendChild(el('span','rl'+(/교육|담당|아카데미/.test(x.role)?' host':''),x.role));
+      t.appendChild(el('b','',x.name));
+      if(x.dept)t.appendChild(el('span','dp',x.dept));
+      c.appendChild(t);
+      if(/^https?:\/\//i.test(x.url||'')){var a=el('a','go','프로필');a.href=x.url;a.target='_blank';a.rel='noopener';a.setAttribute('aria-label',x.name+' 링크드인 프로필 열기');c.appendChild(a);}
+      else c.appendChild(el('span','na','준비 중'));
+      box.appendChild(c);
+    });
+  })();
+  q.addEventListener('input',render);grpSel.addEventListener('change',render);
+
+  function fallback(note){
+    var lines=document.getElementById('roster').textContent.split(/\r?\n/).map(function(l){return l.split('\t')});
+    people=toPeople(lines);draw(note);
+  }
+  if(window.SHEET_CSV_URL){
+    count.textContent='불러오는 중…';
+    fetch(SHEET_CSV_URL,{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.text();})
+      .then(function(t){var ps=toPeople(parseCSV(t));if(!ps.length)throw 0;people=ps;
+        var n=new Date();draw('구글 시트에서 불러옴 · '+(n.getMonth()+1)+'/'+n.getDate()+' '+String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'));})
+      .catch(function(){fallback('시트를 불러오지 못해 저장된 데이터로 보여주고 있어요');});
+  }else fallback('2026. 10. 19 기준');
+})();
+</script>
+</body>
+</html>
