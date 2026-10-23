@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>FF Academy — 리더십 교육 1기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EEF1EC;
+    --paper-2: #E2E7E0;
+    --card: #F8FAF6;
+    --ink: #17201B;
+    --ink-2: #47534B;
+    --ink-3: #7F8A82;
+    --forest: #1E4D3B;
+    --forest-2: #2E6B53;
+    --ribbon: #E2B33C;
+    --line: #17201B;
+    --soft-line: #C9D2C9;
+    --on-forest: #EEF1EC;
+    --serif: 'Noto Serif KR', 'Apple SD Gothic Neo', serif;
+    --sans: 'Pretendard', -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --paper: #141A16;
+      --paper-2: #1C241F;
+      --card: #1A211C;
+      --ink: #E6ECE6;
+      --ink-2: #B3BEB5;
+      --ink-3: #7F8B82;
+      --forest: #3E8A6A;
+      --forest-2: #4FA07D;
+      --ribbon: #E7BE52;
+      --line: #C9D2C9;
+      --soft-line: #33403A;
+      --on-forest: #F2F5F1;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.7;
+    word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+  }
+  a:focus-visible { outline: 3px solid var(--ribbon); outline-offset: 3px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+
+  /* 확정 전 값 표시: 값을 넣은 뒤 class="tbd"를 지워주세요 */
+  .tbd { border-bottom: 2px dashed var(--ribbon); }
+
+  /* TOP */
+  .top { border-bottom: 1.5px solid var(--line); }
+  .top .wrap { display: flex; justify-content: space-between; align-items: center; height: 56px; font-size: 13px; font-weight: 700; }
+  .top a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--ink); }
+
+  /* HERO */
+  .hero { padding: 64px 0 56px; }
+  .hero-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: end; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .chip { font-size: 13px; font-weight: 700; padding: 6px 14px; border: 1.5px solid var(--ink); border-radius: 999px; }
+  .chip.fill { background: var(--forest); border-color: var(--forest); color: var(--on-forest); }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 900;
+    font-size: clamp(34px, 5.4vw, 58px); line-height: 1.28; letter-spacing: -0.035em;
+  }
+  .hero-lead { margin-top: 28px; font-size: 17px; color: var(--ink-2); max-width: 30em; }
+  .hero-lead b { color: var(--ink); font-weight: 700; }
+
+  /* BOOK CARD */
+  .book {
+    position: relative; background: var(--forest); color: var(--on-forest);
+    border-radius: 6px 18px 18px 6px; padding: 30px 28px 26px 40px;
+    box-shadow: inset 10px 0 0 rgba(0,0,0,.18);
+  }
+  .book::after {
+    content: ''; position: absolute; top: -6px; right: 34px; width: 18px; height: 64px;
+    background: var(--ribbon); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  }
+  .book-k { font-size: 13px; font-weight: 600; opacity: .75; }
+  .book-t { font-family: var(--serif); font-size: 26px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.3; margin: 6px 0 4px; }
+  .book-a { font-size: 14px; opacity: .8; margin-bottom: 18px; }
+  .b-row { display: flex; justify-content: space-between; gap: 16px; font-size: 14px; padding: 8px 0; border-top: 1px solid rgba(238,241,236,.2); }
+  .b-row span:first-child { opacity: .7; flex-shrink: 0; }
+  .b-row b { font-weight: 700; text-align: right; }
+  .b-btn {
+    display: block; text-align: center; margin-top: 18px;
+    background: var(--ribbon); color: #17201B; text-decoration: none;
+    font-weight: 800; font-size: 15px; padding: 14px; border-radius: 12px;
+  }
+
+  /* WEEK RULER */
+  .ruler-sec { border-top: 1.5px solid var(--line); border-bottom: 1.5px solid var(--line); padding: 44px 0 48px; }
+  .ruler-h { font-family: var(--serif); font-size: clamp(20px, 2.6vw, 26px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 24px; }
+  .ruler { display: grid; grid-template-columns: 1fr 1fr 1fr .8fr 1fr; border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .wk { padding: 14px 12px 16px; border-right: 1px solid var(--soft-line); min-height: 132px; display: flex; flex-direction: column; justify-content: space-between; }
+  .wk:last-child { border-right: none; }
+  .wk-n { font-size: 13px; font-weight: 800; }
+  .wk-s { font-size: 13px; font-weight: 600; line-height: 1.45; }
+  .wk.read { background: var(--card); }
+  .wk.read .wk-n { color: var(--forest-2); }
+  .wk.do { background: var(--paper-2); border-right-color: transparent; }
+  .wk.do .wk-s { color: var(--ink-2); }
+  .wk.share { background: var(--forest); color: var(--on-forest); }
+  .ruler-key { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 16px; font-size: 14px; color: var(--ink-2); }
+  .ruler-key span::before { content: ''; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: -1px; border: 1px solid var(--soft-line); }
+  .k1::before { background: var(--card); }
+  .k2::before { background: var(--paper-2); }
+  .k3::before { background: var(--forest); }
+
+  /* SECTION */
+  .sec { display: grid; grid-template-columns: 200px 1fr; gap: 40px; padding: 72px 0; border-bottom: 1.5px solid var(--line); }
+  .sec:last-of-type { border-bottom: none; }
+  .sec-name { font-family: var(--serif); font-size: 19px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.4; position: sticky; top: 24px; }
+  .big { font-family: var(--serif); font-size: clamp(21px, 2.6vw, 27px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.45; margin-bottom: 22px; }
+  .p { font-size: 16px; color: var(--ink-2); margin-bottom: 14px; max-width: 38em; }
+  .p b { color: var(--ink); }
+
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; margin-top: 30px; }
+  .tr { padding: 24px 22px; border-right: 1.5px solid var(--line); background: var(--card); }
+  .tr:last-child { border-right: none; }
+  .tr-t { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .tr-d { font-size: 14px; color: var(--ink-2); }
+
+  /* CURRICULUM */
+  .rows { border-top: 1.5px solid var(--line); }
+  .row { display: grid; grid-template-columns: 76px 1fr auto; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--soft-line); align-items: start; }
+  .row:last-child { border-bottom: 1.5px solid var(--line); }
+  .row-no { font-family: var(--serif); font-size: 30px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+  .row-no small { display: block; font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--ink-3); margin-top: 10px; letter-spacing: 0; }
+  .row-range { font-size: 13px; font-weight: 700; color: var(--forest-2); margin-bottom: 4px; }
+  .row-t { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .row ul { list-style: none; }
+  .row li { font-size: 15px; color: var(--ink-2); padding-left: 16px; position: relative; margin-bottom: 4px; }
+  .row li::before { content: ''; position: absolute; left: 0; top: 11px; width: 7px; height: 2px; background: var(--forest-2); }
+  .badge { font-size: 12px; font-weight: 800; padding: 5px 12px; border-radius: 999px; white-space: nowrap; border: 1.5px solid var(--ink); }
+  .row.last .row-no { color: var(--forest-2); }
+  .row.last .badge { background: var(--forest); border-color: var(--forest); color: var(--on-forest); }
+
+  /* SESSION BAR */
+  .bar-t { font-size: 15px; font-weight: 700; margin: 0 0 10px; }
+  .bar { display: flex; border: 1.5px solid var(--line); border-radius: 12px; overflow: hidden; margin-bottom: 30px; }
+  .seg { padding: 12px 12px 14px; border-right: 1px solid var(--soft-line); background: var(--card); min-width: 0; }
+  .seg:last-child { border-right: none; }
+  .seg b { display: block; font-size: 14px; font-weight: 700; }
+  .seg span { font-size: 13px; color: var(--ink-3); }
+  .seg.main { background: var(--paper-2); }
+
+  /* OUTCOMES */
+  .outs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .out { border: 1.5px solid var(--line); border-radius: 16px; padding: 24px 22px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; background: var(--card); }
+  .out:first-child { background: var(--forest); color: var(--on-forest); border-color: var(--forest); }
+  .out-n { font-family: var(--serif); font-size: 38px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; }
+  .out-n small { font-family: var(--sans); font-size: 16px; font-weight: 700; margin-left: 2px; }
+  .out-t { font-size: 15px; font-weight: 600; }
+
+  /* RULES */
+  .rules { border-top: 1px solid var(--soft-line); }
+  .rule { display: grid; grid-template-columns: 150px 1fr; gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--soft-line); }
+  .rule b { font-size: 16px; font-weight: 700; }
+  .rule span { font-size: 15px; color: var(--ink-2); }
+
+  /* NEXT */
+  .next { border: 1.5px dashed var(--line); border-radius: 16px; padding: 24px 26px; }
+  .next-t { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .next-d { font-size: 15px; color: var(--ink-2); }
+
+  /* INFO + FAQ */
+  .info { border: 1.5px solid var(--line); border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+  .info-r { display: grid; grid-template-columns: 120px 1fr; border-bottom: 1px solid var(--soft-line); }
+  .info-r:last-child { border-bottom: none; }
+  .info-k { padding: 16px 20px; font-size: 14px; font-weight: 800; background: var(--paper-2); }
+  .info-v { padding: 16px 20px; font-size: 15px; color: var(--ink-2); background: var(--card); }
+  .info-v b { color: var(--ink); }
+  details { border-bottom: 1px solid var(--soft-line); }
+  details:first-of-type { border-top: 1px solid var(--soft-line); }
+  summary { list-style: none; cursor: pointer; padding: 18px 0; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; color: var(--forest-2); font-size: 18px; line-height: 1.3; transition: transform .2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  summary:focus-visible { outline: 3px solid var(--ribbon); outline-offset: 2px; }
+  details p { padding: 0 0 20px; font-size: 15px; color: var(--ink-2); }
+
+  /* CTA */
+  .cta { background: var(--forest); color: var(--on-forest); padding: 76px 0; text-align: center; border-top: 1.5px solid var(--line); }
+  .cta-k { font-size: 14px; font-weight: 700; margin-bottom: 16px; opacity: .85; }
+  .cta h2 { font-family: var(--serif); font-size: clamp(28px, 4.4vw, 42px); font-weight: 900; letter-spacing: -0.035em; line-height: 1.35; margin-bottom: 32px; }
+  .cta-btn { display: inline-block; background: var(--ribbon); color: #17201B; text-decoration: none; font-weight: 800; font-size: 16px; padding: 18px 44px; border-radius: 999px; }
+  .cta-n { font-size: 13px; margin-top: 18px; opacity: .8; }
+
+  footer { background: var(--ink); color: var(--paper); opacity: .92; font-size: 13px; padding: 26px 0 96px; text-align: center; }
+  .sticky { display: none; }
+  p, li, .tr-d, .out-t, .info-v, .rule span { text-wrap: pretty; }
+  h1, h2, .big, .row-t { text-wrap: balance; }
+
+  @media (max-width: 760px) {
+    br.pc { display: none; }
+    .wrap { padding: 0 18px; }
+    .hero { padding: 40px 0 44px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 36px; }
+    .ruler { grid-template-columns: 1fr 1fr 1fr; }
+    .wk { min-height: 96px; border-bottom: 1px solid var(--soft-line); }
+    .wk.do { grid-column: span 3; border-right: none; }
+    .wk.share { grid-column: span 3; }
+    .wk:nth-child(3) { border-right: none; }
+    .sec { grid-template-columns: 1fr; gap: 16px; padding: 52px 0; }
+    .sec-name { position: static; }
+    .trio, .outs { grid-template-columns: 1fr; }
+    .tr { border-right: none; border-bottom: 1.5px solid var(--line); }
+    .tr:last-child { border-bottom: none; }
+    .row { grid-template-columns: 56px 1fr; gap: 14px; }
+    .row .badge { grid-column: 2; grid-row: 1; justify-self: start; margin-bottom: 2px; }
+    .row-no { grid-row: 1 / span 2; font-size: 24px; }
+    .bar { flex-direction: column; }
+    .seg { flex: none !important; border-right: none; border-bottom: 1px solid var(--soft-line); display: flex; justify-content: space-between; }
+    .seg:last-child { border-bottom: none; }
+    .seg b { display: inline; }
+    .rule { grid-template-columns: 1fr; gap: 2px; }
+    .info-r { grid-template-columns: 1fr; }
+    .info-k { padding: 12px 18px 2px; background: var(--card); color: var(--forest-2); font-size: 13px; }
+    .info-v { padding: 0 18px 14px; }
+    .top a { display: none; }
+    .sticky {
+      display: block; position: fixed; left: 14px; right: 14px; bottom: 14px; z-index: 20;
+      background: var(--forest); color: var(--on-forest); text-align: center; text-decoration: none;
+      font-weight: 800; font-size: 15px; padding: 16px; border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ▼ 신청 구글폼 URL: 아래 FORM_URL 자리(4곳)에 같은 링크를 넣어주세요 -->
+
+<div class="top">
+  <div class="wrap">
+    <span>FF ACADEMY ✦ 리더십 교육</span>
+    <a href="https://forms.gle/8AuPy7dbhsVR8UYg8" target="_blank" rel="noopener">1기 신청하기</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="chips">
+        <span class="chip fill">1기 팀장 과정</span>
+        <span class="chip">북 리뷰</span>
+        <span class="chip">11/11 – 12/3, 총 4회</span>
+      </div>
+      <h1>혼자 하던 고민,<br>책 한 권으로<br>같이 풀어봐요</h1>
+      <p class="hero-lead">
+        리더가 되면 고민은 늘어나는데, 편하게 물어볼 곳은 줄어들어요.<br class="pc">
+        같은 자리에 있는 팀장들과 <b>한 권의 책을 함께 읽고</b>,<br class="pc">
+        <b>내 팀에 직접 적용해 본 뒤</b>, 그 결과를 서로 피드백하는 프로그램입니다.
+      </p>
+    </div>
+
+    <aside class="book" aria-label="1기 과정 요약">
+      <div class="book-k">1기가 함께 읽을 책</div>
+      <div class="book-t">실리콘밸리의 팀장들</div>
+      <div class="book-a">킴 스콧 지음</div>
+      <div class="b-row"><span>대상</span><b>패스트파이브 팀장</b></div>
+      <div class="b-row"><span>구성</span><b>책 토론 3회 + 사례 피드백 1회</b></div>
+      <div class="b-row"><span>기간</span><b>11/11(수) – 12/3(목)</b></div>
+      <div class="b-row"><span>정원</span><b>10명 이내</b></div>
+      <div class="b-row"><span>신청 마감</span><b class="tbd">10/30(금)</b></div>
+      <a class="b-btn" href="https://forms.gle/8AuPy7dbhsVR8UYg8" target="_blank" rel="noopener">신청서 작성하기</a>
+    </aside>
+  </div>
+</header>
+
+<section class="ruler-sec">
+  <div class="wrap">
+    <h2 class="ruler-h">4주는 이렇게 흘러가요</h2>
+    <div class="ruler" role="list">
+      <div class="wk read" role="listitem"><span class="wk-n">11/11(수)</span><span class="wk-s">1회차<br>함께 읽고 토론</span></div>
+      <div class="wk read" role="listitem"><span class="wk-n">11/19(목)</span><span class="wk-s">2회차<br>함께 읽고 토론</span></div>
+      <div class="wk read" role="listitem"><span class="wk-n">11/26(목)</span><span class="wk-s">3회차<br>함께 읽고 토론 + 적용 계획 세우기</span></div>
+      <div class="wk do" role="listitem"><span class="wk-n">1주간</span><span class="wk-s">각자 내 팀에서<br>실행해 보기</span></div>
+      <div class="wk share" role="listitem"><span class="wk-n">12/3(목)</span><span class="wk-s">4회차<br>사례 공유와 피드백</span></div>
+    </div>
+    <div class="ruler-key">
+      <span class="k1">책으로 관점 쌓기</span>
+      <span class="k2">현업 적용</span>
+      <span class="k3">실사례 피드백</span>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <section class="sec">
+    <div><div class="sec-name">왜<br>북리뷰인가요?</div></div>
+    <div>
+      <p class="big">정답을 배우기보다, 내 팀에서 해보고 같이 돌아보는 시간</p>
+      <p class="p">
+        목표를 잡는 일, 피드백을 건네는 일, 팀원을 키우는 일.<br class="pc">
+        팀장이라면 누구나 겪는 고민이지만, 대부분 혼자 답을 찾고 있습니다.<br class="pc">
+        이 프로그램은 <b>책을 공통의 기준</b>으로 삼아 <b>같은 직책의 동료</b>와 이야기를 나누고,<br class="pc">
+        배운 것을 <b>실제로 해본 경험</b>으로 마무리합니다.
+      </p>
+      <div class="trio">
+        <div class="tr"><div class="tr-t">책이 기준이 돼요</div><div class="tr-d">각자의 경험담에 머물지 않도록,<br>같은 책의 관점에서 출발해요.</div></div>
+        <div class="tr"><div class="tr-t">팀장끼리 이야기해요</div><div class="tr-d">같은 자리에 있는 만큼<br> 고민의 결이 비슷하고, <br>나온 해법도 바로 쓸 수 있습니다.</div></div>
+        <div class="tr"><div class="tr-t">읽고 끝내지 않아요</div><div class="tr-d">3회차에 세운 계획을<br> 일주일 동안 내 팀에서 해보고,<br> 그 결과로 피드백을 주고받아요.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="curriculum">
+    <div><div class="sec-name">4회차<br>커리큘럼</div></div>
+    <div>
+      <p class="big">세 번은 책으로, 마지막 한 번은 우리 팀 이야기로</p>
+      <p class="p">회차별 내용과 질문은 참여하시는 분들의 고민에 맞춰 조금씩 달라질 수 있습니다.</p>
+      <div class="rows">
+        <div class="row">
+          <div class="row-no">01<small>11/11 (수)</small></div>
+          <div>
+            <div class="row-t">나는 어떤 피드백을 하는 팀장인가요?</div>
+            <ul>
+              <li>‘개인적 관심’과 ‘직접적 대립’, 나는 어느 쪽에 더 가까운가</li>
+              <li>관계가 틀어질까 봐 하지 못했던 말이 있다면</li>
+              <li>칭찬과 지적, 나는 무엇을 더 자주, 어떻게 하는가</li>
+            </ul>
+          </div>
+          <span class="badge">2시간</span>
+        </div>
+        <div class="row">
+          <div class="row-no">02<small>11/19 (목)</small></div>
+          <div>
+            <div class="row-t">팀원의 성장과 팀이 일하는 방식</div>
+            <ul>
+              <li>팀원마다 성장의 속도와 방향이 다를 때, 관리도 달라야 할까</li>
+              <li>듣기부터 학습까지, 우리 팀이 일하는 과정에서 가장 약한 단계는</li>
+              <li>결정은 누가 내리고 있는가</li>
+            </ul>
+          </div>
+          <span class="badge">2시간</span>
+        </div>
+        <div class="row">
+          <div class="row-no">03<small>11/26 (목)</small></div>
+          <div>
+            <div class="row-t">리더를 키우는 리더</div>
+            <ul>
+              <li>반대 의견과 나쁜 소식이 나에게 편하게 올라오는가</li>
+              <li>팀원이 다음에 어떤 사람이 되고 싶은지 알고 있는가</li>
+              <li>마무리: 1~3회차에서 고른 한 가지로, 일주일 안에 해볼 수 있는 적용 계획 세우기</li>
+            </ul>
+          </div>
+          <span class="badge">2시간</span>
+        </div>
+        <div class="row last">
+          <div class="row-no">04<small>12/3 (목)</small></div>
+          <div>
+            <div class="row-range">1주간의 현업 적용 후</div>
+            <div class="row-t">현업 적용 사례 공유와 피드백</div>
+            <ul>
+              <li>적용한 책의 관점, 실제로 한 일, 그리고 결과</li>
+              <li>잘 안 된 점과 동료에게 받고 싶은 피드백</li>
+              <li>마무리: 나의 리더십 원칙 3가지 나누기</li>
+            </ul>
+          </div>
+          <span class="badge">2시간</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><div class="sec-name">4주 뒤<br>남는 것</div></div>
+    <div>
+      <p class="big">잘 해내는 것보다, 한 번 해보고 돌아보는 것이 목표예요</p>
+      <div class="outs">
+        <div class="out"><div class="out-n">1<small>건</small></div><div class="out-t">내 팀에서 직접 해본 적용 사례</div></div>
+        <div class="out"><div class="out-n">3<small>가지</small></div><div class="out-t">나의 언어로 정리한 리더십 원칙</div></div>
+        <div class="out"><div class="out-n">10<small>명</small></div><div class="out-t">고민을 나눌 수 있는 동료 팀장</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><div class="sec-name">함께할<br>퍼실리테이터</div></div>
+    <div>
+      <p class="big">김준수 CHRO님</p>
+      <p class="p">
+        LG전자 임원인사팀, 원티드랩 HRBP팀 리더, 현대차그룹 42dot TA팀 리더를 거쳐<br class="pc">
+        웍스피어(잡코리아)에서 가치성장본부장(CHRO)으로 인재와 조직문화를 총괄했습니다.<br class="pc">
+        사람을 숫자로만 보지 않는 것을 HR의 원칙으로 삼고 계세요.
+      </p>
+      <p class="p">
+        1기는 김준수 CHRO님이 진행합니다.<br class="pc">
+        정답을 알려주기보다는 대화를 이끌고, 나온 이야기를 정리하는 역할을 맡아요.
+      </p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><div class="sec-name">편하게 말할 수 있도록<br>약속해요</div></div>
+    <div>
+      <p class="big">1회차에 모두 함께 확인하고 시작해요</p>
+      <div class="rules">
+        <div class="rule"><b>평가와 무관해요</b><span>여기서 나눈 이야기는 인사 평가나 리더 평가에 쓰이지 않습니다.</span></div>
+        <div class="rule"><b>밖으로 나가지 않아요</b><span>공유된 사례는 프로그램 밖에서 이야기하지 않습니다.</span></div>
+        <div class="rule"><b>이름은 빼고 말해요</b><span>팀원 사례는 이름과 누구인지 알 수 있는 정보를 빼고 나눠요.</span></div>
+        <div class="rule"><b>조언보다 경험을</b><span>“이렇게 하세요”보다 “저는 이렇게 해봤어요”로 이야기해요.</span></div>
+        <div class="rule"><b>안 된 것도 사례예요</b><span>해봤는데 잘 안 된 경험도 똑같이 반가운 이야기예요.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div><div class="sec-name">신청 전<br>확인해주세요</div></div>
+    <div>
+      <div class="info">
+        <div class="info-r"><div class="info-k">대상</div><div class="info-v">패스트파이브 <b>팀장</b></div></div>
+        <div class="info-r"><div class="info-k">정원</div><div class="info-v"><b>10명 이내</b></div></div>
+        <div class="info-r"><div class="info-k">일정</div><div class="info-v"><b>1회차 11/11(수), 2회차 11/19(목), 3회차 11/26(목), 4회차 12/3(목)</b><br>오후 7시 ~ 9시 예정</div></div>
+        <div class="info-r"><div class="info-k">장소</div><div class="info-v"><b class="tbd">추후 공지</b></div></div>
+        <div class="info-r"><div class="info-k">도서</div><div class="info-v">『실리콘밸리의 팀장들』 (킴 스콧, 청림출판)</div></div>
+        <div class="info-r"><div class="info-k">수료 조건</div><div class="info-v"><b>1~3회차 중 2회 이상 참석</b> + <b>4회차 참석과 사례 공유</b> + <b>나의 리더십 원칙 3가지 제출</b></div></div>
+        <div class="info-r"><div class="info-k">신청 마감</div><div class="info-v"><b class="tbd">10/30(금)</b></div></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-k">신청 마감 <span class="tbd">10/30(금) 오후 4시까지</span>, 정원 10명 이내</div>
+    <h2>패스트파이브의 팀장님들,<br>1기에서 만나요</h2>
+    <a class="cta-btn" href="https://forms.gle/8AuPy7dbhsVR8UYg8" target="_blank" rel="noopener">신청서 작성하기</a>
+  </div>
+</section>
+
+<footer>© 2026 FASTFIVE, FF Academy. 문의: 슬랙 @구연정</footer>
+
+<a class="sticky" href="https://forms.gle/8AuPy7dbhsVR8UYg8" target="_blank" rel="noopener">1기 신청하기</a>
+
+</body>
+</html>
