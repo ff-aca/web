@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>6004 나만의 시간표</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#16181d;--sub:#5f6672;--faint:#a9afb8;--line:#e7e9ee;--accent:#b8860b;--accent2:#fbf1d6;--mustard:#e0a91b;--onm:#2a2208;--warm:#ff7a45;--warm2:#fff1ea;--warn:#e08a00;--ok:#12a36b}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#181b21;--ink:#f1f3f6;--sub:#a3a9b3;--faint:#5b616b;--line:#272b33;--accent:#e6b84a;--accent2:#2b2412;--mustard:#e0a91b;--onm:#1a1505;--warm:#ff9466;--warm2:#2d1d16;--warn:#f0a83a;--ok:#3ccf91}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;padding:22px 18px 48px}
+h1{font-size:15px;font-weight:500;margin:0 0 18px;color:var(--sub);display:flex;align-items:center;gap:8px}
+h1 span{background:#e5484d;color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:6px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--line);padding:4px;border-radius:14px}
+.tabs button{border:0;background:none;font:inherit;font-size:16px;font-weight:500;color:var(--sub);padding:11px 0;border-radius:11px;cursor:pointer}
+.tabs button.on{background:var(--mustard);color:var(--onm);font-weight:700;box-shadow:0 2px 8px rgba(224,169,27,.3)}
+.days{display:flex;gap:6px;margin:12px 0 6px}
+.days button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;font-weight:500;color:var(--sub);padding:5px 12px;border-radius:999px;cursor:pointer}
+.days button.on{border-color:var(--ink);color:var(--ink)}
+.route{color:var(--sub);font-size:12.5px;margin:4px 2px 18px}
+.panel{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:22px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:inherit;font-size:14px;font-weight:500;border:0;background:var(--accent2);color:var(--accent);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chips button.on{background:var(--mustard);color:var(--onm);font-weight:700}
+.ctl{display:flex;gap:16px;align-items:center;margin:14px 0 0;font-size:13px;color:var(--sub);flex-wrap:wrap}
+.ctl input{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
+.ctl input[type=number]{width:46px;text-align:center}
+.res{margin-top:16px}
+.cap{font-size:13px;color:var(--sub);margin-bottom:8px;font-weight:500}
+.cap b{color:var(--accent);font-weight:700}
+.herobox{background:var(--accent2);border-radius:14px;padding:14px 16px 12px;margin-bottom:6px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between}
+.hero .t{font-size:46px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+.hero .r{text-align:right;font-size:12.5px;color:var(--sub);line-height:1.6}
+.hero .r b{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
+.note{font-size:12.5px;color:var(--sub);margin-top:8px;font-weight:500}
+.sm{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);font-size:13px;color:var(--sub)}
+.sm:last-child{border-bottom:0}
+.sm .t{font-size:19px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
+.warn{color:var(--warn);font-weight:600}
+.acc{color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+th{font-size:12px;color:var(--sub);font-weight:500;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+th:last-child,td:last-child{text-align:right}
+td{padding:10px 14px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:top}
+td.a{font-size:17px;font-weight:600}
+td small{display:block;color:var(--sub);font-size:11.5px;margin-top:1px;font-weight:400}
+tr.before td{color:var(--faint)}tr.before td small{color:var(--faint)}
+tr.pick td{background:var(--accent2);color:var(--accent)}tr.pick td.a{font-weight:700}
+.sec td{text-align:left!important;font-size:12px;font-weight:700;color:var(--accent);background:var(--bg);padding:8px 14px;border-bottom:0}
+td.slow{color:var(--warm);font-weight:600}td.fast{color:var(--ok);font-weight:600}
+.foot{font-size:11.5px;color:var(--sub);line-height:1.7;margin-top:18px}
+</style></head><body><div class="wrap">
+<h1><span>직행 6004</span>나만의 시간표</h1>
+<div class="tabs" id="dirseg"><button data-k="back">회사 → 집</button><button data-k="go">집 → 회사</button></div>
+<div class="days" id="dayseg"><button data-d="mon">월–목</button><button data-d="fri">금요일</button></div>
+<div class="route" id="route"></div>
+<div class="panel"><div class="chips" id="chips"></div>
+<div class="ctl" id="ctl"></div>
+<div class="res" id="res"></div></div>
+<table><thead><tr><th>탑승</th><th id="arrh">도착</th><th>소요</th></tr></thead><tbody id="tb"></tbody></table>
+<div class="foot" id="foot"></div>
+</div>
+<script>
+const DATA={"mon": {"go": [["05:21", "05:17", "06:09", "06:12", 50, 48, 52, 0, 3], ["05:39", "05:39", "06:44", "06:51", 63, 55, 68, 0, 3], ["05:57", "05:57", "07:13", "07:16", 75, 74, 76, 0, 3], ["06:19", "06:19", "07:38", "07:39", 78, 75, 80, 0, 3], ["06:42", "06:41", "07:55", "07:57", 74, 73, 76, 0, 3], ["06:53", "06:52", "08:06", "08:18", 76, 72, 82, 0, 3], ["07:11", "07:11", "08:29", "08:32", 77, 74, 81, 0, 3], ["07:26", "07:25", "08:47", "08:48", 79, 75, 82, 0, 3], ["07:40", "07:40", "08:59", "09:05", 80, 76, 85, 0, 3], ["08:06", "08:06", "09:26", "09:32", 79, 72, 86, 0, 3], ["08:32", "08:32", "09:38", "09:47", 68, 64, 75, 0, 3], ["09:05", "09:05", "10:04", "10:05", 59, 58, 60, 0, 3], ["09:19", "09:19", "10:18", "10:19", 55, 47, 60, 0, 3], ["09:41", "09:38", "10:33", "10:34", 53, 52, 54, 0, 3], ["09:56", "09:52", "10:45", "10:53", 52, 49, 57, 0, 3], ["10:09", "10:09", "10:56", "10:57", 46, 44, 48, 0, 3], ["10:27", "10:27", "11:16", "11:19", 49, 47, 52, 0, 3], ["10:42", "10:42", "11:30", "11:31", 48, 47, 48, 0, 3], ["11:07", "11:07", "11:55", "11:58", 48, 45, 51, 0, 3], ["11:33", "11:33", "12:19", "12:22", 46, 42, 49, 0, 3], ["11:59", "11:55", "12:46", "12:46", 48, 47, 50, 0, 3], ["12:19", "12:17", "13:06", "13:09", 47, 43, 52, 0, 3], ["12:39", "12:39", "13:31", "13:34", 49, 44, 52, 0, 3], ["12:57", "12:57", "13:45", "13:50", 48, 45, 51, 0, 3], ["13:19", "13:17", "14:09", "14:10", 49, 46, 51, 0, 3], ["14:05", "14:03", "14:52", "15:00", 48, 46, 51, 0, 3], ["14:23", "14:22", "15:07", "15:21", 46, 43, 52, 0, 3], ["14:44", "14:40", "15:31", "15:34", 48, 47, 50, 0, 3], ["15:06", "15:06", "15:56", "15:56", 49, 47, 50, 0, 3], ["15:32", "15:31", "16:20", "16:25", 47, 44, 49, 0, 3], ["15:55", "15:53", "16:44", "16:50", 50, 48, 53, 0, 3], ["16:21", "16:21", "17:09", "17:14", 49, 46, 53, 0, 3], ["16:35", "16:35", "17:22", "17:23", 46, 43, 48, 0, 3], ["16:50", "16:48", "17:38", "17:39", 48, 46, 50, 0, 3], ["17:15", "17:12", "18:10", "18:12", 53, 47, 57, 0, 3], ["17:34", "17:34", "18:31", "18:35", 58, 57, 61, 0, 3], ["17:49", "17:49", "18:48", "18:52", 59, 54, 63, 0, 3], ["18:22", "18:18", "19:19", "19:21", 56, 51, 59, 0, 3], ["18:44", "18:44", "19:37", "19:57", 58, 47, 73, 0, 3], ["19:09", "19:09", "19:59", "20:08", 52, 48, 59, 0, 3], ["19:27", "19:26", "20:14", "20:23", 50, 47, 56, 0, 3], ["19:42", "19:42", "20:30", "20:31", 46, 44, 49, 0, 3], ["20:00", "19:55", "20:43", "20:44", 44, 43, 47, 0, 3], ["20:26", "20:21", "21:10", "21:13", 47, 44, 49, 0, 3], ["20:44", "20:44", "21:28", "21:30", 44, 43, 46, 0, 3], ["20:59", "20:57", "21:42", "21:44", 44, 43, 45, 0, 3], ["21:29", "21:28", "22:16", "22:16", 46, 44, 47, 0, 3], ["21:54", "21:54", "22:39", "22:43", 46, 43, 49, 0, 3], ["22:20", "22:18", "23:07", "23:07", 45, 42, 49, 0, 3], ["22:33", "22:33", "23:19", "23:20", 44, 41, 47, 0, 3], ["22:48", "22:48", "23:32", "23:32", 43, 41, 44, 0, 3], ["22:59", "22:59", "23:49", "23:51", 50, 48, 51, 0, 3]], "back": [["06:09", "06:09", "07:07", "07:07", 56, 55, 58, 0, 3], ["06:44", "06:34", "07:52", "07:55", 64, 59, 71, 0, 3], ["07:13", "07:11", "08:06", "08:14", 55, 53, 58, 0, 3], ["07:38", "07:37", "08:35", "08:36", 56, 55, 58, 0, 3], ["07:55", "07:55", "08:50", "08:57", 57, 53, 62, 0, 3], ["08:06", "08:05", "09:01", "09:12", 54, 52, 55, 0, 3], ["08:29", "08:26", "09:23", "09:23", 53, 51, 57, 0, 3], ["08:47", "08:40", "09:38", "09:41", 51, 50, 53, 0, 3], ["08:59", "08:56", "09:56", "10:04", 57, 56, 59, 0, 3], ["09:26", "09:18", "10:21", "10:21", 56, 49, 63, 0, 3], ["09:38", "09:36", "10:29", "10:32", 48, 45, 53, 0, 3], ["10:04", "10:03", "10:51", "10:55", 47, 44, 50, 0, 3], ["10:18", "10:06", "11:05", "11:13", 51, 47, 54, 0, 3], ["10:33", "10:32", "11:24", "11:35", 53, 47, 61, 0, 3], ["10:45", "10:41", "11:35", "11:50", 54, 50, 57, 0, 3], ["10:56", "10:54", "11:46", "11:53", 53, 50, 56, 0, 3], ["11:16", "11:15", "12:08", "12:11", 52, 52, 53, 0, 3], ["11:30", "11:29", "12:22", "12:26", 52, 49, 55, 0, 3], ["11:55", "11:52", "12:52", "12:53", 55, 52, 57, 0, 3], ["12:19", "12:17", "13:14", "13:17", 54, 52, 58, 0, 3], ["12:46", "12:45", "13:36", "13:41", 52, 50, 55, 0, 3], ["13:06", "13:02", "14:01", "14:01", 54, 52, 56, 0, 3], ["13:31", "13:23", "14:20", "14:27", 52, 49, 54, 0, 3], ["13:45", "13:42", "14:34", "14:38", 50, 48, 52, 0, 3], ["14:09", "14:03", "14:56", "15:00", 50, 47, 53, 0, 3], ["14:52", "14:49", "15:44", "15:55", 54, 52, 55, 0, 3], ["15:07", "15:05", "16:02", "16:17", 55, 52, 57, 0, 3], ["15:31", "15:27", "16:24", "16:28", 54, 53, 54, 0, 3], ["15:56", "15:55", "16:50", "16:57", 57, 54, 61, 0, 3], ["16:20", "16:16", "17:20", "17:23", 57, 52, 63, 0, 3], ["16:44", "16:41", "17:42", "17:45", 57, 55, 58, 0, 3], ["17:09", "17:07", "18:11", "18:19", 62, 60, 65, 0, 3], ["17:22", "17:18", "18:22", "18:22", 60, 59, 60, 0, 3], ["17:38", "17:36", "18:40", "18:44", 64, 61, 66, 0, 3], ["18:10", "17:59", "19:10", "19:17", 63, 60, 65, 0, 3], ["18:31", "18:31", "19:31", "19:35", 60, 60, 60, 0, 3], ["18:48", "18:43", "19:46", "19:53", 58, 56, 61, 0, 3], ["19:19", "19:09", "20:15", "20:19", 58, 56, 59, 0, 3], ["19:37", "19:31", "20:34", "20:52", 56, 55, 57, 0, 3], ["19:59", "19:57", "20:56", "21:03", 56, 55, 57, 0, 3], ["20:14", "20:14", "21:10", "21:17", 54, 53, 56, 0, 3], ["20:30", "20:28", "21:21", "21:21", 51, 50, 53, 0, 3], ["20:43", "20:42", "21:36", "21:40", 53, 50, 56, 0, 3], ["21:10", "21:10", "22:02", "22:05", 51, 48, 52, 0, 3], ["21:28", "21:27", "22:20", "22:20", 52, 50, 53, 0, 3], ["21:42", "21:41", "22:38", "22:42", 56, 51, 60, 0, 3], ["22:16", "22:12", "23:08", "23:15", 56, 52, 59, 0, 3], ["22:39", "22:37", "23:34", "23:37", 54, 53, 55, 0, 3], ["23:07", "23:02", "23:55", "23:56", 50, 48, 54, 0, 3]]}, "fri": {"go": [["05:21", "05:21", "06:10", "06:13", 49, null, null, 0, 1], ["05:39", "05:39", "06:28", "06:29", 49, null, null, 0, 1], ["05:59", "05:58", "06:56", "07:00", 57, null, null, 0, 1], ["06:20", "06:20", "07:24", "07:31", 64, null, null, 0, 1], ["06:42", "06:38", "07:41", "07:46", 59, null, null, 0, 1], ["06:53", "06:53", "07:54", "08:00", 61, null, null, 0, 1], ["07:11", "07:11", "08:16", "08:21", 65, null, null, 0, 1], ["07:26", "07:26", "08:31", "08:37", 65, null, null, 0, 1], ["07:41", "07:40", "08:48", "08:53", 67, null, null, 0, 1], ["08:06", "08:06", "09:06", "09:15", 60, null, null, 0, 1], ["08:32", "08:32", "09:30", "09:36", 58, null, null, 0, 1], ["09:05", "09:04", "09:57", "10:05", 52, null, null, 0, 1], ["09:19", "09:19", "10:16", "10:19", 57, null, null, 0, 1], ["09:39", "09:37", "10:36", "10:44", 57, null, null, 0, 1], ["09:56", "09:52", "10:50", "10:54", 54, null, null, 0, 1], ["10:10", "10:07", "10:57", "11:03", 47, null, null, 1, 1], ["10:27", "10:27", "11:15", "11:18", 48, null, null, 0, 1], ["10:45", "10:42", "11:32", "11:38", 47, null, null, 0, 1], ["11:09", "11:07", "11:59", "12:08", 50, null, null, 0, 1], ["11:33", "11:33", "12:25", "12:27", 52, null, null, 0, 1], ["11:59", "11:55", "12:51", "12:54", 52, null, null, 0, 1], ["12:19", "12:17", "13:08", "13:12", 49, null, null, 0, 1], ["12:37", "12:36", "13:30", "13:34", 53, null, null, 0, 1], ["12:58", "12:57", "13:44", "13:48", 46, null, null, 0, 1], ["13:18", "13:15", "14:09", "14:14", 51, null, null, 0, 1], ["14:03", "14:00", "14:59", "15:02", 56, null, null, 0, 1], ["14:22", "14:22", "15:15", "15:20", 53, null, null, 0, 1], ["14:44", "14:44", "15:33", "15:39", 49, null, null, 0, 1], ["15:11", "15:06", "16:03", "16:08", 52, null, null, 0, 1], ["15:33", "15:31", "16:26", "16:30", 53, null, null, 0, 1], ["15:54", "15:53", "16:49", "16:55", 55, null, null, 0, 1], ["16:21", "16:20", "17:20", "17:25", 59, null, null, 0, 1], ["16:35", "16:35", "17:34", "17:39", 59, null, null, 0, 1], ["16:50", "16:50", "17:54", "17:57", 64, null, null, 0, 1], ["17:16", "17:12", "18:24", "18:34", 68, null, null, 0, 1], ["17:34", "17:34", "18:50", "18:52", 76, null, null, 0, 1], ["17:49", "17:48", "19:04", "19:08", 75, null, null, 0, 1], ["18:21", "18:18", "19:28", "19:35", 67, null, null, 0, 1], ["18:44", "18:43", "19:44", "19:50", 60, null, null, 0, 1], ["19:09", "19:07", "20:02", "20:08", 53, null, null, 0, 1], ["19:27", "19:27", "20:21", "20:27", 54, null, null, 0, 1], ["19:42", "19:42", "20:35", "20:42", 53, null, null, 0, 1], ["20:01", "20:00", "20:51", "20:56", 50, null, null, 0, 1], ["20:23", "20:21", "21:11", "21:18", 48, null, null, 0, 1], ["20:44", "20:44", "21:41", "21:47", 57, null, null, 0, 1], ["20:59", "20:59", "21:51", "21:54", 52, null, null, 0, 1], ["21:29", "21:27", "22:22", "22:30", 53, null, null, 0, 1], ["21:54", "21:52", "22:43", "22:49", 49, null, null, 0, 1], ["22:18", "22:18", "23:05", "23:08", 47, null, null, 0, 1], ["22:33", "22:33", "23:21", "23:24", 48, null, null, 0, 1], ["22:48", "22:47", "23:35", "23:40", 47, null, null, 0, 1], ["22:59", "22:59", "23:52", "23:57", 53, null, null, 0, 1]], "back": [["06:10", "06:08", "07:03", "07:08", 53, null, null, 0, 1], ["06:28", "06:26", "07:22", "07:26", 54, null, null, 0, 1], ["06:56", "06:50", "07:51", "07:55", 55, null, null, 0, 1], ["07:24", "07:18", "08:17", "08:24", 53, null, null, 0, 1], ["07:41", "07:35", "08:43", "08:47", 62, null, null, 0, 1], ["07:54", "07:48", "08:57", "09:01", 63, null, null, 0, 1], ["08:31", "08:24", "09:23", "09:30", 52, null, null, 0, 1], ["08:48", "08:43", "09:41", "09:49", 53, null, null, 0, 1], ["09:06", "09:00", "10:07", "10:10", 61, null, null, 0, 1], ["09:30", "09:27", "10:25", "10:33", 55, null, null, 0, 1], ["09:57", "09:52", "10:47", "10:51", 50, null, null, 0, 1], ["10:16", "10:12", "11:07", "11:13", 51, null, null, 0, 1], ["10:36", "10:29", "11:24", "11:31", 48, null, null, 0, 1], ["10:50", "10:48", "11:42", "11:46", 52, null, null, 0, 1], ["11:15", "11:10", "12:08", "12:12", 53, null, null, 0, 1], ["11:32", "11:26", "12:24", "12:30", 52, null, null, 0, 1], ["11:59", "11:52", "12:50", "12:59", 51, null, null, 0, 1], ["12:25", "12:21", "13:17", "13:18", 52, null, null, 0, 1], ["12:51", "12:46", "13:40", "13:47", 49, null, null, 0, 1], ["13:08", "13:04", "14:05", "14:12", 57, null, null, 0, 1], ["13:30", "13:21", "14:27", "14:31", 57, null, null, 0, 1], ["13:44", "13:44", "14:42", "14:42", 58, null, null, 0, 1], ["14:09", "14:05", "15:04", "15:11", 55, null, null, 0, 1], ["14:59", "14:52", "15:54", "16:03", 55, null, null, 0, 1], ["15:15", "15:10", "16:14", "16:17", 59, null, null, 0, 1], ["15:33", "15:26", "16:32", "16:35", 59, null, null, 0, 1], ["16:03", "15:57", "17:01", "17:05", 58, null, null, 0, 1], ["16:26", "16:21", "17:23", "17:31", 57, null, null, 0, 1], ["16:49", "16:44", "17:49", "17:53", 60, null, null, 0, 1], ["17:20", "17:14", "18:22", "18:30", 62, null, null, 0, 1], ["17:34", "17:30", "18:40", "18:44", 66, null, null, 0, 1], ["17:54", "17:49", "19:02", "19:10", 68, null, null, 0, 1], ["18:24", "18:17", "19:23", "19:32", 59, null, null, 0, 1], ["18:50", "18:43", "19:41", "19:46", 51, null, null, 0, 1], ["19:04", "19:00", "20:01", "20:05", 57, null, null, 0, 1], ["19:28", "19:19", "20:19", "20:27", 51, null, null, 0, 1], ["19:44", "19:41", "20:37", "20:41", 53, null, null, 0, 1], ["20:02", "19:59", "20:56", "21:03", 54, null, null, 0, 1], ["20:21", "20:14", "21:10", "21:14", 49, null, null, 0, 1], ["20:35", "20:29", "21:22", "21:29", 47, null, null, 0, 1], ["20:51", "20:48", "21:40", "21:44", 49, null, null, 0, 1], ["21:11", "21:09", "22:08", "22:17", 57, null, null, 0, 1], ["21:41", "21:39", "22:38", "22:42", 57, null, null, 0, 1], ["21:51", "21:50", "22:46", "22:53", 55, null, null, 0, 1], ["22:22", "22:16", "23:19", "23:23", 57, null, null, 0, 1], ["22:43", "22:38", "23:37", "23:41", 54, null, null, 0, 1], ["23:05", "23:03", "23:59", "00:03", 54, null, null, 0, 1], ["23:21", "23:20", "00:15", "00:20", 54, null, null, 0, 1], ["23:35", "23:31", "00:27", "00:31", 52, null, null, 0, 1], ["23:52", "23:46", "00:39", "00:46", 47, null, null, 0, 1], ["00:23", "00:23", "01:08", "01:08", 45, null, null, 0, 1]]}};
+const OFFICE_WALK=10;
+const R={go:{from:'신미주아파트',fromId:'37965',to:'신분당선강남역(중)',toId:'22009',short:'강남역',origin:'집',slow:66,walkDef:5,
+            chips:[['now','지금'],['a08:30','8:30 도착'],['a09:30','9:30 도착']]},
+         back:{from:'신분당선강남역(중)',fromId:'22009',to:'신미주아파트',toId:'36993',short:'신미주',origin:'회사',slow:61,walkDef:5,
+            chips:[['now','지금'],['15:30','15:30'],['16:30','16:30'],['17:30','17:30'],['18:30','18:30']]}};
+const m=s=>{const[h,mi]=s.split(':').map(Number);return (h<4?h+24:h)*60+mi};
+const p2=n=>String(n).padStart(2,'0');
+const hm=x=>p2(Math.floor(x/60)%24)+':'+p2(x%60);
+const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const $=id=>document.getElementById(id);
+let K,DAY,SEL='now',TIME=null;
+function kst(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}))}
+function nowMin(){const n=kst();return n.getHours()*60+n.getMinutes()+(n.getHours()<4?1440:0)}
+function sec(a){const h=m(a)/60;return h<7?'새벽':h<9.5?'출근 시간':h<12?'오전':h<17?'오후':h<20?'퇴근 시간':h<24?'저녁':'자정 이후'}
+function walk(){const v=parseInt(ls.get('walk_'+K));return isNaN(v)?R[K].walkDef:v}
+function render(scroll){
+  const D=DATA[DAY][K],r=R[K],w=walk();
+  document.querySelectorAll('#dirseg button').forEach(b=>b.classList.toggle('on',b.dataset.k===K));
+  document.querySelectorAll('#dayseg button').forEach(b=>b.classList.toggle('on',b.dataset.d===DAY));
+  $('route').textContent=`${r.from} ${r.fromId} → ${r.to} ${r.toId}`;
+  $('arrh').textContent=r.short+' 도착';
+  $('chips').innerHTML=r.chips.map(([k,l])=>`<button data-s="${k}" class="${SEL===k?'on':''}">${l}</button>`).join('');
+  $('chips').querySelectorAll('button').forEach(b=>b.onclick=()=>{SEL=b.dataset.s;TIME=null;render(true)});
+  const isArr=SEL.startsWith('a');
+  const base=SEL==='now'?nowMin():SEL==='custom'?TIME:isArr?null:m(SEL);
+  $('ctl').innerHTML=`<label>${r.origin} 출발 <input type="time" id="ft" value="${base!=null?hm(base):''}"></label><label>정류장까지 <input type="number" id="fw" min="0" max="60" inputmode="numeric" value="${w}">분</label>`;
+  $('ft').oninput=e=>{if(!e.target.value)return;SEL='custom';TIME=m(e.target.value);render(true)};
+  $('fw').oninput=e=>{ls.set('walk_'+K,e.target.value);render(false)};
+  let pi=-1,html='';
+  if(isArr){ // 도착 목표 역산
+    const target=m(SEL.slice(1)),by=target-OFFICE_WALK;
+    let s=-1;D.forEach((x,i)=>{if(m(x[3])<=by)s=i});
+    const tight=D[s+1]&&m(D[s+1][2])<=by?D[s+1]:null;pi=s;
+    const x=D[s],leave=m(x[1])-w;
+    html=`<div class="cap">회사 <b>${SEL.slice(1)}</b> 도착하려면</div>
+    <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
+    <div class="r">${r.short} <b>${x[2]}</b><br>늦어도 ${x[3]} · 회사 ${hm(m(x[3])+OFFICE_WALK)}</div></div>
+    <div class="note">${r.origin}에서 <span class="acc">${hm(leave)}</span>까지 출발${x[1]!==x[0]?` · 빠르면 ${x[1]}에 와요`:''}</div></div>`
+    +(tight?`<div class="sm"><span><span class="t">${tight[0]}</span>보통 ${tight[2]} 도착</span><span class="warn">늦으면 ${tight[3]} · 빠듯</span></div>`:'')
+    +(D[s-1]?`<div class="sm"><span><span class="t">${D[s-1][0]}</span>여유 있게</span><span>${D[s-1][2]} 도착</span></div>`:'');
+  }else{
+    const st=base+w;pi=D.findIndex(x=>m(x[0])>=st);
+    if(pi<0)html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착</div><div class="sm">이후 버스가 없어요 · 첫차 ${D[0][0]}</div>`;
+    else{const x=D[pi],wait=m(x[0])-st,risky=m(x[1])<st;
+      const extra=K==='go'?`<br>회사 ${hm(m(x[2])+OFFICE_WALK)}`:`<br>늦으면 ${x[3]}`;
+      html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착 → ${wait}분 대기</div>
+      <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
+      <div class="r">${r.short} <b>${x[2]}</b>${x[7]?' (추정)':''}${extra}</div></div>
+      ${risky?`<div class="note warn">빠르면 ${x[1]}에 와요 · 놓칠 수 있음</div>`:x[1]!==x[0]?`<div class="note">빠르면 ${x[1]}</div>`:''}</div>`
+      +D.slice(pi+1,pi+3).map(y=>`<div class="sm"><span><span class="t">${y[0]}</span>${m(y[0])-st}분 대기</span><span>${y[2]} 도착</span></div>`).join('');}
+  }
+  $('res').innerHTML=html;
+  let t='',last='';
+  D.forEach((x,i)=>{const[a,ae,b,bl,avg,mn,mx,est]=x;const s=sec(a);
+    if(s!==last){t+=`<tr class="sec"><td colspan="3">${s}</td></tr>`;last=s}
+    const cls=pi>=0&&i<pi&&!isArr?'before':(i===pi?'pick':'');
+    t+=`<tr class="${cls}"><td class="a">${a}<small>${ae!==a?'빠르면 '+ae:'&nbsp;'}</small></td><td>${b}${est?' *':''}<small>늦으면 ${bl}</small></td><td class="${avg>=r.slow?'slow':avg<=50?'fast':''}">${avg}분${mn!=null?`<small>${mn}–${mx}</small>`:''}</td></tr>`});
+  $('tb').innerHTML=t;
+  $('foot').innerHTML=(DAY==='mon'
+    ?'월–목은 월요일 3주치(11/2·11/9·11/16) 실제 기록 기준이에요. 도착은 중간값, 빠르면·늦으면은 3주 중 가장 이른·늦은 시각. 화–목 기록이 없어 월요일로 대신했어요. 자정 넘어 도착하는 퇴근 막차 3대는 기록이 없어 뺐어요.'
+    :'금요일은 앱 예상시간표 기준이에요. * 표시는 소요시간 추정.')
+    +'<br>출근 도착 목표는 늦으면 시각 + 도보 10분으로 계산해요. 정류장까지 도보 시간은 이 기기에 저장돼요.';
+  if(scroll){const n=document.querySelector('tr.pick');if(n)setTimeout(()=>n.scrollIntoView({block:'center'}),0)}
+}
+(function(){const n=kst(),h=location.hash.slice(1);
+  DAY=n.getDay()===5?'fri':'mon';
+  K=(h==='go'||h==='back')?h:(n.getHours()>=4&&n.getHours()<12?'go':'back');
+  document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';history.replaceState(null,'','#'+K);render(true)});
+  document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;render(true)});
+  render(false);
+  setInterval(()=>{if(SEL==='now'&&document.activeElement.tagName!=='INPUT')render(false)},30000);
+})();
+</script></body></html>
