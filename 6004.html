@@ -2,71 +2,85 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>연정's 시간표</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>연정's 시간표 🚌</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--bg:#faf7ef;--card:#fff;--ink:#001219;--sub:#5a5546;--faint:#b5ae9c;--line:#eee6d2;--accent:#ee9b00;--accent2:#fbefcf;--hero:#f6edd3;--num:#bb3e03;--chip:#ee9b00;--chiptxt:#8a5a00;--warm:#ca6702;--warn:#ca6702;--ok:#001219;--mustard:#ee9b00;--onm:#001219;--sec:#ca6702}
-@media(prefers-color-scheme:dark){:root{--bg:#001219;--card:#0b1e25;--ink:#f3eedf;--sub:#b8b19c;--faint:#4f5b5e;--line:#1d3038;--accent:#ee9b00;--accent2:#2e2610;--hero:#2a2617;--num:#ee9b00;--chip:#ee9b00;--chiptxt:#e9d8a6;--warm:#ee9b00;--warn:#ee9b00;--ok:#f3eedf;--mustard:#ee9b00;--onm:#001219;--sec:#ee9b00}}
+:root{--bg:#f4f4f3;--card:#fff;--ink:#111111;--sub:#6b6b6b;--faint:#b9b9b9;--line:#e8e8e6;--accent:#3d3d40;--accent2:#f1f1ef;--hero:#1f1f21;--heroTxt:#d8d8d8;--heroInk:#ffffff;--num:#ffc233;--chip:#ffc233;--chiptxt:#3a3a3a;--warm:#d98a00;--warn:#d98a00;--ok:#111;--mustard:#3d3d40;--onm:#ffffff;--sec:#8a8a8a;--pick:#fff4d1;--pickTxt:#111}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0f10;--card:#1a1a1c;--ink:#f2f2f2;--sub:#a0a0a0;--faint:#555;--line:#2a2a2d;--accent:#4a4a4f;--accent2:#26262a;--hero:#2a2a2e;--heroTxt:#bdbdbd;--heroInk:#fff;--num:#ffc233;--chip:#ffc233;--chiptxt:#d6d6d6;--warm:#ffb020;--warn:#ffb020;--ok:#f2f2f2;--mustard:#4a4a4f;--onm:#fff;--sec:#8a8a8a;--pick:#3a3018;--pickTxt:#ffd76a}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:300;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
 .wrap{max-width:480px;margin:0 auto;padding:0 18px 48px}
-.top{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:18px;padding-bottom:2px}
-.top .panel{margin-bottom:10px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:12px;padding-bottom:8px}
+.hrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hrow h1{margin:0;font-size:14px}
+.hrow .days{margin:0}
+.days button{padding:4px 11px;font-size:12.5px}
+.tabs button{padding:9px 0;font-size:15px}
+.chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:0 0 auto}
+.route{margin:6px 2px 10px}
+.mini{display:none;margin-top:8px;background:var(--hero);border-radius:12px;padding:8px 12px;font-size:13px;color:var(--heroTxt);align-items:center;justify-content:space-between;cursor:pointer}
+.mini.show{display:flex}
+.mini b{font-size:20px;font-weight:600;color:var(--num);margin-right:6px;font-variant-numeric:tabular-nums}
+.mini .ar b{font-size:16px;color:var(--heroInk);margin:0 2px}
+
 th{position:sticky;top:var(--toph,0px);z-index:2}
-tr{scroll-margin-top:calc(var(--toph,0px) + 44px)}
-h1{font-size:15px;font-weight:500;margin:0 0 18px;color:var(--sub);display:flex;align-items:center;gap:8px}
-h1 span{background:#9b2226;color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:6px}
+tr{scroll-margin-top:calc(var(--toph,0px) + 40px)}
+h1{font-size:15px;font-weight:400;margin:0 0 18px;color:var(--sub);display:flex;align-items:center;gap:8px}
+h1 span{background:#d7263d;color:#fff;font-weight:600;font-size:13px;padding:2px 8px;border-radius:6px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--line);padding:4px;border-radius:14px}
-.tabs button{border:0;background:none;font:inherit;font-size:16px;font-weight:500;color:var(--sub);padding:11px 0;border-radius:11px;cursor:pointer}
-.tabs button.on{background:var(--mustard);color:var(--onm);font-weight:700;box-shadow:0 2px 8px rgba(238,155,0,.3)}
+.tabs button{border:0;background:none;font:inherit;font-size:16px;font-weight:400;color:var(--sub);padding:11px 0;border-radius:11px;cursor:pointer}
+.tabs button.on{background:var(--mustard);color:var(--onm);font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .days{display:flex;gap:6px;margin:12px 0 6px}
-.days button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;font-weight:500;color:var(--sub);padding:5px 12px;border-radius:999px;cursor:pointer}
+.days button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;font-weight:400;color:var(--sub);padding:5px 12px;border-radius:999px;cursor:pointer}
 .days button.on{border-color:var(--accent);background:var(--accent);color:var(--onm)}
 .route{color:var(--sub);font-size:12.5px;margin:4px 2px 18px}
 .panel{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:22px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{font:inherit;font-size:14px;font-weight:500;border:0;background:var(--accent2);color:var(--chiptxt);border-radius:999px;padding:7px 14px;cursor:pointer}
-.chips button.on{background:var(--chip);color:var(--onm);font-weight:700}
+.chips button{font:inherit;font-size:14px;font-weight:400;border:0;background:var(--accent2);color:var(--chiptxt);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chips button.on{background:var(--chip);color:#111;font-weight:600}
 .ctl{display:flex;gap:16px;align-items:center;margin:14px 0 0;font-size:13px;color:var(--sub);flex-wrap:wrap}
-.ctl input{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
+.ctl input{font:inherit;font-size:15px;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
 .ctl input[type=number]{width:46px;text-align:center}
 .res{margin-top:16px}
-.cap{font-size:13px;color:var(--sub);margin-bottom:8px;font-weight:500}
-.cap b{color:var(--num);font-weight:700}
+.cap{font-size:13px;color:var(--sub);margin-bottom:8px;font-weight:400}
+.cap b{color:var(--ink);font-weight:600}
 .herobox{background:var(--hero);border-radius:14px;padding:14px 16px 12px;margin-bottom:6px}
 .hero{display:flex;align-items:flex-end;justify-content:space-between}
-.hero .t{font-size:46px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--num);font-variant-numeric:tabular-nums}
-.hero .r{text-align:right;font-size:12.5px;color:var(--sub);line-height:1.6}
-.hero .r b{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
-.note{font-size:12.5px;color:var(--sub);margin-top:8px;font-weight:500}
+.hero .t{font-size:46px;font-weight:500;line-height:1;letter-spacing:-.03em;color:var(--num);font-variant-numeric:tabular-nums}
+.hero .r{text-align:right;font-size:12.5px;color:var(--heroTxt);line-height:1.6}
+.hero .r b{font-size:22px;font-weight:600;color:var(--heroInk);letter-spacing:-.02em}
+.note{font-size:12.5px;color:var(--sub);margin-top:8px;font-weight:400}
+.herobox .note{color:var(--heroTxt)}
+.herobox .acc{color:var(--num)}
 .sm{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line);font-size:13px;color:var(--sub)}
 .sm:last-child{border-bottom:0}
-.sm .t{font-size:19px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
-.warn{color:var(--warn);font-weight:600}
-.acc{color:var(--num);font-weight:700}
+.sm .t{font-size:19px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
+.warn{color:var(--warn);font-weight:500}
+.acc{color:var(--ink);font-weight:600}
 table{width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;background:var(--card);border-radius:18px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-th{font-size:12px;color:var(--sub);font-weight:500;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+th{font-size:12px;color:var(--sub);font-weight:400;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}
 th:last-child,td:last-child{text-align:right}
 td{padding:10px 14px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:top}
-td.a{font-size:17px;font-weight:600}
-td small{display:block;color:var(--sub);font-size:11.5px;margin-top:1px;font-weight:400}
+td.a{font-size:17px;font-weight:500}
+td small{display:block;color:var(--sub);font-size:11.5px;margin-top:1px;font-weight:300}
 tr.before td{color:var(--faint)}tr.before td small{color:var(--faint)}
-tr.pick td{background:var(--accent2);color:var(--num)}tr.pick td.a{font-weight:700}
-.sec td{text-align:left!important;font-size:12px;font-weight:700;color:var(--sec);background:var(--bg);padding:8px 14px;border-bottom:0}
-td.slow{color:#ae2012;font-weight:600}td.fast{color:var(--ink);font-weight:600}
-.fold td{text-align:center!important;font-size:12.5px;font-weight:600;color:var(--chiptxt);background:var(--accent2);padding:10px;cursor:pointer;border-bottom:1px solid var(--line)}
+tr.pick td{background:var(--pick);color:var(--pickTxt)}tr.pick td.a{font-weight:600}
+.sec td{text-align:left!important;font-size:12px;font-weight:600;color:var(--sec);background:var(--bg);padding:8px 14px;border-bottom:0}
+td.slow{color:var(--warm);font-weight:500}td.fast{color:var(--ink);font-weight:500}
+.fold td{text-align:center!important;font-size:12.5px;font-weight:500;color:var(--sub);background:var(--accent2);padding:10px;cursor:pointer;border-bottom:1px solid var(--line)}
 .foot{font-size:11.5px;color:var(--sub);line-height:1.7;margin-top:18px}
 </style></head><body><div class="wrap">
 <div class="top" id="top">
-<h1><span>직행 6004</span>연정's 시간표</h1>
+<div class="hrow"><h1><span>직행 6004</span>연정's 시간표 🚌</h1><div class="days" id="dayseg"><button data-d="mon">월–목</button><button data-d="fri">금요일</button></div></div>
 <div class="tabs" id="dirseg"><button data-k="go">집 → 회사</button><button data-k="back">회사 → 집</button></div>
-<div class="days" id="dayseg"><button data-d="mon">월–목</button><button data-d="fri">금요일</button></div>
+<div class="mini" id="mini"></div>
+</div>
 <div class="route" id="route"></div>
 <div class="panel"><div class="chips" id="chips"></div>
 <div class="ctl" id="ctl"></div>
 <div class="res" id="res"></div></div>
-</div>
 <table><thead><tr><th>탑승</th><th id="arrh">도착</th><th>소요</th></tr></thead><tbody id="tb"></tbody></table>
 <div class="foot" id="foot"></div>
 </div>
@@ -82,7 +96,7 @@ const p2=n=>String(n).padStart(2,'0');
 const hm=x=>p2(Math.floor(x/60)%24)+':'+p2(x%60);
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const $=id=>document.getElementById(id);
-let K,DAY,SEL='now',TIME=null,OPEN_AM=false;
+let K,DAY,SEL='now',TIME=null,OPEN_AM=false,MINI='';
 function kst(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}))}
 function nowMin(){const n=kst();return n.getHours()*60+n.getMinutes()+(n.getHours()<4?1440:0)}
 function sec(a){const h=m(a)/60;return h<7?'새벽':h<9.5?'출근 시간':h<12?'오전':h<17?'오후':h<20?'퇴근 시간':h<24?'저녁':'자정 이후'}
@@ -100,12 +114,13 @@ function render(scroll){
   $('ctl').innerHTML=`<label>${r.origin} 출발 <input type="time" id="ft" value="${base!=null?hm(base):''}"></label><label>정류장까지 <input type="number" id="fw" min="0" max="60" inputmode="numeric" value="${w}">분</label>`;
   $('ft').oninput=e=>{if(!e.target.value)return;SEL='custom';TIME=m(e.target.value);render(true)};
   $('fw').oninput=e=>{ls.set('walk_'+K,e.target.value);render(false)};
-  let pi=-1,html='';
+  let pi=-1,html='';MINI='';
   if(isArr){ // 도착 목표 역산
     const target=m(SEL.slice(1)),by=target-OFFICE_WALK;
     let s=-1;D.forEach((x,i)=>{if(m(x[3])<=by)s=i});
     const tight=D[s+1]&&m(D[s+1][2])<=by?D[s+1]:null;pi=s;
     const x=D[s],leave=m(x[1])-w;
+    MINI=`<span><b>${x[0]}</b>${SEL.slice(1)} 도착용 · ${hm(leave)} 출발</span><span class="ar">${r.short}<b>${x[2]}</b></span>`;
     html=`<div class="cap">회사 <b>${SEL.slice(1)}</b> 도착하려면</div>
     <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
     <div class="r">${r.short} <b>${x[2]}</b><br>늦어도 ${x[3]} · 회사 ${hm(m(x[3])+OFFICE_WALK)}</div></div>
@@ -116,6 +131,7 @@ function render(scroll){
     const st=base+w;pi=D.findIndex(x=>m(x[0])>=st);
     if(pi<0)html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착</div><div class="sm">이후 버스가 없어요 · 첫차 ${D[0][0]}</div>`;
     else{const x=D[pi],wait=m(x[0])-st,risky=m(x[1])<st;
+      MINI=`<span><b>${x[0]}</b>${wait}분 대기</span><span class="ar">${r.short}<b>${x[2]}</b>도착</span>`;
       const extra=K==='go'?`<br>회사 ${hm(m(x[2])+OFFICE_WALK)}`:`<br>늦으면 ${x[3]}`;
       html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착 → ${wait}분 대기</div>
       <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
@@ -124,6 +140,7 @@ function render(scroll){
       +D.slice(pi+1,pi+3).map(y=>`<div class="sm"><span><span class="t">${y[0]}</span>${m(y[0])-st}분 대기</span><span>${y[2]} 도착</span></div>`).join('');}
   }
   $('res').innerHTML=html;
+  $('mini').innerHTML=MINI;
   let t='',last='';
   const amN=K==='back'?D.filter(x=>m(x[0])<12*60).length:0;
   const amOpen=OPEN_AM||(pi>=0&&pi<amN);
@@ -140,13 +157,16 @@ function render(scroll){
     :'금요일은 앱 예상시간표 기준이에요. * 표시는 소요시간 추정.')
     +'<br>출근 도착 목표는 늦으면 시각 + 도보 10분으로 계산해요. 정류장까지 도보 시간은 이 기기에 저장돼요.';
   document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
-  if(scroll){const n=document.querySelector('tr.pick');if(n)setTimeout(()=>n.scrollIntoView({block:'start'}),0)}
+  if(scroll){const n=document.querySelector('tr.pick');if(n){$('mini').classList.add('show');document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');setTimeout(()=>n.scrollIntoView({block:'start'}),0)}}
 }
 (function(){const n=kst(),h=location.hash.slice(1);
   DAY=n.getDay()===5?'fri':'mon';
   K=(h==='go'||h==='back')?h:(n.getHours()>=4&&n.getHours()<12?'go':'back');
   document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';history.replaceState(null,'','#'+K);render(true)});
   document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;render(true)});
+  const setH=()=>document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
+  new IntersectionObserver(es=>{const v=es[0].isIntersecting;$('mini').classList.toggle('show',!v);setH()},{rootMargin:'-120px 0px 0px 0px'}).observe($('res'));
+  $('mini').onclick=()=>scrollTo({top:0,behavior:'smooth'});
   addEventListener('resize',()=>document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px'));
   render(false);
   setInterval(()=>{if(SEL==='now'&&document.activeElement.tagName!=='INPUT')render(false)},30000);
