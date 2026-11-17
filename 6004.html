@@ -22,8 +22,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:"Pretendard Vari
 .route{margin:6px 2px 10px}
 .mini{display:none;margin-top:8px;background:var(--hero);border-radius:12px;padding:8px 12px;font-size:13px;color:var(--heroTxt);align-items:center;justify-content:space-between;cursor:pointer}
 .mini.show{display:flex}
-.mini b{font-size:20px;font-weight:600;color:var(--num);margin-right:6px;font-variant-numeric:tabular-nums}
-.mini .ar b{font-size:16px;color:var(--heroInk);margin:0 2px}
+.mini b{font-size:18px;font-weight:600;color:var(--num);margin-right:6px;font-variant-numeric:tabular-nums}
+.mini .ar b{font-size:18px;color:var(--heroInk);margin:0 2px}
 
 th{position:sticky;top:var(--toph,0px);z-index:2}
 tr{scroll-margin-top:calc(var(--toph,0px) + 40px)}
@@ -70,6 +70,24 @@ tr.pick td{background:var(--pick);color:var(--pickTxt)}tr.pick td.a{font-weight:
 .sec td{text-align:left!important;font-size:12px;font-weight:600;color:var(--sec);background:var(--bg);padding:8px 14px;border-bottom:0}
 td.slow{color:var(--warm);font-weight:500}td.fast{color:var(--ink);font-weight:500}
 .fold td{text-align:center!important;font-size:12.5px;font-weight:500;color:var(--sub);background:var(--accent2);padding:10px;cursor:pointer;border-bottom:1px solid var(--line)}
+.lb{font-size:11px;color:var(--heroTxt);margin-bottom:6px;letter-spacing:.02em}
+.r .lb{margin-bottom:2px}
+.sm i,.mini i{font-style:normal;font-size:10.5px;font-weight:600;color:var(--sub);border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-right:6px;vertical-align:2px}
+.mini i{color:var(--heroTxt);border-color:#4a4a4f}
+.sm small{font-size:11px}
+.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hero .col{flex:1}.hero .rr{text-align:right}
+.hero .t{font-size:40px!important;font-weight:500!important;line-height:1.05;letter-spacing:-.03em;color:var(--num);font-variant-numeric:tabular-nums}
+.hero .t.w{color:var(--heroInk)}
+.hero .sub{font-size:12px;color:var(--heroTxt);margin-top:6px;line-height:1.5}
+.lb{font-size:11.5px;color:var(--heroTxt);margin-bottom:4px}
+.sm{font-size:16px!important}
+.sm .t,.sm .v{margin-right:0!important;font-size:17px!important;font-weight:500!important;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:6px}
+.sm .x{font-size:12px;color:var(--sub);margin-left:6px}
+.sm .warn.x{margin:0 6px}
+td,td.a{font-size:16px!important;font-weight:500!important}
+td small{font-weight:400!important}
+.sec td{font-size:12px!important}.fold td{font-size:12.5px!important}
 .foot{font-size:11.5px;color:var(--sub);line-height:1.7;margin-top:18px}
 </style></head><body><div class="wrap">
 <div class="top" id="top">
@@ -81,7 +99,7 @@ td.slow{color:var(--warm);font-weight:500}td.fast{color:var(--ink);font-weight:5
 <div class="panel"><div class="chips" id="chips"></div>
 <div class="ctl" id="ctl"></div>
 <div class="res" id="res"></div></div>
-<table><thead><tr><th>탑승</th><th id="arrh">도착</th><th>소요</th></tr></thead><tbody id="tb"></tbody></table>
+<table><thead><tr><th id="deph">탑승</th><th id="arrh">도착</th><th>소요</th></tr></thead><tbody id="tb"></tbody></table>
 <div class="foot" id="foot"></div>
 </div>
 <script>
@@ -106,7 +124,7 @@ function render(scroll){
   document.querySelectorAll('#dirseg button').forEach(b=>b.classList.toggle('on',b.dataset.k===K));
   document.querySelectorAll('#dayseg button').forEach(b=>b.classList.toggle('on',b.dataset.d===DAY));
   $('route').textContent=`${r.from} ${r.fromId} → ${r.to} ${r.toId}`;
-  $('arrh').textContent=r.short+' 도착';
+  $('arrh').textContent='하차 ('+r.short+')';$('deph').textContent='탑승 ('+(K==='go'?'신미주':'강남역')+')';
   $('chips').innerHTML=r.chips.map(([k,l])=>`<button data-s="${k}" class="${SEL===k?'on':''}">${l}</button>`).join('');
   $('chips').querySelectorAll('button').forEach(b=>b.onclick=()=>{SEL=b.dataset.s;TIME=null;render(true)});
   const isArr=SEL.startsWith('a');
@@ -120,24 +138,22 @@ function render(scroll){
     let s=-1;D.forEach((x,i)=>{if(m(x[3])<=by)s=i});
     const tight=D[s+1]&&m(D[s+1][2])<=by?D[s+1]:null;pi=s;
     const x=D[s],leave=m(x[1])-w;
-    MINI=`<span><b>${x[0]}</b>${SEL.slice(1)} 도착용 · ${hm(leave)} 출발</span><span class="ar">${r.short}<b>${x[2]}</b></span>`;
+    MINI=`<span><i>탑승</i><b>${x[0]}</b>${hm(leave)} 집 출발</span><span class="ar"><i>하차</i><b>${x[2]}</b></span>`;
     html=`<div class="cap">회사 <b>${SEL.slice(1)}</b> 도착하려면</div>
-    <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
-    <div class="r">${r.short} <b>${x[2]}</b><br>늦어도 ${x[3]} · 회사 ${hm(m(x[3])+OFFICE_WALK)}</div></div>
-    <div class="note">${r.origin}에서 <span class="acc">${hm(leave)}</span>까지 출발${x[1]!==x[0]?` · 빠르면 ${x[1]}에 와요`:''}</div></div>`
-    +(tight?`<div class="sm"><span><span class="t">${tight[0]}</span>보통 ${tight[2]} 도착</span><span class="warn">늦으면 ${tight[3]} · 빠듯</span></div>`:'')
-    +(D[s-1]?`<div class="sm"><span><span class="t">${D[s-1][0]}</span>여유 있게</span><span>${D[s-1][2]} 도착</span></div>`:'');
+    <div class="herobox"><div class="hero"><div class="col"><div class="lb">탑승 · ${r.from}</div><div class="t">${x[0]}</div><div class="sub">${r.origin}에서 <span class="acc">${hm(leave)}</span>까지 출발${x[1]!==x[0]?`<br>빠르면 ${x[1]}에 와요`:''}</div></div>
+    <div class="col rr"><div class="lb">하차 · ${r.short}</div><div class="t w">${x[2]}</div><div class="sub">늦어도 ${x[3]}<br>회사 도착 ${hm(m(x[3])+OFFICE_WALK)}</div></div></div></div>`
+    +(tight?`<div class="sm"><span><i>탑승</i><span class="t">${tight[0]}</span><span class="x warn">빠듯</span></span><span><span class="x warn">늦으면 ${tight[3]} </span><i>하차</i><span class="v">${tight[2]}</span></span></div>`:'')
+    +(D[s-1]?`<div class="sm"><span><i>탑승</i><span class="t">${D[s-1][0]}</span><span class="x">여유 있게</span></span><span><i>하차</i><span class="v">${D[s-1][2]}</span></span></div>`:'');
   }else{
     const st=base+w;pi=D.findIndex(x=>m(x[0])>=st);
     if(pi<0)html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착</div><div class="sm">이후 버스가 없어요 · 첫차 ${D[0][0]}</div>`;
     else{const x=D[pi],wait=m(x[0])-st,risky=m(x[1])<st;
-      MINI=`<span><b>${x[0]}</b>${wait}분 대기</span><span class="ar">${r.short}<b>${x[2]}</b>도착</span>`;
-      const extra=K==='go'?`<br>회사 ${hm(m(x[2])+OFFICE_WALK)}`:`<br>늦으면 ${x[3]}`;
+      MINI=`<span><i>탑승</i><b>${x[0]}</b>${wait}분 대기</span><span class="ar"><i>하차</i><b>${x[2]}</b></span>`;
+      const extra=K==='go'?`<br>회사 도착 ${hm(m(x[2])+OFFICE_WALK)}`:`<br>늦으면 ${x[3]}`;
       html=`<div class="cap">정류장 <b>${hm(st)}</b> 도착 → ${wait}분 대기</div>
-      <div class="herobox"><div class="hero"><div class="t">${x[0]}</div>
-      <div class="r">${r.short} <b>${x[2]}</b>${x[7]?' (추정)':''}${extra}</div></div>
-      ${risky?`<div class="note warn">빠르면 ${x[1]}에 와요 · 놓칠 수 있음</div>`:x[1]!==x[0]?`<div class="note">빠르면 ${x[1]}</div>`:''}</div>`
-      +D.slice(pi+1,pi+3).map(y=>`<div class="sm"><span><span class="t">${y[0]}</span>${m(y[0])-st}분 대기</span><span>${y[2]} 도착</span></div>`).join('');}
+      <div class="herobox"><div class="hero"><div class="col"><div class="lb">탑승 · ${r.from}</div><div class="t">${x[0]}</div><div class="sub">${risky?`<span class="warn">빠르면 ${x[1]} · 놓칠 수 있음</span>`:x[1]!==x[0]?`빠르면 ${x[1]}`:'&nbsp;'}</div></div>
+      <div class="col rr"><div class="lb">하차 · ${r.short}</div><div class="t w">${x[2]}</div><div class="sub">${x[7]?'추정 · ':''}${extra.replace('<br>','')}</div></div></div></div>`
+      +D.slice(pi+1,pi+3).map(y=>`<div class="sm"><span><i>탑승</i><span class="t">${y[0]}</span><span class="x">${m(y[0])-st}분 대기</span></span><span><i>하차</i><span class="v">${y[2]}</span></span></div>`).join('');}
   }
   $('res').innerHTML=html;
   $('mini').innerHTML=MINI;
