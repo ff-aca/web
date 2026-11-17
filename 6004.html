@@ -2,37 +2,41 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>6004 나만의 시간표</title>
+<title>연정's 시간표</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f7f8fa;--card:#fff;--ink:#16181d;--sub:#5f6672;--faint:#a9afb8;--line:#e7e9ee;--accent:#b8860b;--accent2:#fbf1d6;--mustard:#e0a91b;--onm:#2a2208;--warm:#ff7a45;--warm2:#fff1ea;--warn:#e08a00;--ok:#12a36b}
-@media(prefers-color-scheme:dark){:root{--bg:#0f1115;--card:#181b21;--ink:#f1f3f6;--sub:#a3a9b3;--faint:#5b616b;--line:#272b33;--accent:#e6b84a;--accent2:#2b2412;--mustard:#e0a91b;--onm:#1a1505;--warm:#ff9466;--warm2:#2d1d16;--warn:#f0a83a;--ok:#3ccf91}}
+:root{--bg:#faf7ef;--card:#fff;--ink:#001219;--sub:#5a5546;--faint:#b5ae9c;--line:#eee6d2;--accent:#ee9b00;--accent2:#fbefcf;--hero:#f6edd3;--num:#bb3e03;--chip:#ee9b00;--chiptxt:#8a5a00;--warm:#ca6702;--warn:#ca6702;--ok:#001219;--mustard:#ee9b00;--onm:#001219;--sec:#ca6702}
+@media(prefers-color-scheme:dark){:root{--bg:#001219;--card:#0b1e25;--ink:#f3eedf;--sub:#b8b19c;--faint:#4f5b5e;--line:#1d3038;--accent:#ee9b00;--accent2:#2e2610;--hero:#2a2617;--num:#ee9b00;--chip:#ee9b00;--chiptxt:#e9d8a6;--warm:#ee9b00;--warn:#ee9b00;--ok:#f3eedf;--mustard:#ee9b00;--onm:#001219;--sec:#ee9b00}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;font-weight:400;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
-.wrap{max-width:480px;margin:0 auto;padding:22px 18px 48px}
+.wrap{max-width:480px;margin:0 auto;padding:0 18px 48px}
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding-top:18px;padding-bottom:2px}
+.top .panel{margin-bottom:10px}
+th{position:sticky;top:var(--toph,0px);z-index:2}
+tr{scroll-margin-top:calc(var(--toph,0px) + 44px)}
 h1{font-size:15px;font-weight:500;margin:0 0 18px;color:var(--sub);display:flex;align-items:center;gap:8px}
-h1 span{background:#e5484d;color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:6px}
+h1 span{background:#9b2226;color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:6px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--line);padding:4px;border-radius:14px}
 .tabs button{border:0;background:none;font:inherit;font-size:16px;font-weight:500;color:var(--sub);padding:11px 0;border-radius:11px;cursor:pointer}
-.tabs button.on{background:var(--mustard);color:var(--onm);font-weight:700;box-shadow:0 2px 8px rgba(224,169,27,.3)}
+.tabs button.on{background:var(--mustard);color:var(--onm);font-weight:700;box-shadow:0 2px 8px rgba(238,155,0,.3)}
 .days{display:flex;gap:6px;margin:12px 0 6px}
 .days button{border:1px solid var(--line);background:var(--card);font:inherit;font-size:13px;font-weight:500;color:var(--sub);padding:5px 12px;border-radius:999px;cursor:pointer}
-.days button.on{border-color:var(--ink);color:var(--ink)}
+.days button.on{border-color:var(--accent);background:var(--accent);color:var(--onm)}
 .route{color:var(--sub);font-size:12.5px;margin:4px 2px 18px}
 .panel{background:var(--card);border-radius:18px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:22px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chips button{font:inherit;font-size:14px;font-weight:500;border:0;background:var(--accent2);color:var(--accent);border-radius:999px;padding:7px 14px;cursor:pointer}
-.chips button.on{background:var(--mustard);color:var(--onm);font-weight:700}
+.chips button{font:inherit;font-size:14px;font-weight:500;border:0;background:var(--accent2);color:var(--chiptxt);border-radius:999px;padding:7px 14px;cursor:pointer}
+.chips button.on{background:var(--chip);color:var(--onm);font-weight:700}
 .ctl{display:flex;gap:16px;align-items:center;margin:14px 0 0;font-size:13px;color:var(--sub);flex-wrap:wrap}
 .ctl input{font:inherit;font-size:15px;font-weight:500;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums}
 .ctl input[type=number]{width:46px;text-align:center}
 .res{margin-top:16px}
 .cap{font-size:13px;color:var(--sub);margin-bottom:8px;font-weight:500}
-.cap b{color:var(--accent);font-weight:700}
-.herobox{background:var(--accent2);border-radius:14px;padding:14px 16px 12px;margin-bottom:6px}
+.cap b{color:var(--num);font-weight:700}
+.herobox{background:var(--hero);border-radius:14px;padding:14px 16px 12px;margin-bottom:6px}
 .hero{display:flex;align-items:flex-end;justify-content:space-between}
-.hero .t{font-size:46px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+.hero .t{font-size:46px;font-weight:600;line-height:1;letter-spacing:-.03em;color:var(--num);font-variant-numeric:tabular-nums}
 .hero .r{text-align:right;font-size:12.5px;color:var(--sub);line-height:1.6}
 .hero .r b{font-size:22px;font-weight:700;color:var(--ink);letter-spacing:-.02em}
 .note{font-size:12.5px;color:var(--sub);margin-top:8px;font-weight:500}
@@ -40,26 +44,29 @@ h1 span{background:#e5484d;color:#fff;font-weight:700;font-size:13px;padding:2px
 .sm:last-child{border-bottom:0}
 .sm .t{font-size:19px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;margin-right:8px}
 .warn{color:var(--warn);font-weight:600}
-.acc{color:var(--accent);font-weight:700}
-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.acc{color:var(--num);font-weight:700}
+table{width:100%;border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;background:var(--card);border-radius:18px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 th{font-size:12px;color:var(--sub);font-weight:500;text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}
 th:last-child,td:last-child{text-align:right}
 td{padding:10px 14px;border-bottom:1px solid var(--line);font-size:14.5px;vertical-align:top}
 td.a{font-size:17px;font-weight:600}
 td small{display:block;color:var(--sub);font-size:11.5px;margin-top:1px;font-weight:400}
 tr.before td{color:var(--faint)}tr.before td small{color:var(--faint)}
-tr.pick td{background:var(--accent2);color:var(--accent)}tr.pick td.a{font-weight:700}
-.sec td{text-align:left!important;font-size:12px;font-weight:700;color:var(--accent);background:var(--bg);padding:8px 14px;border-bottom:0}
-td.slow{color:var(--warm);font-weight:600}td.fast{color:var(--ok);font-weight:600}
+tr.pick td{background:var(--accent2);color:var(--num)}tr.pick td.a{font-weight:700}
+.sec td{text-align:left!important;font-size:12px;font-weight:700;color:var(--sec);background:var(--bg);padding:8px 14px;border-bottom:0}
+td.slow{color:#ae2012;font-weight:600}td.fast{color:var(--ink);font-weight:600}
+.fold td{text-align:center!important;font-size:12.5px;font-weight:600;color:var(--chiptxt);background:var(--accent2);padding:10px;cursor:pointer;border-bottom:1px solid var(--line)}
 .foot{font-size:11.5px;color:var(--sub);line-height:1.7;margin-top:18px}
 </style></head><body><div class="wrap">
-<h1><span>직행 6004</span>나만의 시간표</h1>
-<div class="tabs" id="dirseg"><button data-k="back">회사 → 집</button><button data-k="go">집 → 회사</button></div>
+<div class="top" id="top">
+<h1><span>직행 6004</span>연정's 시간표</h1>
+<div class="tabs" id="dirseg"><button data-k="go">집 → 회사</button><button data-k="back">회사 → 집</button></div>
 <div class="days" id="dayseg"><button data-d="mon">월–목</button><button data-d="fri">금요일</button></div>
 <div class="route" id="route"></div>
 <div class="panel"><div class="chips" id="chips"></div>
 <div class="ctl" id="ctl"></div>
 <div class="res" id="res"></div></div>
+</div>
 <table><thead><tr><th>탑승</th><th id="arrh">도착</th><th>소요</th></tr></thead><tbody id="tb"></tbody></table>
 <div class="foot" id="foot"></div>
 </div>
@@ -75,7 +82,7 @@ const p2=n=>String(n).padStart(2,'0');
 const hm=x=>p2(Math.floor(x/60)%24)+':'+p2(x%60);
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const $=id=>document.getElementById(id);
-let K,DAY,SEL='now',TIME=null;
+let K,DAY,SEL='now',TIME=null,OPEN_AM=false;
 function kst(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}))}
 function nowMin(){const n=kst();return n.getHours()*60+n.getMinutes()+(n.getHours()<4?1440:0)}
 function sec(a){const h=m(a)/60;return h<7?'새벽':h<9.5?'출근 시간':h<12?'오전':h<17?'오후':h<20?'퇴근 시간':h<24?'저녁':'자정 이후'}
@@ -118,22 +125,29 @@ function render(scroll){
   }
   $('res').innerHTML=html;
   let t='',last='';
+  const amN=K==='back'?D.filter(x=>m(x[0])<12*60).length:0;
+  const amOpen=OPEN_AM||(pi>=0&&pi<amN);
+  if(amN)t+=`<tr class="fold" id="fold"><td colspan="3">새벽 · 오전 ${amN}대 ${amOpen?'접기 ▴':'펼치기 ▾'}</td></tr>`;
   D.forEach((x,i)=>{const[a,ae,b,bl,avg,mn,mx,est]=x;const s=sec(a);
+    if(i<amN&&!amOpen)return;
     if(s!==last){t+=`<tr class="sec"><td colspan="3">${s}</td></tr>`;last=s}
     const cls=pi>=0&&i<pi&&!isArr?'before':(i===pi?'pick':'');
     t+=`<tr class="${cls}"><td class="a">${a}<small>${ae!==a?'빠르면 '+ae:'&nbsp;'}</small></td><td>${b}${est?' *':''}<small>늦으면 ${bl}</small></td><td class="${avg>=r.slow?'slow':avg<=50?'fast':''}">${avg}분${mn!=null?`<small>${mn}–${mx}</small>`:''}</td></tr>`});
   $('tb').innerHTML=t;
+  if($('fold'))$('fold').onclick=()=>{OPEN_AM=!amOpen;render(false)};
   $('foot').innerHTML=(DAY==='mon'
     ?'월–목은 월요일 3주치(11/2·11/9·11/16) 실제 기록 기준이에요. 도착은 중간값, 빠르면·늦으면은 3주 중 가장 이른·늦은 시각. 화–목 기록이 없어 월요일로 대신했어요. 자정 넘어 도착하는 퇴근 막차 3대는 기록이 없어 뺐어요.'
     :'금요일은 앱 예상시간표 기준이에요. * 표시는 소요시간 추정.')
     +'<br>출근 도착 목표는 늦으면 시각 + 도보 10분으로 계산해요. 정류장까지 도보 시간은 이 기기에 저장돼요.';
-  if(scroll){const n=document.querySelector('tr.pick');if(n)setTimeout(()=>n.scrollIntoView({block:'center'}),0)}
+  document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
+  if(scroll){const n=document.querySelector('tr.pick');if(n)setTimeout(()=>n.scrollIntoView({block:'start'}),0)}
 }
 (function(){const n=kst(),h=location.hash.slice(1);
   DAY=n.getDay()===5?'fri':'mon';
   K=(h==='go'||h==='back')?h:(n.getHours()>=4&&n.getHours()<12?'go':'back');
   document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';history.replaceState(null,'','#'+K);render(true)});
   document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;render(true)});
+  addEventListener('resize',()=>document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px'));
   render(false);
   setInterval(()=>{if(SEL==='now'&&document.activeElement.tagName!=='INPUT')render(false)},30000);
 })();
