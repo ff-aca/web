@@ -160,18 +160,22 @@ function render(scroll){
   $('res').innerHTML=html;
   $('mini').innerHTML=MINI;
   let t='',last='';
-  const amN=K==='back'?D.filter(x=>m(x[0])<17*60).length:0;
-  const amOpen=OPEN_AM===null?(SEL!=='now'&&pi>=0&&pi<amN):OPEN_AM;
-  if(amN)t+=`<tr class="fold" id="fold"><td colspan="3">새벽 · 오전 · 오후 ${amN}대 ${amOpen?'접기 ▴':'펼치기 ▾'}</td></tr>`;
+  // 접기 구간: 퇴근은 17시 이전(위쪽), 출근은 12시 이후(아래쪽)
+  const inFold=i=>K==='back'?m(D[i][0])<17*60:m(D[i][0])>=12*60;
+  const fN=D.filter((x,i)=>inFold(i)).length;
+  const amOpen=OPEN_AM===null?(SEL!=='now'&&pi>=0&&inFold(pi)):OPEN_AM;
+  const foldRow=`<tr class="fold" id="fold"><td colspan="3">${K==='back'?'새벽 · 오전 · 오후':'오후 · 저녁'} ${fN}대 ${amOpen?'접기 ▴':'펼치기 ▾'}</td></tr>`;
+  let foldPlaced=false;
   D.forEach((x,i)=>{const[a,ae,b,bl,avg,mn,mx,est]=x;const s=sec(a);
-    if(i<amN&&!amOpen)return;
+    if(fN&&!foldPlaced&&inFold(i)){t+=foldRow;foldPlaced=true;if(K==='go')last=''}
+    if(inFold(i)&&!amOpen)return;
     if(s!==last){t+=`<tr class="sec"><td colspan="3">${s}</td></tr>`;last=s}
     const cls=pi>=0&&i<pi&&!isArr?'before':(i===pi?'pick':'');
     t+=`<tr class="${cls}"><td class="a">${a}<small>${ae!==a?'빠르면 '+ae:'&nbsp;'}</small></td><td>${b}${est?' *':''}<small>늦으면 ${bl}</small></td><td class="${avg>=r.slow?'slow':avg<=50?'fast':''}">${avg}분${mn!=null?`<small>${mn}–${mx}</small>`:''}</td></tr>`});
   $('tb').innerHTML=t;
   if($('fold'))$('fold').onclick=()=>{OPEN_AM=!amOpen;render(false)};
   $('foot').innerHTML=(DAY==='mon'
-    ?'월–목은 월요일 3주치(11/2·11/9·11/16) 실제 기록 기준이에요. 도착은 중간값, 빠르면·늦으면은 3주 중 가장 이른·늦은 시각. 화–목 기록이 없어 월요일로 대신했어요. 자정 넘어 도착하는 퇴근 막차 3대는 기록이 없어 뺐어요. 회사→집은 17시 이전 버스를 접어 뒀어요.'
+    ?'월–목은 월요일 3주치(11/2·11/9·11/16) 실제 기록 기준이에요. 도착은 중간값, 빠르면·늦으면은 3주 중 가장 이른·늦은 시각. 화–목 기록이 없어 월요일로 대신했어요. 자정 넘어 도착하는 퇴근 막차 3대는 기록이 없어 뺐어요. 회사→집은 17시 이전, 집→회사는 12시 이후 버스를 접어 뒀어요.'
     :'금요일은 앱 예상시간표 기준이에요. * 표시는 소요시간 추정.')
     +'<br>출근 도착 목표는 늦으면 시각 + 도보 10분으로 계산해요. 정류장까지 도보 시간은 이 기기에 저장돼요.';
   document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
