@@ -183,8 +183,8 @@ function render(scroll){
 }
 (function(){const n=kst(),h=location.hash.slice(1);
   DAY=n.getDay()===5?'fri':'mon';
-  K=(h==='go'||h==='back')?h:(n.getHours()>=4&&n.getHours()<12?'go':'back');
-  document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';OPEN_AM=null;history.replaceState(null,'','#'+K);render(true)});
+  K=(n.getHours()>=4&&n.getHours()<13)?'go':'back'; // 04~13시 전: 집→회사, 13시 이후: 회사→집
+  document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';OPEN_AM=null;render(true)});
   document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;OPEN_AM=null;render(true)});
   const setH=()=>document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
   new IntersectionObserver(es=>{const v=es[0].isIntersecting;$('mini').classList.toggle('show',!v);setH()},{rootMargin:'-120px 0px 0px 0px'}).observe($('res'));
