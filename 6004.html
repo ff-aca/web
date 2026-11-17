@@ -88,6 +88,8 @@ td.slow{color:var(--warm);font-weight:500}td.fast{color:var(--ink);font-weight:5
 td,td.a{font-size:16px!important;font-weight:500!important}
 td small{font-weight:400!important}
 .sec td{font-size:12px!important}.fold td{font-size:12.5px!important}
+.chips{gap:5px!important;flex-wrap:nowrap!important}
+.chips button{flex:1 1 0!important;min-width:0;padding:7px 0!important;font-size:13.5px!important;text-align:center;white-space:nowrap}
 .foot{font-size:11.5px;color:var(--sub);line-height:1.7;margin-top:18px}
 </style></head><body><div class="wrap">
 <div class="top" id="top">
@@ -114,7 +116,7 @@ const p2=n=>String(n).padStart(2,'0');
 const hm=x=>p2(Math.floor(x/60)%24)+':'+p2(x%60);
 const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const $=id=>document.getElementById(id);
-let K,DAY,SEL='now',TIME=null,OPEN_AM=false,MINI='';
+let K,DAY,SEL='now',TIME=null,OPEN_AM=null,MINI='';
 function kst(){return new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Seoul'}))}
 function nowMin(){const n=kst();return n.getHours()*60+n.getMinutes()+(n.getHours()<4?1440:0)}
 function sec(a){const h=m(a)/60;return h<7?'새벽':h<9.5?'출근 시간':h<12?'오전':h<17?'오후':h<20?'퇴근 시간':h<24?'저녁':'자정 이후'}
@@ -126,11 +128,11 @@ function render(scroll){
   $('route').textContent=`${r.from} ${r.fromId} → ${r.to} ${r.toId}`;
   $('arrh').textContent='하차 ('+r.short+')';$('deph').textContent='탑승 ('+(K==='go'?'신미주':'강남역')+')';
   $('chips').innerHTML=r.chips.map(([k,l])=>`<button data-s="${k}" class="${SEL===k?'on':''}">${l}</button>`).join('');
-  $('chips').querySelectorAll('button').forEach(b=>b.onclick=()=>{SEL=b.dataset.s;TIME=null;render(true)});
+  $('chips').querySelectorAll('button').forEach(b=>b.onclick=()=>{SEL=b.dataset.s;TIME=null;OPEN_AM=null;render(true)});
   const isArr=SEL.startsWith('a');
   const base=SEL==='now'?nowMin():SEL==='custom'?TIME:isArr?null:m(SEL);
   $('ctl').innerHTML=`<label>${r.origin} 출발 <input type="time" id="ft" value="${base!=null?hm(base):''}"></label><label>정류장까지 <input type="number" id="fw" min="0" max="60" inputmode="numeric" value="${w}">분</label>`;
-  $('ft').oninput=e=>{if(!e.target.value)return;SEL='custom';TIME=m(e.target.value);render(true)};
+  $('ft').oninput=e=>{if(!e.target.value)return;SEL='custom';TIME=m(e.target.value);OPEN_AM=null;render(true)};
   $('fw').oninput=e=>{ls.set('walk_'+K,e.target.value);render(false)};
   let pi=-1,html='';MINI='';
   if(isArr){ // 도착 목표 역산
@@ -159,7 +161,7 @@ function render(scroll){
   $('mini').innerHTML=MINI;
   let t='',last='';
   const amN=K==='back'?D.filter(x=>m(x[0])<12*60).length:0;
-  const amOpen=OPEN_AM||(pi>=0&&pi<amN);
+  const amOpen=OPEN_AM===null?(pi>=0&&pi<amN):OPEN_AM;
   if(amN)t+=`<tr class="fold" id="fold"><td colspan="3">새벽 · 오전 ${amN}대 ${amOpen?'접기 ▴':'펼치기 ▾'}</td></tr>`;
   D.forEach((x,i)=>{const[a,ae,b,bl,avg,mn,mx,est]=x;const s=sec(a);
     if(i<amN&&!amOpen)return;
@@ -178,8 +180,8 @@ function render(scroll){
 (function(){const n=kst(),h=location.hash.slice(1);
   DAY=n.getDay()===5?'fri':'mon';
   K=(h==='go'||h==='back')?h:(n.getHours()>=4&&n.getHours()<12?'go':'back');
-  document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';history.replaceState(null,'','#'+K);render(true)});
-  document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;render(true)});
+  document.querySelectorAll('#dirseg button').forEach(b=>b.onclick=()=>{K=b.dataset.k;SEL='now';OPEN_AM=null;history.replaceState(null,'','#'+K);render(true)});
+  document.querySelectorAll('#dayseg button').forEach(b=>b.onclick=()=>{DAY=b.dataset.d;OPEN_AM=null;render(true)});
   const setH=()=>document.documentElement.style.setProperty('--toph',$('top').offsetHeight+'px');
   new IntersectionObserver(es=>{const v=es[0].isIntersecting;$('mini').classList.toggle('show',!v);setH()},{rootMargin:'-120px 0px 0px 0px'}).observe($('res'));
   $('mini').onclick=()=>scrollTo({top:0,behavior:'smooth'});
